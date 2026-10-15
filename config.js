@@ -3,15 +3,15 @@
 // ==========================================
 window.CONFIG = {
   // 1. GAS 後端部署網址 (結尾為 /exec)
-  GAS_URL: "https://script.google.com/macros/s/請替換為你的GAS部署ID/exec",
+  GAS_URL: "https://script.google.com/macros/s/AKfycbxFvVr6NmalmkPZ-7APo_b3uMOK-JQRQKZ7XvClptiPu09zI8u7wYyFr20kwRvqVnze2w/exec",
 
   // 2. GitHub 靜態資源與資料庫 (存放 JSON、圖片、MP3 的 Public 倉庫)
   // 格式: "你的GitHub帳號/你的資源庫名稱"
-  GITHUB_REPO: "your-username/english-vocab-assets",
+  GITHUB_REPO: "lamfungjerry/word-assets",
   GITHUB_BRANCH: "main",
 
   // 3. iPhone 主畫面 Icon 網址 (可放相對路徑如 "icon.png" 或完整 https 網址 / data:image/png;base64,...)
-  ICON_URL: "icon.png",
+  ICON_URL: "https://lamfungjerry.github.io/gas/icons/app1.png",
 
   // 4. 預設 TTS 發音款式
   // 格式: "語音代號,語言代碼,引擎(azure|google)"
