@@ -1,0 +1,187 @@
+/* ==========================================
+   iOS 觸控、切割網格與基礎互動修正
+   ========================================== */
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.drag-line-v {
+  cursor: col-resize;
+  width: 40px;
+  margin-left: -20px;
+  display: flex;
+  justify-content: center;
+}
+
+.drag-line-h {
+  cursor: row-resize;
+  height: 40px;
+  margin-top: -20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#grid-container {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* ==========================================
+   虛擬鍵盤按鈕樣式
+   ========================================== */
+.vk-btn {
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 8px 0;
+  box-shadow: 0 3px 0px #94a3b8;
+  transition: all 0.1s;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.vk-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 0px 0px #94a3b8;
+  background-color: #e2e8f0;
+}
+
+.vk-btn-wide {
+  flex: 1.5;
+  font-size: 1rem;
+  background-color: #cbd5e1;
+}
+
+@media (min-width: 768px) {
+  .vk-btn {
+    padding: 12px 0;
+  }
+  .vk-btn-wide {
+    font-size: 1.4rem;
+  }
+}
+
+/* ==========================================
+   模擬輸入框游標與旋轉漏斗動畫
+   ========================================== */
+@keyframes blink {
+  50% { border-right-color: transparent; }
+}
+
+.fake-cursor::after {
+  content: '|';
+  color: #3b82f6;
+  animation: blink 1s step-start infinite;
+  font-weight: normal;
+  margin-left: 2px;
+}
+
+@keyframes hourglass-spin {
+  0% { transform: rotate(0deg); }
+  50% { transform: rotate(180deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.hourglass-spin {
+  animation: hourglass-spin 1.5s infinite ease-in-out;
+  display: inline-block;
+}
+
+/* ==========================================
+   發音播放按鈕狀態 (綠燈就緒 / 黃燈待下載)
+   ========================================== */
+.btn-play-ready {
+  background-color: #10b981;
+  color: #ffffff;
+}
+.btn-play-ready:hover {
+  background-color: #059669;
+}
+
+.btn-play-pending {
+  background-color: #f59e0b;
+  color: #ffffff;
+}
+.btn-play-pending:hover {
+  background-color: #d97706;
+}
+
+/* ==========================================
+   右下角進度浮窗 (API 橙黃色 / Drive 快取紫色)
+   ========================================== */
+.floating-dl-wrapper {
+  position: fixed;
+  right: 0;
+  bottom: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.floating-dl-wrapper.collapsed {
+  transform: translateX(calc(100% - 44px));
+}
+
+.floating-dl-toggle {
+  width: 44px;
+  height: 48px;
+  color: #ffffff;
+  border-radius: 24px 0 0 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  font-size: 18px;
+  padding-left: 4px;
+}
+
+.floating-dl-content {
+  background: rgba(255, 255, 255, 0.96);
+  border: 2px solid #cbd5e1;
+  border-right: none;
+  border-radius: 28px 0 0 28px;
+  padding: 8px 14px 8px 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: -2px 4px 15px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.floating-dl-wrapper.collapsed .floating-dl-content {
+  display: none;
+}
+
+.floating-dl-wrapper:not(.collapsed) .floating-dl-toggle {
+  display: none;
+}
+
+/* 橙黃色：API 下載模式 */
+.dl-mode-api .floating-dl-toggle {
+  background-color: #f59e0b;
+}
+.dl-mode-api .floating-dl-content {
+  border-color: #f59e0b;
+  background-color: #fffbeb;
+}
+
+/* 紫色：Drive 快取讀取模式 */
+.dl-mode-drive .floating-dl-toggle {
+  background-color: #8b5cf6;
+}
+.dl-mode-drive .floating-dl-content {
+  border-color: #8b5cf6;
+  background-color: #f5f3ff;
+}
