@@ -330,14 +330,6 @@
           </div>
         </div>
       </div>
-
-      <!-- === [可刪除區塊 START] 舊 Google Sheet 一鍵遷移按鈕 (用完一次即可刪除此 div) === -->
-      <div class="mt-3 pt-3 border-t border-dashed border-indigo-200">
-        <button id="migrate-sheet-btn" onclick="window.runLegacySheetMigration()" class="w-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-300 font-bold py-2 rounded-xl text-xs transition">
-          📦 一鍵遷移舊 Google Sheet 課題與紀錄至 GitHub
-        </button>
-      </div>
-      <!-- === [可刪除區塊 END] === -->
     </div>
   </div>
 
@@ -1859,33 +1851,6 @@
         alert('🗑️ 殘留項目已清除！');
       });
     };
-
-    // === [可刪除區塊 START] 舊 Google Sheet 一鍵遷移前端觸發函數 (遷移完成後可刪除) ===
-    window.runLegacySheetMigration = function() {
-      if (!confirm('確定要將舊 Google Sheet (Topics 與 Records) 的所有資料轉換並同步至 GitHub 嗎？')) return;
-      var btn = document.getElementById('migrate-sheet-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="hourglass-spin">⏳</span> 正在遷移舊資料並推送至 GitHub...';
-
-      callGasApi('migrateLegacySheetToGitHub', {
-        githubRepo: window.CONFIG.GITHUB_REPO,
-        githubBranch: window.CONFIG.GITHUB_BRANCH || 'main'
-      }).then(function(res) {
-        btn.disabled = false;
-        btn.innerText = '✅ 遷移完成！';
-        if (res.commitSha) {
-          window.globalData.commitSha = res.commitSha;
-          localStorage.setItem('latestCommitSha', res.commitSha);
-        }
-        alert('🎉 遷移成功！共匯入 ' + res.migratedTopics + ' 個課題及 ' + res.migratedRecords + ' 筆測驗紀錄。');
-        loadGitHubStaticJson(window.globalData.commitSha);
-      }).catch(function(err) {
-        btn.disabled = false;
-        btn.innerText = '📦 一鍵遷移舊 Google Sheet 課題與紀錄至 GitHub';
-        alert('❌ 遷移失敗: ' + err.message);
-      });
-    };
-    // === [可刪除區塊 END] ===
   </script>
 </body>
 </html>
