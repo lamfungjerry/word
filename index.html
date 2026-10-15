@@ -8,6 +8,7 @@
   <!-- iOS Web App 專屬設定 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="單字系統">
 
   <!-- 優先載入設定檔並同步寫入 Apple Touch Icon，確保 iOS Safari 100% 抓取成功 -->
   <script src="config.js"></script>
@@ -941,21 +942,17 @@
     // ==========================================
     // 4. GitHub 自動同步控制
     // ==========================================
-function updateSyncBadge(isSyncing, unsyncedCount, customText) {
+    function updateSyncBadge(isSyncing, unsyncedCount, customText) {
       var s = document.getElementById('sync-status');
       if (!s) return;
       if (isSyncing) {
         s.innerHTML = '<span class="hourglass-spin">⏳</span> <span class="ml-1">' + (customText || 'GitHub 同步中...') + '</span>';
         s.className = 'cursor-pointer text-xs md:text-sm font-bold text-amber-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
-      } else if (customText) { 
-        // 💥 修正：若有自訂錯誤訊息，強制優先顯示，不再被待同步數量蓋過
-        s.innerHTML = '<span>⚠️</span> <span class="ml-1">' + customText + '</span>';
-        s.className = 'cursor-pointer text-xs md:text-sm font-bold text-red-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-red-500/40';
       } else if (unsyncedCount > 0) {
         s.innerHTML = '<span>☁️</span> <span class="ml-1">待同步 (' + unsyncedCount + ')</span>';
         s.className = 'cursor-pointer text-xs md:text-sm font-bold text-amber-300 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
       } else {
-        s.innerHTML = '<span>✅</span> <span class="ml-1">GitHub 已同步</span>';
+        s.innerHTML = '<span>✅</span> <span class="ml-1">' + (customText || 'GitHub 已同步') + '</span>';
         s.className = 'cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
       }
     }
