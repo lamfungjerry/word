@@ -691,7 +691,8 @@
       updateVoiceBadge();
       var s = document.getElementById('topic-select');
       if (s && s.value) {
-        checkTopicAudioReady(s.value, true);
+        // 修正：切換語音時不強制同步，傳入 false。若有缺檔內部會自動排隊並觸發同步
+        checkTopicAudioReady(s.value, false);
       }
     };
 
@@ -788,6 +789,10 @@
       updateDownloadFloatingUI();
       if (!isProcessingQueue) {
         isProcessingQueue = true;
+        // 💥 新增：開始下載佇列時，右上角顯示待下載後同步
+        if (pendingAutoSyncAfterQueue) {
+          updateSyncBadge(false, 0, '待下載後同步...');
+        }
         processNextAudioTask();
       }
     }
