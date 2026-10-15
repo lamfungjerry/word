@@ -3,7 +3,7 @@
 // ==========================================
 window.CONFIG = {
   // 1. GAS 後端部署網址 (結尾為 /exec)
-  GAS_URL: "https://script.google.com/macros/s/AKfycbxFvVr6NmalmkPZ-7APo_b3uMOK-JQRQKZ7XvClptiPu09zI8u7wYyFr20kwRvqVnze2w/exec",
+  GAS_URL: "https://script.google.com/macros/s/AKfycbwQ0JpHtO3WAVU-RIQjPST8lu87dqCVllXLGC5AU4ILfgJB23M5K8yyLh2AqwIz3GW5/exec",
 
   // 2. GitHub 靜態資源與資料庫 (存放 JSON、圖片、MP3 的 Public 倉庫)
   // 格式: "你的GitHub帳號/你的資源庫名稱"
