@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>英語單字學習系統</title>
+  <title>英語單字</title>
 
   <!-- iOS Web App 專屬設定 -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="單字系統">
+  <meta name="apple-mobile-web-app-title" content="英語單字">
 
   <!-- 優先載入設定檔並同步寫入 Apple Touch Icon，確保 iOS Safari 100% 抓取成功 -->
   <script src="config.js"></script>
@@ -33,7 +33,7 @@
       <div class="flex justify-between items-center px-1">
         <div class="flex items-center space-x-2">
           <button onclick="window.openKeyModal()" class="text-lg hover:scale-110 transition p-1" title="API Key 與容量設定">🔑</button>
-          <h1 class="text-white text-base md:text-lg font-bold whitespace-nowrap">英語單字學習系統</h1>
+          <h1 class="text-white text-base md:text-lg font-bold whitespace-nowrap" onclick="history.back()" style="cursor: pointer;">英語單字</h1>
         </div>
         <div class="flex items-center space-x-2">
           <div id="sync-status" onclick="window.manualSyncGitHub()" class="cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition" title="點擊手動同步至 GitHub">
