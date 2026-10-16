@@ -1,187 +1,356 @@
-/* ==========================================
-   iOS 觸控、切割網格與基礎互動修正
-   ========================================== */
+:root {
+  --primary: #2563eb;
+  --success: #16a34a;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #1e293b;
+  --text-sub: #64748b;
+  --border: #e2e8f0;
+}
+
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
 
-.drag-line-v {
-  cursor: col-resize;
-  width: 40px;
-  margin-left: -20px;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang HK", sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+}
+
+/* 頂部導覽列：左上與右上純 Icon */
+.top-nav {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.drag-line-h {
-  cursor: row-resize;
-  height: 40px;
-  margin-top: -20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.app-title {
+  font-size: 1.12rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--primary);
 }
 
-#grid-container {
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: none;
-}
-
-/* ==========================================
-   虛擬鍵盤按鈕樣式
-   ========================================== */
-.vk-btn {
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-weight: bold;
-  font-size: 1.2rem;
-  padding: 8px 0;
-  box-shadow: 0 3px 0px #94a3b8;
-  transition: all 0.1s;
-  flex: 1;
+.icon-btn {
+  position: relative;
+  width: 42px;
+  height: 42px;
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.icon-btn:active {
+  background: #f1f5f9;
+}
+
+/* 未設定 Key 提示紅點 */
+.dot-badge {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 9px;
+  height: 9px;
+  background-color: var(--danger);
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+
+/* 主容器 (針對 iPhone 單欄優化) */
+.container {
+  max-width: 540px;
+  margin: 12px auto;
+  padding: 0 12px 40px;
+}
+
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  margin-bottom: 14px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+/* 步進器 Stepper: [+按鈕] [inputbox] [-按鈕] */
+.stepper-group {
+  margin-bottom: 14px;
+}
+
+.stepper-label {
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.stepper-btn {
+  width: 46px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   user-select: none;
-  -webkit-user-select: none;
 }
 
-.vk-btn:active {
-  transform: translateY(3px);
-  box-shadow: 0 0px 0px #94a3b8;
-  background-color: #e2e8f0;
+.stepper-btn:active {
+  background: #eff6ff;
+  border-color: var(--primary);
 }
 
-.vk-btn-wide {
-  flex: 1.5;
-  font-size: 1rem;
-  background-color: #cbd5e1;
+.stepper-display {
+  width: 110px;
+  height: 44px;
+  text-align: center;
+  font-size: 1.08rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fafc;
+  color: var(--text-main);
+  outline: none;
 }
 
-@media (min-width: 768px) {
-  .vk-btn {
-    padding: 12px 0;
-  }
-  .vk-btn-wide {
-    font-size: 1.4rem;
-  }
+/* 表單與通用按鈕 */
+label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 600;
+  margin: 10px 0 6px;
 }
 
-/* ==========================================
-   模擬輸入框游標與旋轉漏斗動畫
-   ========================================== */
-@keyframes blink {
-  50% { border-right-color: transparent; }
+input[type="text"], input[type="password"], textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #fff;
 }
 
-.fake-cursor::after {
-  content: '|';
-  color: #3b82f6;
-  animation: blink 1s step-start infinite;
-  font-weight: normal;
-  margin-left: 2px;
+.btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--primary);
+  color: #fff;
 }
 
-@keyframes hourglass-spin {
-  0% { transform: rotate(0deg); }
-  50% { transform: rotate(180deg); }
-  100% { transform: rotate(360deg); }
+.btn:active { opacity: 0.85; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-success { background: var(--success); }
+.btn-warning { background: var(--warning); }
+.btn-danger  { background: var(--danger); }
+.btn-outline {
+  background: #fff;
+  color: var(--text-main);
+  border: 1px solid var(--border);
 }
 
-.hourglass-spin {
-  animation: hourglass-spin 1.5s infinite ease-in-out;
+/* 課文選擇列 */
+.lesson-select-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.lesson-select-bar select {
+  flex: 1;
+  font-weight: 600;
+}
+
+/* 進度追蹤區塊 */
+.progress-box {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 8px;
+}
+
+.step-pill {
+  display: inline-block;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 12px;
+  background: #dbeafe;
+  border-radius: 99px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--primary);
+  transition: width 0.25s ease;
+}
+
+/* 意群卡片清單 */
+.chunk-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.chunk-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.chunk-card.active {
+  border-color: var(--primary);
+  background: #eff6ff;
+  font-weight: 600;
+}
+
+.chunk-text.masked {
+  filter: blur(6px);
+  user-select: none;
+}
+
+.chunk-badge {
+  font-size: 0.75rem;
+  color: var(--text-sub);
+  background: #f1f5f9;
+  padding: 3px 7px;
+  border-radius: 6px;
+  margin-left: 8px;
+  white-space: nowrap;
+}
+
+/* Key 設定 Modal 專屬排版 */
+.key-item {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+}
+
+.key-item:last-child {
+  border-bottom: none;
+}
+
+.key-row-inline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.key-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.key-nextline-badge {
+  margin-top: 6px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.badge-tag {
+  font-size: 0.76rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
   display: inline-block;
 }
 
-/* ==========================================
-   發音播放按鈕狀態 (綠燈就緒 / 黃燈待下載)
-   ========================================== */
-.btn-play-ready {
-  background-color: #10b981;
-  color: #ffffff;
-}
-.btn-play-ready:hover {
-  background-color: #059669;
+.badge-tag.ok {
+  background: #dcfce7;
+  color: var(--success);
 }
 
-.btn-play-pending {
-  background-color: #f59e0b;
-  color: #ffffff;
-}
-.btn-play-pending:hover {
-  background-color: #d97706;
+.badge-tag.warn {
+  background: #fee2e2;
+  color: var(--danger);
 }
 
-/* ==========================================
-   右下角進度浮窗 (API 橙黃色 / Drive 快取紫色)
-   ========================================== */
-.floating-dl-wrapper {
+/* 彈出視窗 Modal */
+.modal-backdrop {
   position: fixed;
-  right: 0;
-  bottom: 24px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  transition: transform 0.3s ease-in-out;
-}
-
-.floating-dl-wrapper.collapsed {
-  transform: translateX(calc(100% - 44px));
-}
-
-.floating-dl-toggle {
-  width: 44px;
-  height: 48px;
-  color: #ffffff;
-  border-radius: 24px 0 0 24px;
-  display: flex;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: none;
   justify-content: center;
   align-items: center;
-  box-shadow: -2px 4px 12px rgba(0, 0, 0, 0.2);
-  cursor: pointer;
-  font-size: 18px;
-  padding-left: 4px;
+  z-index: 100;
+  padding: 14px;
 }
 
-.floating-dl-content {
-  background: rgba(255, 255, 255, 0.96);
-  border: 2px solid #cbd5e1;
-  border-right: none;
-  border-radius: 28px 0 0 28px;
-  padding: 8px 14px 8px 18px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: -2px 4px 15px rgba(0, 0, 0, 0.18);
-  backdrop-filter: blur(6px);
-  cursor: pointer;
-}
-
-.floating-dl-wrapper.collapsed .floating-dl-content {
-  display: none;
-}
-
-.floating-dl-wrapper:not(.collapsed) .floating-dl-toggle {
-  display: none;
-}
-
-/* 橙黃色：API 下載模式 */
-.dl-mode-api .floating-dl-toggle {
-  background-color: #f59e0b;
-}
-.dl-mode-api .floating-dl-content {
-  border-color: #f59e0b;
-  background-color: #fffbeb;
-}
-
-/* 紫色：Drive 快取讀取模式 */
-.dl-mode-drive .floating-dl-toggle {
-  background-color: #8b5cf6;
-}
-.dl-mode-drive .floating-dl-content {
-  border-color: #8b5cf6;
-  background-color: #f5f3ff;
+.modal {
+  background: #fff;
+  border-radius: 14px;
+  max-width: 420px;
+  width: 100%;
+  padding: 18px;
+  max-height: 88vh;
+  overflow-y: auto;
 }
