@@ -3,108 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>英語單字</title>
+  <title>英語單字學習系統</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <script src="config.js"></script>
-  <script>
-    document.write('<link rel="apple-touch-icon" href="' + (window.CONFIG.ICON_URL || 'icon.png') + '">');
-  </script>
+  <script>document.write('<link rel="apple-touch-icon" href="' + (window.CONFIG.ICON_URL || 'icon.png') + '">');</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 pb-16">
+<body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
+  <!-- =============================== -->
   <!-- 頂部導覽列 -->
+  <!-- =============================== -->
   <header class="bg-slate-900 shadow-md sticky top-0 z-50 pt-safe">
-    <div class="px-3 pt-2 pb-2 flex flex-col space-y-2">
+    <div class="max-w-4xl mx-auto px-3 pt-2 pb-1 flex flex-col space-y-1">
       <div class="flex justify-between items-center px-1">
         <div class="flex items-center space-x-2">
-          <button onclick="window.openKeyModal()" class="text-lg p-1" title="API 金鑰">🔑</button>
-          <h1 class="text-white text-base font-bold">英語單字系統</h1>
+          <button onclick="window.openKeyModal()" class="text-lg hover:scale-110 transition p-1" title="API 金鑰">🔑</button>
+          <h1 class="text-white text-base md:text-lg font-bold">英語單字學習系統</h1>
         </div>
         <div class="flex items-center space-x-2">
-          <div id="sync-status" class="text-xs font-bold text-emerald-400 flex items-center bg-slate-800 px-2 py-1 rounded-full border border-slate-700">
+          <div id="sync-status" class="text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
             <span class="hourglass-spin">⏳</span> <span class="ml-1">載入中...</span>
           </div>
           <button onclick="window.openVoiceModal()" class="text-lg p-1">⚙️</button>
         </div>
       </div>
-      <nav id="main-nav" class="flex justify-between gap-2 pb-1">
-        <button id="nav-quiz" onclick="window.switchTab('quiz')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm font-bold bg-amber-500 text-slate-900 shadow-sm">測驗</button>
-        <button id="nav-topics" onclick="window.switchTab('topics')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm font-bold bg-slate-700 text-white shadow-sm">課題</button>
-        <button id="nav-analytics" onclick="window.switchTab('analytics')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm font-bold bg-slate-700 text-white shadow-sm">歷程</button>
+      <nav id="main-nav" class="flex justify-between gap-2 pb-1 pt-1">
+        <button id="nav-quiz" onclick="window.switchTab('quiz')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-amber-500 text-slate-900 shadow-sm">✏️ 開始測驗</button>
+        <button id="nav-topics" onclick="window.switchTab('topics')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-slate-700 text-white shadow-sm">📚 課題管理</button>
+        <button id="nav-analytics" onclick="window.switchTab('analytics')" class="nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-slate-700 text-white shadow-sm">📊 學習歷程</button>
       </nav>
     </div>
   </header>
 
-  <main class="px-3 pt-3 pb-6 max-w-lg mx-auto">
-    <!-- 1. 測驗 -->
+  <main class="max-w-4xl mx-auto px-3 md:px-4 pt-3 pb-6">
+    <!-- =============================== -->
+    <!-- 1. 測驗分頁 (已完全回復上一版豐富介面) -->
+    <!-- =============================== -->
     <section id="tab-quiz">
-      <div id="quiz-setup" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 mb-3">
-        <div class="mb-4">
-          <label class="block text-sm font-bold text-slate-700 mb-2">📚 選擇課題</label>
-          <select id="topic-select" onchange="window.onTopicSelectChange()" class="w-full p-2.5 border-2 border-slate-200 rounded-xl font-bold text-base bg-slate-50 outline-none">
-            <option value="">載入中...</option>
+      <div id="quiz-setup" class="bg-white p-5 md:p-6 rounded-xl shadow-sm border border-slate-200 mb-3">
+        <div class="mb-5">
+          <label class="block text-base font-bold text-slate-700 mb-2">📚 選擇測驗課題</label>
+          <select id="topic-select" onchange="window.onTopicSelectChange()" class="w-full p-3 border-2 border-slate-200 rounded-xl focus:ring focus:ring-amber-200 bg-slate-50 font-bold text-base outline-none">
+            <option value="">載入課題中...</option>
           </select>
         </div>
-        <div class="mb-5">
-          <label class="block text-sm font-bold text-slate-700 mb-2">🎯 模式</label>
-          <div class="grid grid-cols-3 gap-2">
+        <div class="mb-6">
+          <label class="block text-base font-bold text-slate-700 mb-3">🎯 選擇測驗模式</label>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="view" class="peer sr-only" checked>
-              <div class="p-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:border-indigo-500 peer-checked:bg-indigo-50 text-center shadow-sm">
-                <div class="text-xl mb-1">👁️</div><div class="font-bold text-xs">瀏覽</div>
+              <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all flex flex-col h-full shadow-sm">
+                <div class="flex items-center space-x-2 mb-1">
+                  <span class="text-2xl">👁️</span><span class="font-bold text-indigo-900 text-base">瀏覽模式</span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">純顯示圖片與發音。<br>適合配合實體紙筆手寫作答。</p>
               </div>
             </label>
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="type" class="peer sr-only">
-              <div class="p-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:border-indigo-500 peer-checked:bg-indigo-50 text-center shadow-sm">
-                <div class="text-xl mb-1">⌨️</div><div class="font-bold text-xs">打字</div>
+              <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all flex flex-col h-full shadow-sm">
+                <div class="flex items-center space-x-2 mb-1">
+                  <span class="text-2xl">⌨️</span><span class="font-bold text-indigo-900 text-base">打字模式</span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">使用虛擬鍵盤拼寫單字。<br>嚴格批改，成績將保存至歷程。</p>
               </div>
             </label>
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="mc" class="peer sr-only">
-              <div class="p-2 rounded-xl border-2 border-slate-200 bg-white peer-checked:border-emerald-500 peer-checked:bg-emerald-50 text-center shadow-sm">
-                <div class="text-xl mb-1">🎲</div><div class="font-bold text-xs text-emerald-800">溫習</div>
+              <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all flex flex-col h-full shadow-sm">
+                <div class="flex items-center space-x-2 mb-1">
+                  <span class="text-2xl">🎲</span><span class="font-bold text-emerald-800 text-base">溫習模式</span>
+                </div>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">四選一選擇題。<br>無壓力快速溫習，不留紀錄。</p>
               </div>
             </label>
           </div>
         </div>
-        <button id="start-quiz-btn" onclick="window.startQuiz()" class="w-full bg-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-md text-lg active:bg-emerald-700">▶️ 開始測驗</button>
+        <button id="start-quiz-btn" onclick="window.startQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 md:py-4 rounded-xl shadow-md transition text-lg mt-2">▶️ 開始測驗</button>
       </div>
 
       <div id="quiz-active" class="hidden space-y-2">
         <div class="flex justify-between items-center font-bold text-slate-700 bg-white p-2.5 rounded-lg shadow-sm border border-slate-200">
-          <div class="flex space-x-3 text-sm">
+          <div class="flex items-center space-x-3 text-sm">
             <span>進度: <span id="q-progress" class="text-amber-600">1/10</span></span>
             <span id="score-container" class="hidden">得分: <span id="q-score" class="text-emerald-600">0</span></span>
           </div>
-          <button onclick="window.cancelQuiz()" class="text-red-500 font-bold px-3 py-1 bg-red-50 rounded-lg text-xs">✖ 取消</button>
+          <button onclick="window.cancelQuiz()" class="text-red-500 font-bold px-3 py-1 bg-red-50 rounded-lg text-xs border border-red-200">✖ 取消</button>
         </div>
         <div class="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center">
-          <div class="w-full bg-slate-100 p-2 rounded-lg mb-3">
-            <canvas id="word-canvas" class="w-full object-contain p-1 rounded bg-white shadow-sm" style="height: 220px;"></canvas>
+          <div class="w-full relative flex flex-col justify-center bg-slate-100 p-2 rounded-lg mb-3">
+            <div class="absolute top-2 right-2 flex flex-col space-y-1 opacity-70 hover:opacity-100 transition z-10">
+              <button onclick="window.changeImageHeight(24)" class="bg-white border shadow-sm w-8 h-8 rounded text-lg font-bold">➕</button>
+              <button onclick="window.changeImageHeight(-24)" class="bg-white border shadow-sm w-8 h-8 rounded text-lg font-bold">➖</button>
+            </div>
+            <canvas id="word-canvas" class="w-full object-contain p-1 rounded bg-white shadow-sm border border-slate-200 transition-all duration-200" style="height: 344px;"></canvas>
           </div>
+          
           <button id="quiz-play-btn" onclick="window.playCurrentQuizWord()" class="btn-play-ready font-bold px-8 py-3 rounded-full flex items-center space-x-2 mb-4 shadow-md text-lg active:scale-95">
             <span>▶️ 播放</span>
           </button>
-          <!-- 瀏覽UI -->
+          
           <div id="view-mode-ui" class="w-full flex gap-3 hidden">
-            <button onclick="window.prevQuestion()" class="flex-1 bg-slate-200 text-slate-800 font-bold py-3 rounded-xl">⬅️ 上一題</button>
-            <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md">下一題 ➡️</button>
+            <button onclick="window.prevQuestion()" class="flex-1 bg-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-300">⬅️ 上一題</button>
+            <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-md">下一題 ➡️</button>
           </div>
-          <!-- 溫習UI -->
-          <div id="mc-mode-ui" class="w-full grid grid-cols-2 gap-2 hidden">
-            <button class="mc-btn w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-sm bg-white shadow-sm"></button>
-            <button class="mc-btn w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-sm bg-white shadow-sm"></button>
-            <button class="mc-btn w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-sm bg-white shadow-sm"></button>
-            <button class="mc-btn w-full p-3 rounded-xl border-2 border-slate-300 font-bold text-sm bg-white shadow-sm"></button>
+          
+          <div id="mc-mode-ui" class="w-full grid gap-2 hidden">
+            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
+            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
+            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
+            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
           </div>
-          <!-- 打字UI -->
-          <div id="type-mode-ui" class="w-full hidden flex-col items-center">
-            <div id="fake-answer-input" class="w-full p-2.5 border-2 border-slate-300 rounded-xl bg-slate-50 text-xl font-bold text-center h-12 flex items-center justify-center tracking-widest fake-cursor shadow-inner"></div>
-            <div class="w-full mt-3 bg-slate-100 p-2 rounded-xl flex flex-col gap-1.5 shadow-inner">
+          
+          <div id="type-mode-ui" class="w-full max-w-xl hidden flex-col items-center">
+            <div id="fake-answer-input" class="w-full p-3 border-2 border-slate-300 rounded-xl bg-slate-50 text-xl font-bold text-center h-12 flex items-center justify-center tracking-widest fake-cursor shadow-inner"></div>
+            <div class="w-full mt-3 bg-slate-100 p-2 md:p-3 rounded-xl flex flex-col gap-1.5 shadow-inner">
               <div class="flex gap-1 justify-center">
                 <button onclick="window.handleVK('q')" class="vk-btn">q</button><button onclick="window.handleVK('w')" class="vk-btn">w</button>
                 <button onclick="window.handleVK('e')" class="vk-btn">e</button><button onclick="window.handleVK('r')" class="vk-btn">r</button>
@@ -112,7 +128,7 @@
                 <button onclick="window.handleVK('u')" class="vk-btn">u</button><button onclick="window.handleVK('i')" class="vk-btn">i</button>
                 <button onclick="window.handleVK('o')" class="vk-btn">o</button><button onclick="window.handleVK('p')" class="vk-btn">p</button>
               </div>
-              <div class="flex gap-1 justify-center px-4">
+              <div class="flex gap-1 justify-center px-4 md:px-6">
                 <button onclick="window.handleVK('a')" class="vk-btn">a</button><button onclick="window.handleVK('s')" class="vk-btn">s</button>
                 <button onclick="window.handleVK('d')" class="vk-btn">d</button><button onclick="window.handleVK('f')" class="vk-btn">f</button>
                 <button onclick="window.handleVK('g')" class="vk-btn">g</button><button onclick="window.handleVK('h')" class="vk-btn">h</button>
@@ -133,90 +149,94 @@
       </div>
     </section>
 
-    <!-- 2. 課題管理 -->
+    <!-- 2. 課題管理分頁 (保留全自動化流程) -->
     <section id="tab-topics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <h2 class="text-base font-bold mb-3">📸 新增課題 (AI 自動切割)</h2>
+        <h2 class="text-base md:text-lg font-bold mb-3">📸 新增課題 (AI 自動切割)</h2>
         <div class="space-y-3">
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">AI 引擎</label>
-            <select id="ai-model-select" class="w-full p-2 border rounded-lg bg-slate-50 text-sm font-bold outline-none">
+            <select id="ai-model-select" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm font-bold outline-none">
               <option value="">載入中...</option>
             </select>
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-600 mb-1">上傳圖片</label>
-            <input type="file" id="new-topic-img" accept="image/png, image/jpeg" class="w-full text-sm border p-1.5 rounded-lg">
+            <input type="file" id="new-topic-img" accept="image/png, image/jpeg" class="w-full text-sm border p-1.5 rounded-lg bg-slate-50">
           </div>
-          <button onclick="window.uploadTopic()" id="upload-btn" class="w-full bg-indigo-600 text-white font-bold py-2.5 rounded-lg shadow-sm">分析圖片</button>
+          <button onclick="window.uploadTopic()" id="upload-btn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg shadow-md active:bg-indigo-700">🚀 分析圖片並建立</button>
           <div id="upload-status" class="text-xs font-bold text-amber-600 text-center whitespace-pre-wrap"></div>
         </div>
       </div>
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <h2 class="text-base font-bold mb-3">📚 已有課題</h2>
+        <h2 class="text-base md:text-lg font-bold mb-3">📚 已有課題</h2>
         <ul id="topic-list-ul" class="space-y-2 text-sm max-h-[50vh] overflow-y-auto pr-1"></ul>
       </div>
     </section>
 
-    <!-- 3. 歷程 -->
-    <section id="tab-analytics" class="hidden">
+    <!-- 3. 學習歷程 (已還原) -->
+    <section id="tab-analytics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <h2 class="text-base font-bold mb-3">學生紀錄</h2>
-        <div id="records-list" class="space-y-2 max-h-[65vh] overflow-y-auto pr-1"></div>
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-lg font-bold">學生測驗紀錄</h2>
+        </div>
+        <div class="mb-4">
+          <select id="record-filter" onchange="window.renderRecords(this.value)" class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-medium text-sm outline-none"></select>
+        </div>
+        <div id="records-list" class="space-y-3 max-h-[60vh] overflow-y-auto pr-1 pb-4"></div>
       </div>
     </section>
   </main>
 
-  <!-- 📱 2x5 網格編輯器 (新增與編輯共用) -->
+  <!-- 📱 2x5 網格編輯器 (已保留，用於極速編輯) -->
   <div id="grid-editor-modal" class="fixed inset-0 bg-slate-100 z-[70] hidden flex-col">
     <div class="bg-white p-2.5 flex justify-between items-center shadow-sm shrink-0 border-b pt-safe">
-      <button onclick="window.closeGridEditor()" class="text-red-500 font-bold px-3 py-1.5 bg-red-50 rounded-lg text-sm">✖ 取消</button>
-      <input type="text" id="grid-topic-name" class="flex-1 mx-3 p-1.5 text-center font-bold text-base border-b-2 border-indigo-200 focus:border-indigo-500 bg-transparent outline-none rounded-none" placeholder="課題名稱">
-      <button onclick="window.saveGridEditor()" id="grid-save-btn" class="bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm shadow-sm">💾 儲存</button>
+      <button onclick="window.closeGridEditor()" class="text-red-500 font-bold px-3 py-1.5 bg-red-50 rounded-lg text-sm border border-red-200">✖ 取消</button>
+      <input type="text" id="grid-topic-name" class="flex-1 mx-3 p-1.5 text-center font-bold text-base border-b-2 border-indigo-300 focus:border-indigo-600 bg-transparent outline-none rounded-none" placeholder="輸入課題名稱">
+      <button onclick="window.saveGridEditor()" id="grid-save-btn" class="bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm shadow-md">💾 儲存</button>
     </div>
     <div class="flex-1 overflow-y-auto p-3">
-      <div class="grid grid-cols-2 gap-3 pb-6" id="grid-cards-container">
-        <!-- 10 張卡片會動態生成喺度 -->
-      </div>
+      <div class="grid grid-cols-2 gap-3 pb-6" id="grid-cards-container"></div>
     </div>
   </div>
 
-  <!-- 單字修改彈窗 -->
+  <!-- 單字修改放大彈窗 -->
   <div id="single-edit-modal" class="fixed inset-0 bg-slate-900/60 z-[80] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white w-full max-w-xs rounded-2xl p-4 flex flex-col items-center shadow-2xl">
-      <h3 class="font-bold text-sm text-slate-500 mb-2">修改生字 (<span id="single-edit-idx"></span>)</h3>
-      <canvas id="single-edit-canvas" class="w-full h-32 object-contain bg-slate-100 rounded border border-slate-200 mb-3"></canvas>
-      <input type="text" id="single-edit-input" class="w-full p-3 border-2 border-indigo-300 rounded-xl text-center font-bold text-xl outline-none focus:border-indigo-500 mb-4" placeholder="輸入正確生字">
-      <button onclick="window.confirmSingleEdit()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl text-base shadow-md active:bg-indigo-700">確定修改</button>
+    <div class="bg-white w-full max-w-xs rounded-2xl p-5 flex flex-col items-center shadow-2xl">
+      <h3 class="font-bold text-sm text-slate-500 mb-3">修改生字 (<span id="single-edit-idx"></span>)</h3>
+      <canvas id="single-edit-canvas" class="w-full h-32 object-contain bg-slate-100 rounded border border-slate-200 mb-4"></canvas>
+      <input type="text" id="single-edit-input" class="w-full p-3 border-2 border-indigo-300 rounded-xl text-center font-bold text-xl outline-none focus:border-indigo-500 mb-5" placeholder="輸入正確生字">
+      <button onclick="window.confirmSingleEdit()" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl text-base shadow-md active:bg-indigo-700">確定修改</button>
     </div>
   </div>
 
-  <!-- 其他 Modals -->
+  <!-- 🔑 金鑰設定 (已還原輸入與儲存邏輯) -->
   <div id="key-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-base font-bold">🔑 金鑰設定</h3>
-        <button onclick="document.getElementById('key-modal').classList.add('hidden')" class="text-slate-400 font-bold text-lg">✖</button>
+        <h3 class="text-lg font-bold text-slate-800">🔑 系統金鑰設定</h3>
+        <button onclick="document.getElementById('key-modal').classList.add('hidden')" class="text-slate-400 font-bold text-xl">✖</button>
       </div>
+      <p class="text-xs text-slate-500 mb-4">金鑰會安全加密儲存於 GAS 伺服器底層，留空代表保持原設定不變。</p>
       <div class="space-y-3 text-sm">
         <div>
           <label class="font-bold text-slate-700 text-xs block mb-1">Gemini API Key</label>
-          <input type="password" id="input-gemini-key" class="w-full p-2.5 border rounded-lg bg-slate-50">
+          <input type="password" id="input-gemini-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
         </div>
         <div>
           <label class="font-bold text-slate-700 text-xs block mb-1">Azure TTS Key</label>
-          <input type="password" id="input-azure-key" class="w-full p-2.5 border rounded-lg bg-slate-50">
+          <input type="password" id="input-azure-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
         </div>
         <div>
           <label class="font-bold text-slate-700 text-xs block mb-1">Google Cloud TTS Key</label>
-          <input type="password" id="input-gcptts-key" class="w-full p-2.5 border rounded-lg bg-slate-50">
+          <input type="password" id="input-gcptts-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
         </div>
         <div>
           <label class="font-bold text-slate-700 text-xs block mb-1">GitHub Token</label>
-          <input type="password" id="input-github-token" class="w-full p-2.5 border rounded-lg bg-slate-50">
+          <input type="password" id="input-github-token" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="ghp_...">
         </div>
       </div>
-      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-5 bg-emerald-600 text-white font-bold py-3 rounded-xl shadow">儲存設定</button>
+      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-6 bg-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-md">💾 儲存並套用</button>
     </div>
   </div>
 
@@ -236,25 +256,17 @@
     </div>
   </div>
 
+  <!-- JavaScript 邏輯 (包含修復歷程渲染、金鑰儲存及測驗紀錄上傳) -->
   <script>
-    // 系統狀態
-    window.globalData = {
-      topics: [], records: [], lessonCache: {},
-      commitSha: localStorage.getItem('latestCommitSha') || ''
-    };
-    var audioState = {}; // { voiceName: { word: { status: 'ready', url/base64: '...' } } }
-    var syncEngine = {
-      queue: [], // [{ word, voiceName, langCode, engine }]
-      active: false,
-      commitBatch: [], // 收集完成的 Base64，滿 10 個推 GitHub
-      totalInQueue: 0,
-      initialPayload: null // 新增課題時的圖片與 JSON
-    };
+    window.globalData = { topics: [], records: [], lessonCache: {}, commitSha: localStorage.getItem('latestCommitSha') || '' };
+    var audioState = {}; 
+    var syncEngine = { queue: [], active: false, commitBatch: [], totalInQueue: 0, initialPayload: null };
     var gridEditorState = { isNew: true, topicId: '', items: [], imgObj: null, base64: '' };
     var activeEditIdx = -1, dlBarTimer = null, currentAudioPlayer = null;
-    var currentQuestions = [], currentIndex = 0, currentScore = 0, currentTopicId = '', mistakes = [];
+    var currentQuestions = [], currentIndex = 0, currentScore = 0, currentTopicId = '', currentTopicName = '', mistakes = [];
+    var currentQuizMode = 'view', currentTypedAnswer = '', currentMcChoices = [];
+    var quizImgHeight = localStorage.getItem('quizImgHeight') ? parseInt(localStorage.getItem('quizImgHeight'), 10) : 344;
 
-    // --- 基礎橋接與 UI 控制 ---
     function callGasApi(action, payload) {
       if(!window.CONFIG || !window.CONFIG.GEMINI_SETTINGS) return Promise.reject(new Error('config.js 設定遺失'));
       var fullPayload = Object.assign({}, payload, { CONFIG: window.CONFIG });
@@ -268,42 +280,35 @@
     }
 
     function updateSyncBadge(isSyncing, unsyncedCount, customText) {
-      var s = document.getElementById('sync-status');
-      if (!s) return;
+      var s = document.getElementById('sync-status'); if (!s) return;
       if (isSyncing) {
         s.innerHTML = '<span class="hourglass-spin">⏳</span> <span class="ml-1">' + (customText || '自動同步...') + '</span>';
-        s.className = 'text-xs font-bold text-amber-400 flex items-center bg-slate-800 px-2 py-1 rounded-full border border-amber-500/40';
+        s.className = 'text-xs md:text-sm font-bold text-amber-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
       } else if (customText) {
         var icon = customText.indexOf('失敗') !== -1 ? '⚠️' : '☁️';
         var color = customText.indexOf('失敗') !== -1 ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40';
         s.innerHTML = '<span>' + icon + '</span> <span class="ml-1">' + customText + '</span>';
-        s.className = 'text-xs font-bold ' + color + ' flex items-center bg-slate-800 px-2 py-1 rounded-full border';
+        s.className = 'text-xs md:text-sm font-bold ' + color + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
       } else if (unsyncedCount > 0) {
         s.innerHTML = '<span>☁️</span> <span class="ml-1">待同步 (' + unsyncedCount + ')</span>';
-        s.className = 'text-xs font-bold text-amber-300 flex items-center bg-slate-800 px-2 py-1 rounded-full border border-amber-500/40';
+        s.className = 'text-xs md:text-sm font-bold text-amber-300 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
       } else {
         s.innerHTML = '<span>✅</span> <span class="ml-1">已同步</span>';
-        s.className = 'text-xs font-bold text-emerald-400 flex items-center bg-slate-800 px-2 py-1 rounded-full border border-slate-700';
+        s.className = 'text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
       }
     }
 
     function initVoiceSelect() {
-      var sel = document.getElementById('voice-select');
-      sel.innerHTML = '';
+      var sel = document.getElementById('voice-select'); sel.innerHTML = '';
       window.CONFIG.VOICE_MODELS.forEach(function(v) {
-        var opt = document.createElement('option');
-        opt.value = v; opt.innerText = v.split(',')[0];
-        sel.appendChild(opt);
+        var opt = document.createElement('option'); opt.value = v; opt.innerText = v.split(',')[0]; sel.appendChild(opt);
       });
-      var saved = localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE;
-      sel.value = saved; if(sel.selectedIndex === -1) sel.selectedIndex = 0;
+      sel.value = localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE;
+      if(sel.selectedIndex === -1) sel.selectedIndex = 0;
     }
 
-    // --- 開機與資料載入 ---
     window.addEventListener('DOMContentLoaded', function() {
-      initVoiceSelect();
-      loadModels();
-      
+      initVoiceSelect(); loadModels();
       var url = 'https://api.github.com/repos/' + window.CONFIG.GITHUB_REPO + '/commits/' + window.CONFIG.GITHUB_BRANCH;
       fetch(url, { headers: { 'Accept': 'application/vnd.github.sha' }, cache: 'no-store' })
       .then(function(r) { return r.ok ? r.text() : ''; })
@@ -316,42 +321,59 @@
         ]);
       }).then(function(res) {
         window.globalData.topics = res[0]; window.globalData.records = res[1];
-        window.refreshUI();
-        updateSyncBadge(false, 0);
+        window.refreshUI(); updateSyncBadge(false, 0);
       });
     });
 
     function loadModels() {
-      var sel = document.getElementById('ai-model-select');
-      sel.innerHTML = '<option>⏳ 載入中...</option>';
+      var sel = document.getElementById('ai-model-select'); sel.innerHTML = '<option>⏳ 載入中...</option>';
       callGasApi('getGeminiModels', {}).then(function(res) {
         sel.innerHTML = '';
         (res.models || [window.CONFIG.GEMINI_SETTINGS.DEFAULT_MODEL]).forEach(function(m) {
           var opt = document.createElement('option'); opt.value = m.id; opt.innerText = m.displayName; sel.appendChild(opt);
         });
       }).catch(function() {
-        sel.innerHTML = '<option value="' + window.CONFIG.GEMINI_SETTINGS.DEFAULT_MODEL.id + '">⚠️ 載入失敗 (使用預設)</option>';
+        sel.innerHTML = '<option value="' + window.CONFIG.GEMINI_SETTINGS.DEFAULT_MODEL.id + '">⚠️ 載入失敗 (無 Key或斷線)</option>';
       });
     }
 
+    // 💥 恢復金鑰儲存邏輯
+    window.saveAllKeys = function() {
+      var btn = document.getElementById('save-keys-btn');
+      btn.disabled = true; btn.innerHTML = '<span class="hourglass-spin">⏳</span> 儲存中...';
+      callGasApi('saveSystemKeys', {
+        geminiKey: document.getElementById('input-gemini-key').value.trim(),
+        azureKey: document.getElementById('input-azure-key').value.trim(),
+        gcpTtsKey: document.getElementById('input-gcptts-key').value.trim(),
+        githubToken: document.getElementById('input-github-token').value.trim()
+      }).then(function() {
+        btn.disabled = false; btn.innerText = '💾 儲存並套用';
+        ['input-gemini-key', 'input-azure-key', 'input-gcptts-key', 'input-github-token'].forEach(function(id){ document.getElementById(id).value = ''; });
+        loadModels(); // 重新載入 AI 模型清單
+        alert('✅ 金鑰設定已成功儲存！');
+      }).catch(function(err) {
+        btn.disabled = false; btn.innerText = '💾 儲存並套用'; alert('❌ 儲存失敗: ' + err.message);
+      });
+    };
+
     function ensureTopicDetailLoaded(topicId) {
-      if (window.globalData.lessonCache[topicId] && window.globalData.lessonCache[topicId].items) {
-        return Promise.resolve(window.globalData.lessonCache[topicId]);
-      }
+      if (window.globalData.lessonCache[topicId] && window.globalData.lessonCache[topicId].items) return Promise.resolve(window.globalData.lessonCache[topicId]);
       var tMeta = window.globalData.topics.find(function(t) { return t.id === topicId; });
       var url = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/lessons/' + topicId + '.json';
       return fetch(url, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(detail) {
         if(tMeta) { tMeta.items = detail.items; window.globalData.lessonCache[topicId] = tMeta; return tMeta; }
-        return detail; // 例外
+        return detail; 
       });
     }
 
-    // --- 2x5 網格編輯器 ---
+    // ----------------------------------------------------
+    // 2x5 網格編輯與圖片上傳邏輯
+    // ----------------------------------------------------
     window.uploadTopic = function() {
-      var n = 'Words of the Week', f = document.getElementById('new-topic-img').files[0];
+      var n = 'New Topic', f = document.getElementById('new-topic-img').files[0];
       var m = document.getElementById('ai-model-select').value, stat = document.getElementById('upload-status');
-      if(!f) return alert('請選擇圖片');
-      stat.innerHTML = '<span class="hourglass-spin">⏳</span> AI 處理中...';
+      if(!f) return alert('請先選擇圖片');
+      stat.innerHTML = '<span class="hourglass-spin">⏳</span> AI 視覺分析處理中...';
       document.getElementById('upload-btn').disabled = true;
 
       var reader = new FileReader();
@@ -366,12 +388,9 @@
           
           callGasApi('analyzeImagePositions', { base64Image: b64, modelName: m }).then(function(res) {
             document.getElementById('upload-btn').disabled = false; stat.innerText = '';
-            // 強制清洗為 0.0 ~ 1.0 比例座標
             var cleanItems = res.items.map(function(it) {
               var b = it.box_2d || it.boundingBox;
-              if(b && b.length === 4) {
-                return { word: it.word||it.text||'', box_2d: [ b[0]>1?b[0]/h:b[0], b[1]>1?b[1]/w:b[1], b[2]>1?b[2]/h:b[2], b[3]>1?b[3]/w:b[3] ] };
-              }
+              if(b && b.length === 4) return { word: it.word||it.text||'', box_2d: [ b[0]>1?b[0]/h:b[0], b[1]>1?b[1]/w:b[1], b[2]>1?b[2]/h:b[2], b[3]>1?b[3]/w:b[3] ] };
               return it;
             });
             openGridEditor(true, { name: n, items: cleanItems }, b64, img.src);
@@ -399,8 +418,7 @@
       
       var img = new Image(); img.crossOrigin = 'anonymous';
       img.onload = function() {
-        gridEditorState.imgObj = img;
-        renderGridCards();
+        gridEditorState.imgObj = img; renderGridCards();
         document.getElementById('grid-editor-modal').classList.remove('hidden');
         document.getElementById('grid-editor-modal').classList.add('flex');
       };
@@ -416,73 +434,53 @@
         card.className = 'bg-white rounded-lg shadow border border-slate-200 p-2 flex flex-col items-center grid-card';
         card.onclick = function() { openSingleEdit(i); };
         
-        var can = document.createElement('canvas');
-        can.className = 'w-full h-20 object-contain mb-1';
+        var can = document.createElement('canvas'); can.className = 'w-full h-20 object-contain mb-1';
         var b = it.box_2d, img = gridEditorState.imgObj;
         if(b && b.length===4) {
           var sw = (b[3]-b[1])*img.width, sh = (b[2]-b[0])*img.height;
-          can.width = sw; can.height = sh;
-          can.getContext('2d').drawImage(img, b[1]*img.width, b[0]*img.height, sw, sh, 0, 0, sw, sh);
+          can.width = sw; can.height = sh; can.getContext('2d').drawImage(img, b[1]*img.width, b[0]*img.height, sw, sh, 0, 0, sw, sh);
         }
-        
-        var txt = document.createElement('div');
-        txt.className = 'font-bold text-slate-800 text-sm truncate w-full text-center';
-        txt.innerText = it.word || '?';
-        
+        var txt = document.createElement('div'); txt.className = 'font-bold text-slate-800 text-sm truncate w-full text-center'; txt.innerText = it.word || '?';
         card.appendChild(can); card.appendChild(txt); c.appendChild(card);
       });
     }
 
     function openSingleEdit(idx) {
-      activeEditIdx = idx;
-      var it = gridEditorState.items[idx], b = it.box_2d, img = gridEditorState.imgObj;
+      activeEditIdx = idx; var it = gridEditorState.items[idx], b = it.box_2d, img = gridEditorState.imgObj;
       var can = document.getElementById('single-edit-canvas');
       var sw = (b[3]-b[1])*img.width, sh = (b[2]-b[0])*img.height;
-      can.width = sw; can.height = sh;
-      can.getContext('2d').drawImage(img, b[1]*img.width, b[0]*img.height, sw, sh, 0, 0, sw, sh);
+      can.width = sw; can.height = sh; can.getContext('2d').drawImage(img, b[1]*img.width, b[0]*img.height, sw, sh, 0, 0, sw, sh);
       
       document.getElementById('single-edit-idx').innerText = (idx+1) + '/10';
       document.getElementById('single-edit-input').value = it.word;
-      document.getElementById('single-edit-modal').classList.remove('hidden');
-      document.getElementById('single-edit-modal').classList.add('flex');
+      document.getElementById('single-edit-modal').classList.remove('hidden'); document.getElementById('single-edit-modal').classList.add('flex');
       setTimeout(function(){ document.getElementById('single-edit-input').focus(); }, 100);
     }
     
     window.confirmSingleEdit = function() {
       gridEditorState.items[activeEditIdx].word = document.getElementById('single-edit-input').value.trim();
-      document.getElementById('single-edit-modal').classList.add('hidden');
-      document.getElementById('single-edit-modal').classList.remove('flex');
+      document.getElementById('single-edit-modal').classList.add('hidden'); document.getElementById('single-edit-modal').classList.remove('flex');
       renderGridCards();
     };
 
-    // --- 存檔與全自動同步引擎 (Local -> GitHub) ---
     window.saveGridEditor = function() {
       var tName = document.getElementById('grid-topic-name').value.trim() || 'Untitled';
       var id = gridEditorState.topicId;
       var meta = { id: id, name: tName, date: window.getFormattedTime(), imagePath: 'images/' + id + '.jpg' };
       
-      // 更新本機 Cache
       if(gridEditorState.isNew) window.globalData.topics.unshift(meta);
       else { var idx = window.globalData.topics.findIndex(function(x){return x.id===id;}); if(idx!==-1) window.globalData.topics[idx] = meta; }
       meta.items = gridEditorState.items; window.globalData.lessonCache[id] = meta;
       window.refreshUI(); window.closeGridEditor();
 
-      // 準備初始 Payload (JSON + Image)
-      syncEngine.initialPayload = {
-        meta: meta, items: meta.items,
-        imgBase64: gridEditorState.isNew ? gridEditorState.base64 : null
-      };
+      syncEngine.initialPayload = { meta: meta, items: meta.items, imgBase64: gridEditorState.isNew ? gridEditorState.base64 : null };
       
-      // 列出所有需要下載的語音，排入隊列
       var words = meta.items.map(function(x){return x.word;});
       window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
         var pts = vConfig.split(',');
-        words.forEach(function(w) {
-          syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1], engine: pts[2] });
-        });
+        words.forEach(function(w) { syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1], engine: pts[2] }); });
       });
-      syncEngine.totalInQueue = syncEngine.queue.length;
-      startSyncEngine();
+      syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
     };
 
     function startSyncEngine() {
@@ -493,15 +491,9 @@
 
     function processSyncQueue() {
       document.getElementById('dl-detail-text').innerText = '雲端生成中 (' + (syncEngine.totalInQueue - syncEngine.queue.length) + '/' + syncEngine.totalInQueue + ')';
-      
       if(syncEngine.queue.length === 0 || syncEngine.commitBatch.length >= 10) {
-        // 滿 10 個或下載完畢，推 GitHub
-        if(syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) {
-          flushCommitBatch();
-        } else {
-          syncEngine.active = false; syncEngine.totalInQueue = 0; document.getElementById('download-controller').style.display = 'none';
-          updateSyncBadge(false, 0);
-        }
+        if(syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) flushCommitBatch();
+        else { syncEngine.active = false; syncEngine.totalInQueue = 0; document.getElementById('download-controller').style.display = 'none'; updateSyncBadge(false, 0); }
         return;
       }
       
@@ -512,81 +504,203 @@
           var safeWord = task.word.replace(/[^a-zA-Z0-9]/g, "").substring(0, 20);
           var path = 'cache/T_' + task.topicId + '/' + task.voiceName + '/' + safeWord + '_' + hash + '.mp3';
           syncEngine.commitBatch.push({ path: path, base64: res.base64 });
-          
           if(!audioState[task.voiceName]) audioState[task.voiceName] = {};
           audioState[task.voiceName][task.word] = { status: 'ready', base64: res.base64 };
         }
       }).catch(function(err) {
         updateSyncBadge(false, 0, '⚠️ 下載失敗 (' + task.word + ')');
-      }).finally(function() {
-        processSyncQueue();
-      });
+      }).finally(function() { processSyncQueue(); });
     }
 
     function flushCommitBatch() {
       updateSyncBadge(true, 0, '自動同步...');
-      var payload = {
-        commitSha: window.globalData.commitSha,
-        initial: syncEngine.initialPayload,
-        files: syncEngine.commitBatch.slice()
-      };
-      syncEngine.initialPayload = null; syncEngine.commitBatch = []; // 清空緩衝
-      
+      var payload = { commitSha: window.globalData.commitSha, initial: syncEngine.initialPayload, files: syncEngine.commitBatch.slice() };
+      syncEngine.initialPayload = null; syncEngine.commitBatch = [];
       callGasApi('commitToGitHub', payload).then(function(res) {
         window.globalData.commitSha = res.commitSha; localStorage.setItem('latestCommitSha', res.commitSha);
-        updateSyncBadge(false, 0, '待下載後同步...');
-        processSyncQueue(); // 繼續下載下一批
+        updateSyncBadge(false, 0, '待下載後同步...'); processSyncQueue(); 
       }).catch(function(err) {
         updateSyncBadge(false, 0, '⚠️ 同步失敗'); syncEngine.active = false;
-        alert('GitHub 同步失敗: ' + err.message);
       });
     }
 
-    // --- 測驗與播放邏輯 ---
-    // (與舊版相同，播放優先取 audioState 的 base64)
+    // ----------------------------------------------------
+    // 測驗與播放邏輯
+    // ----------------------------------------------------
+    window.changeImageHeight = function(delta) {
+      quizImgHeight = Math.max(144, Math.min(480, quizImgHeight + delta));
+      localStorage.setItem('quizImgHeight', quizImgHeight);
+      var cvs = document.getElementById('word-canvas'); if (cvs) cvs.style.height = quizImgHeight + 'px';
+    };
+
+    window.startQuiz = function() {
+      var s = document.getElementById('topic-select'); if (!s.value) return alert('請選擇課題');
+      currentTopicId = s.value; currentTopicName = s.options[s.selectedIndex].text;
+      document.getElementsByName('quizMode').forEach(function(r) { if (r.checked) currentQuizMode = r.value; });
+      var btn = document.getElementById('start-quiz-btn'); btn.disabled = true; btn.innerHTML = '<span class="hourglass-spin">⏳</span> 載入中...';
+
+      ensureTopicDetailLoaded(currentTopicId).then(function(tData) {
+        var qArray = (tData.items || []).slice();
+        for (var i = qArray.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = qArray[i]; qArray[i] = qArray[j]; qArray[j] = tmp; }
+        currentQuestions = qArray; currentIndex = 0; currentScore = 0; mistakes = []; currentTypedAnswer = '';
+
+        var img = new Image(); img.crossOrigin = 'anonymous';
+        img.onload = function() {
+          btn.disabled = false; btn.innerHTML = '▶️ 開始測驗'; gridEditorState.imgObj = img;
+          document.getElementById('quiz-setup').classList.add('hidden'); document.getElementById('quiz-active').classList.remove('hidden'); document.getElementById('main-nav').classList.add('hidden');
+          document.getElementById('view-mode-ui').classList.toggle('hidden', currentQuizMode !== 'view');
+          document.getElementById('type-mode-ui').classList.toggle('hidden', currentQuizMode !== 'type');
+          document.getElementById('mc-mode-ui').classList.toggle('hidden', currentQuizMode !== 'mc');
+          document.getElementById('score-container').classList.toggle('hidden', currentQuizMode === 'view' || currentQuizMode === 'mc');
+          document.getElementById('word-canvas').style.height = quizImgHeight + 'px';
+          window.renderCurrentQuestion();
+        };
+        var tMeta = window.globalData.topics.find(function(t){return t.id===currentTopicId;}) || tData;
+        img.src = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + tMeta.imagePath;
+      });
+    };
+
+    window.renderCurrentQuestion = function() {
+      if(currentIndex >= currentQuestions.length) { window.finishQuiz(); return; }
+      document.getElementById('q-progress').innerText = (currentIndex + 1) + '/' + currentQuestions.length;
+      document.getElementById('q-score').innerText = currentScore;
+      
+      var q = currentQuestions[currentIndex], cvs = document.getElementById('word-canvas'), ctx = cvs.getContext('2d');
+      ctx.clearRect(0, 0, cvs.width, cvs.height);
+      var b = q.box_2d, img = gridEditorState.imgObj;
+      if (b && b.length === 4 && img) {
+        var sx = b[1]>1?b[1]:b[1]*img.width, sy = b[0]>1?b[0]:b[0]*img.height, ex = b[3]>1?b[3]:b[3]*img.width, ey = b[2]>1?b[2]:b[2]*img.height;
+        var sw = ex-sx, sh = ey-sy;
+        cvs.width = sw; cvs.height = sh; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+      }
+      
+      if(currentQuizMode === 'type') { currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; }
+      else if(currentQuizMode === 'mc') {
+        var correct = q.word;
+        var pool = currentQuestions.map(function(item){return item.word;}).filter(function(w){return w.toLowerCase()!==correct.toLowerCase();});
+        pool.sort(function(){return Math.random()-0.5;});
+        currentMcChoices = [correct, pool[0]||'A', pool[1]||'B', pool[2]||'C'].sort(function(){return Math.random()-0.5;});
+        var btns = document.querySelectorAll('.mc-btn');
+        btns.forEach(function(btn, i) {
+          btn.innerText = currentMcChoices[i]; btn.className = 'mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm';
+          btn.onclick = function() { window.checkMcAnswer(i); };
+        });
+      }
+      setTimeout(window.playCurrentQuizWord, 250);
+    };
+
     window.playCurrentQuizWord = function() {
       var w = currentQuestions[currentIndex].word;
-      var vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(',');
-      var vName = vCfg[0];
-      if(currentAudioPlayer) currentAudioPlayer.pause();
-      if(window.speechSynthesis) window.speechSynthesis.cancel();
-
+      var vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(','); var vName = vCfg[0];
+      if(currentAudioPlayer) currentAudioPlayer.pause(); if(window.speechSynthesis) window.speechSynthesis.cancel();
       if(audioState[vName] && audioState[vName][w] && audioState[vName][w].base64) {
-        currentAudioPlayer = new Audio('data:audio/mp3;base64,' + audioState[vName][w].base64);
-        currentAudioPlayer.play();
+        currentAudioPlayer = new Audio('data:audio/mp3;base64,' + audioState[vName][w].base64); currentAudioPlayer.play();
       } else {
-        // 如果未載入或 GitHub 未有，呼叫 Browser Speech 頂住先，並單獨觸發下載推上 GitHub
         if(window.speechSynthesis) { var u = new SpeechSynthesisUtterance(w); u.lang = vCfg[1]; window.speechSynthesis.speak(u); }
         syncEngine.queue.push({ topicId: currentTopicId, word: w, voiceName: vName, langCode: vCfg[1], engine: vCfg[2] });
         syncEngine.totalInQueue++; startSyncEngine();
       }
     };
+
+    window.checkMcAnswer = function(idx) {
+      var btns = document.querySelectorAll('.mc-btn');
+      if (currentMcChoices[idx].toLowerCase() === currentQuestions[currentIndex].word.toLowerCase()) {
+        btns[idx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800');
+        setTimeout(function() { currentIndex++; window.renderCurrentQuestion(); }, 550);
+      } else {
+        btns[idx].classList.add('bg-red-100', 'border-red-500', 'text-red-800'); window.playCurrentQuizWord();
+      }
+    };
+
+    window.handleVK = function(k) {
+      if(currentQuizMode !== 'type') return;
+      if (k === 'DEL') currentTypedAnswer = currentTypedAnswer.slice(0, -1);
+      else if (k === 'ENTER') window.submitAnswer(); else currentTypedAnswer += k.toLowerCase();
+      document.getElementById('fake-answer-input').innerText = currentTypedAnswer.toLowerCase();
+    };
     
-    // 省略部分純 UI 切換函數 (switchTab, handleVK 等...) 保持原樣運作
+    window.submitAnswer = function() {
+      var ans = currentTypedAnswer.trim().toLowerCase(), cor = currentQuestions[currentIndex].word.trim().toLowerCase();
+      if(!ans) return;
+      if(ans === cor) currentScore++; else { mistakes.push(currentQuestions[currentIndex].word); alert('答錯！正確為: ' + currentQuestions[currentIndex].word); }
+      currentIndex++; window.renderCurrentQuestion();
+    };
+
+    window.cancelQuiz = function() {
+      if (!confirm('確定要結束測驗嗎？(進度將不儲存)')) return;
+      if (currentAudioPlayer) currentAudioPlayer.pause(); if (window.speechSynthesis) window.speechSynthesis.cancel();
+      document.getElementById('quiz-active').classList.add('hidden'); document.getElementById('quiz-setup').classList.remove('hidden'); document.getElementById('main-nav').classList.remove('hidden');
+    };
+
+    // 💥 恢復測驗紀錄上傳邏輯 (直連 GitHub Commit)
+    window.finishQuiz = function() {
+      document.getElementById('quiz-active').classList.add('hidden'); document.getElementById('quiz-setup').classList.remove('hidden'); document.getElementById('main-nav').classList.remove('hidden');
+      if (currentQuizMode === 'mc') { alert('溫習完成！此模式不紀錄成績。'); return; }
+      
+      var scoreStr = currentQuizMode === 'view' ? '手寫模式' : (currentScore + '/' + currentQuestions.length + '(打字)');
+      var detailsStr = currentQuizMode === 'view' ? '順序: ' + currentQuestions.map(function(q,i){return (i+1)+'.'+q.word;}).join(', ') : (mistakes.length > 0 ? '錯誤: ' + mistakes.join(', ') : '全對');
+      alert(currentQuizMode === 'view' ? '測驗結束！請至「學習歷程」查看順序。' : '測驗完成！\n得分: ' + currentScore);
+
+      updateSyncBadge(true, 0, '儲存紀錄...');
+      callGasApi('recordQuizResult', { topicId: currentTopicId, topicName: currentTopicName, score: scoreStr, details: detailsStr, commitSha: window.globalData.commitSha })
+      .then(function(res) {
+        if(res.newRecord) window.globalData.records.unshift(res.newRecord);
+        if(res.commitSha) { window.globalData.commitSha = res.commitSha; localStorage.setItem('latestCommitSha', res.commitSha); }
+        window.refreshUI(); updateSyncBadge(false, 0);
+      }).catch(function(err){ updateSyncBadge(false, 0, '⚠️ 儲存紀錄失敗'); });
+    };
+
+    // ----------------------------------------------------
+    // UI 控制與 💥 修復歷程渲染邏輯
+    // ----------------------------------------------------
     window.switchTab = function(tName) {
       ['quiz', 'topics', 'analytics'].forEach(function(n) { document.getElementById('tab-' + n).classList.add('hidden'); });
       document.getElementById('tab-' + tName).classList.remove('hidden');
       document.querySelectorAll('.nav-btn').forEach(function(b) {
-        b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm font-bold bg-slate-700 text-white shadow-sm';
-        if (b.id === 'nav-' + tName) b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm font-bold bg-amber-500 text-slate-900 shadow-sm';
+        b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-slate-700 text-white shadow-sm';
+        if (b.id === 'nav-' + tName) b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-amber-500 text-slate-900 shadow-sm';
       });
     };
+    
+    window.refreshUI = function() {
+      var select = document.getElementById('topic-select'); select.innerHTML = '<option value="">請選擇課題</option>';
+      var ul = document.getElementById('topic-list-ul'); ul.innerHTML = '';
+      window.globalData.topics.forEach(function(t) {
+        select.innerHTML += '<option value="' + t.id + '">' + t.name + '</option>';
+        ul.innerHTML += '<li class="flex justify-between items-center p-3 bg-slate-50 border border-slate-200 rounded-lg mb-2 shadow-sm">' +
+          '<span class="font-bold text-slate-700 text-base">' + t.name + '</span>' +
+          '<div class="flex space-x-2"><button onclick="window.openTopicEditor(\'' + t.id + '\')" class="text-indigo-600 font-bold px-4 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm">編輯</button></div></li>';
+      });
+      // 💥 恢復歷程下拉選單與列表渲染
+      var filter = document.getElementById('record-filter'); var currentFilter = filter.value || '';
+      filter.innerHTML = '<option value="">📜 顯示所有課題紀錄</option>';
+      var uniqueTopics = Array.from(new Set((window.globalData.records || []).map(function(r) { return r[2]; })));
+      uniqueTopics.forEach(function(tName) { filter.innerHTML += '<option value="' + tName + '"' + (tName===currentFilter?' selected':'') + '>' + tName + '</option>'; });
+      window.renderRecords(currentFilter);
+    };
+
+    window.renderRecords = function(filterTopic) {
+      var list = document.getElementById('records-list'); list.innerHTML = '';
+      var records = window.globalData.records || [];
+      if(filterTopic) records = records.filter(function(r) { return r[2] === filterTopic; });
+      if(records.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 py-4 text-sm">目前沒有相關紀錄</p>'; return; }
+      records.forEach(function(r) {
+        var detailsText = r[4] || '無詳細紀錄', scoreText = String(r[3] || '');
+        var badgeColor = (scoreText.indexOf('10/10')!==-1 || detailsText.indexOf('全對')!==-1) ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+        if(scoreText.indexOf('手寫')!==-1) badgeColor = 'bg-indigo-100 text-indigo-700';
+        list.innerHTML += '<div class="bg-white border border-slate-200 rounded-lg p-3 shadow-sm mb-3">' +
+          '<div class="flex justify-between items-start mb-1"><span class="text-xs text-slate-500 font-medium">' + r[0] + '</span><span class="font-bold text-xs ' + badgeColor + ' px-2 py-0.5 rounded">' + scoreText + '</span></div>' +
+          '<div class="font-bold text-slate-800 text-sm mb-1">' + r[2] + '</div><div class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">' + detailsText + '</div></div>';
+      });
+    };
+
     window.openKeyModal = function(){ document.getElementById('key-modal').classList.remove('hidden'); document.getElementById('key-modal').classList.add('flex'); }
     window.openVoiceModal = function(){ document.getElementById('voice-modal').classList.remove('hidden'); document.getElementById('voice-modal').classList.add('flex'); }
     window.openDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.remove('collapsed'); }
     window.closeDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.add('collapsed'); }
+    window.prevQuestion = function() { if (currentIndex > 0) { currentIndex--; window.renderCurrentQuestion(); } };
+    window.nextQuestion = function() { currentIndex++; window.renderCurrentQuestion(); };
     window.getFormattedTime = function(){ var d=new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes(); }
-    window.refreshUI = function() {
-      var select = document.getElementById('topic-select'); select.innerHTML = '<option value="">請選擇</option>';
-      var ul = document.getElementById('topic-list-ul'); ul.innerHTML = '';
-      window.globalData.topics.forEach(function(t) {
-        select.innerHTML += '<option value="' + t.id + '">' + t.name + '</option>';
-        ul.innerHTML += '<li class="flex justify-between items-center p-2.5 bg-slate-50 border rounded-lg mb-2">' +
-          '<span class="font-bold text-slate-700">' + t.name + '</span>' +
-          '<div class="flex space-x-2"><button onclick="window.openTopicEditor(\'' + t.id + '\')" class="text-indigo-600 font-bold px-3 py-1 bg-indigo-50 rounded">編輯</button></div></li>';
-      });
-    };
-    // md5 小工具 (精簡版)
     function md5(str){ var hash=0; for(var i=0;i<str.length;i++){ hash=(hash<<5)-hash+str.charCodeAt(i); hash|=0; } return Math.abs(hash).toString(16); }
   </script>
 </body>
