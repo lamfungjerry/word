@@ -210,33 +210,81 @@
     </div>
   </div>
 
-  <!-- 🔑 金鑰設定 (已還原輸入與儲存邏輯) -->
+  <!-- =============================== -->
+  <!-- Modal 1: 🔑 API Key 與 📊 容量明細 (完整還原版) -->
+  <!-- =============================== -->
   <div id="key-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-bold text-slate-800">🔑 系統金鑰設定</h3>
-        <button onclick="document.getElementById('key-modal').classList.add('hidden')" class="text-slate-400 font-bold text-xl">✖</button>
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="text-lg font-bold text-slate-800">🔑 金鑰與容量設定</h3>
+        <button onclick="window.closeKeyModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✖</button>
       </div>
-      <p class="text-xs text-slate-500 mb-4">金鑰會安全加密儲存於 GAS 伺服器底層，留空代表保持原設定不變。</p>
+      <p class="text-xs text-slate-500 mb-4">金鑰安全儲存於 GAS 伺服器底層，留空代表保持原設定不變。</p>
+
       <div class="space-y-3 text-sm">
         <div>
-          <label class="font-bold text-slate-700 text-xs block mb-1">Gemini API Key</label>
-          <input type="password" id="input-gemini-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
+          <div class="flex justify-between">
+            <label class="font-bold text-slate-700 text-xs">Gemini API Key：</label>
+            <span id="status-gemini" class="text-xs font-bold"></span>
+          </div>
+          <input type="password" id="input-gemini-key" placeholder="輸入新 Gemini Key 以更新..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
         </div>
+
         <div>
-          <label class="font-bold text-slate-700 text-xs block mb-1">Azure TTS Key</label>
-          <input type="password" id="input-azure-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
+          <div class="flex justify-between">
+            <label class="font-bold text-slate-700 text-xs">Azure Speech Key：</label>
+            <span id="status-azure" class="text-xs font-bold"></span>
+          </div>
+          <div class="flex gap-2 mt-1">
+            <input type="password" id="input-azure-key" placeholder="Azure TTS Key..." class="flex-1 p-2 border rounded-lg text-xs bg-slate-50">
+            <input type="text" id="input-azure-region" placeholder="eastasia" value="eastasia" class="w-24 p-2 border rounded-lg text-xs text-center bg-slate-50" title="Azure 區域">
+          </div>
         </div>
+
         <div>
-          <label class="font-bold text-slate-700 text-xs block mb-1">Google Cloud TTS Key</label>
-          <input type="password" id="input-gcptts-key" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="輸入以更新...">
+          <div class="flex justify-between">
+            <label class="font-bold text-slate-700 text-xs">Google Cloud TTS Key：</label>
+            <span id="status-gcptts" class="text-xs font-bold"></span>
+          </div>
+          <input type="password" id="input-gcptts-key" placeholder="輸入新 Google TTS Key..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
         </div>
+
         <div>
-          <label class="font-bold text-slate-700 text-xs block mb-1">GitHub Token</label>
-          <input type="password" id="input-github-token" class="w-full p-2.5 border rounded-lg bg-slate-50" placeholder="ghp_...">
+          <div class="flex justify-between">
+            <label class="font-bold text-slate-700 text-xs">GitHub Token：</label>
+            <span id="status-github" class="text-xs font-bold"></span>
+          </div>
+          <input type="password" id="input-github-token" placeholder="ghp_... 或 github_pat_..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
         </div>
       </div>
-      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-6 bg-emerald-600 text-white font-bold py-3.5 rounded-xl shadow-md">💾 儲存並套用</button>
+
+      <div class="flex gap-2 mt-5">
+        <button onclick="window.saveAllKeys()" id="save-keys-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm shadow">💾 儲存設定</button>
+        <button onclick="window.closeKeyModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm">關閉</button>
+      </div>
+
+      <!-- 📊 容量明細折疊區 -->
+      <div class="mt-4 pt-3 border-t border-slate-200">
+        <div onclick="window.toggleStorageDetail()" class="flex justify-between items-center cursor-pointer select-none text-xs font-bold text-slate-600 hover:text-slate-900 py-1">
+          <span id="storage-summary-title">📊 容量明細: 載入中...</span>
+          <span id="storage-arrow">▼</span>
+        </div>
+        <div id="storage-detail-box" class="hidden mt-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
+          <div class="flex justify-between text-slate-700">
+            <span>🔑 金鑰設定佔用：</span>
+            <span id="storage-keys-kb" class="font-mono font-bold">0.00 KB</span>
+          </div>
+          <div class="flex justify-between text-slate-700">
+            <span>📖 其他屬性佔用：</span>
+            <span id="storage-pending-kb" class="font-mono font-bold">0.00 KB</span>
+          </div>
+          <div id="storage-orphan-section" class="hidden pt-2 mt-2 border-t border-amber-200">
+            <div class="text-amber-700 font-bold mb-1">⚠️ 其他殘留項目：</div>
+            <ul id="storage-orphan-list" class="space-y-1 text-slate-600 font-mono text-[11px] mb-2 max-h-28 overflow-y-auto"></ul>
+            <button onclick="window.cleanOrphanProperties()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold py-1.5 rounded-lg transition">🗑️ 清除殘留項目</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
