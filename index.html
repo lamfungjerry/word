@@ -747,16 +747,95 @@
       modal.classList.remove('hidden');
       modal.classList.add('flex');
       
-      // 呼叫後端查詢現有 Key 的設定狀態
-      callGasApi('getKeysStatus', {}).then(function(res) {
-        if (!res || !res.keys) return;
-        var k = res.keys;
-        document.getElementById('input-gemini-key').placeholder = k.gemini ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
-        document.getElementById('input-azure-key').placeholder = k.azure ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
-        document.getElementById('input-gcptts-key').placeholder = k.gcpTts ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
-        document.getElementById('input-github-token').placeholder = k.github ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
+      callGasApi('getStorageAndKeysStatus', {}).then(function(res) {
+        if (res) updateKeyModalUI(res.keysStatus, res.storageUsage);
       }).catch(function(err) {
-        console.error("讀取 Key 狀態失敗:", err);
+        console.error("讀取金鑰狀態失敗:", err);
+      });
+    };
+
+    window.closeKeyModal = function() {
+      var modal = document.getElementById('key-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    };
+
+    function updateKeyModalUI(keysStatus, storageUsage) {
+      if (keysStatus) {
+        var setBadge = function(id, isSet) {
+          var el = document.getElementById(id);
+          if (!el) return;
+          el.innerText = isSet ? '✅ 已設定' : '⚠️ 未設定';
+          el.className = 'text-xs font-bold ' + (isSet ? 'text-emerald-600' : 'text-amber-500');
+        };
+        setBadge('status-gemini', keysStatus.gemini);
+        setBadge('status-azure', keysStatus.azure);
+        setBadge('status-gcptts', keysStatus.gcpTts);
+        setBadge('status-github', keysStatus.github);
+        if (keysStatus.azureRegion) {
+          document.getElementById('input-azure-region').value = keysStatus.azureRegion;
+        }
+      }
+
+      if (storageUsage) {
+        document.getElementById('storage-summary-title').innerText =
+          '📊 容量明細: ' + storageUsage.totalKB + ' / 500 KB (' + storageUsage.percent + '%)';
+        document.getElementById('storage-keys-kb').innerText = storageUsage.keysKB + ' KB';
+        document.getElementById('storage-pending-kb').innerText = storageUsage.pendingKB + ' KB';
+
+        var orphanSec = document.getElementById('storage-orphan-section');
+        var orphanList = document.getElementById('storage-orphan-list');
+        if (storageUsage.orphanItems && storageUsage.orphanItems.length > 0) {
+          orphanSec.classList.remove('hidden');
+          orphanList.innerHTML = '';
+          storageUsage.orphanItems.forEach(function(item) {
+            orphanList.innerHTML += '<li class="flex justify-between"><span>' + item.key + '</span><span>' + item.kb + ' KB</span></li>';
+          });
+        } else {
+          orphanSec.classList.add('hidden');
+        }
+      }
+    }
+
+    window.toggleStorageDetail = function() {
+      var box = document.getElementById('storage-detail-box');
+      var arrow = document.getElementById('storage-arrow');
+      var isHidden = box.classList.toggle('hidden');
+      arrow.innerText = isHidden ? '▼' : '▲';
+    };
+
+    window.saveAllKeys = function() {
+      var btn = document.getElementById('save-keys-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="hourglass-spin">⏳</span> 儲存中...';
+
+      callGasApi('saveSystemKeys', {
+        geminiKey: document.getElementById('input-gemini-key').value.trim(),
+        azureKey: document.getElementById('input-azure-key').value.trim(),
+        azureRegion: document.getElementById('input-azure-region').value.trim() || 'eastasia',
+        gcpTtsKey: document.getElementById('input-gcptts-key').value.trim(),
+        githubToken: document.getElementById('input-github-token').value.trim()
+      }).then(function(res) {
+        btn.disabled = false;
+        btn.innerText = '💾 儲存設定';
+        ['input-gemini-key', 'input-azure-key', 'input-gcptts-key', 'input-github-token'].forEach(function(id) {
+          document.getElementById(id).value = '';
+        });
+        updateKeyModalUI(res.keysStatus, res.storageUsage);
+        loadModels();
+        alert('✅ 金鑰設定已成功儲存！');
+      }).catch(function(err) {
+        btn.disabled = false;
+        btn.innerText = '💾 儲存設定';
+        alert('❌ 儲存失敗: ' + err.message);
+      });
+    };
+
+    window.cleanOrphanProperties = function() {
+      if (!confirm('確定要清除所有殘留屬性嗎？')) return;
+      callGasApi('cleanOrphanProperties', {}).then(function(res) {
+        updateKeyModalUI(res.keysStatus, res.storageUsage);
+        alert('🗑️ 殘留項目已清除！');
       });
     };
     window.openVoiceModal = function(){ document.getElementById('voice-modal').classList.remove('hidden'); document.getElementById('voice-modal').classList.add('flex'); }
