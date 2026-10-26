@@ -16,11 +16,10 @@ window.CONFIG = {
   // 4. 全自動發音下載清單 (所有新課題會自動下載此清單內的所有語音)
   // 格式: "語音代號,語言代碼,引擎(google)"
   VOICE_MODELS: [
-    "en-US-Chirp3-HD-Aoede,en-US,google",
-    "en-US-Chirp3-HD-Puck,en-US,google",
-    "en-US-Chirp3-HD-Kore,en-US,google",
-    "en-US-Chirp3-HD-Charon,en-US,google",
-    "en-US-Chirp3-HD-Fenrir,en-US,google"
+    "en-US-Chirp3-HD-Fenrir,en-US,google", // 原使用：Chirp3 男聲，清脆有活力、咬字俐落
+    "en-US-Chirp3-HD-Leda,en-US,google",   // Chirp3 女聲：親切溫和、類似兒童有聲書朗讀
+    "en-US-Neural2-F,en-US,google",        // Neural2 女聲：標準美式課堂女教師發音，尾音極清晰
+    "en-US-Studio-O,en-US,google"          // Studio 女聲：頂級錄音室音質，語調生動自然
   ],
   
   // 5. 預設 TTS 發音款式
