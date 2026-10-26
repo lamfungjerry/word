@@ -316,14 +316,20 @@
     var quizImgHeight = localStorage.getItem('quizImgHeight') ? parseInt(localStorage.getItem('quizImgHeight'), 10) : 344;
 
     function callGasApi(action, payload) {
-      if(!window.CONFIG || !window.CONFIG.GEMINI_SETTINGS) return Promise.reject(new Error('config.js 設定遺失'));
+      if (!window.CONFIG || !window.CONFIG.GAS_URL) {
+        alert('❌ 嚴重錯誤：找不到 config.js 或 GAS_URL 未設定');
+        return Promise.reject(new Error('GAS_URL 未設定'));
+      }
       var fullPayload = Object.assign({}, payload, { CONFIG: window.CONFIG });
       return fetch(window.CONFIG.GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: action, payload: fullPayload })
-      }).then(function(r) { return r.json(); }).then(function(d) {
-        if(d.status === 'error') throw new Error(d.message); return d;
+      }).then(function(r) { 
+        return r.json(); 
+      }).then(function(d) {
+        if (d.status === 'error') throw new Error(d.message); 
+        return d;
       });
     }
 
@@ -374,15 +380,29 @@
     });
 
     function loadModels() {
-      var sel = document.getElementById('ai-model-select'); sel.innerHTML = '<option>⏳ 載入中...</option>';
-      callGasApi('getGeminiModels', {}).then(function(res) {
-        sel.innerHTML = '';
-        (res.models || [window.CONFIG.GEMINI_SETTINGS.DEFAULT_MODEL]).forEach(function(m) {
-          var opt = document.createElement('option'); opt.value = m.id; opt.innerText = m.displayName; sel.appendChild(opt);
+      var sel = document.getElementById('ai-model-select');
+      if (!sel) return;
+      sel.innerHTML = '<option>⏳ 載入模型中...</option>';
+      
+      var defModel = window.CONFIG.GEMINI_DEFAULT_MODEL;
+
+      callGasApi('getGeminiModels', {})
+        .then(function(res) {
+          sel.innerHTML = '';
+          var list = (res && res.models && res.models.length) ? res.models : [defModel];
+          list.forEach(function(m) {
+            var opt = document.createElement('option');
+            opt.value = m.id;
+            opt.innerText = m.displayName;
+            sel.appendChild(opt);
+          });
+        })
+        .catch(function(err) {
+          // iPhone 友善：直接在選單顯示錯誤原因，並彈出提示
+          sel.innerHTML = '<option value="' + defModel.id + '">⚠️ 載入失敗: ' + err.message + '</option>';
+          updateSyncBadge(false, 0, '⚠️ 模型載入失敗');
+          alert('載入 Gemini 模型失敗：\n' + err.message);
         });
-      }).catch(function() {
-        sel.innerHTML = '<option value="' + window.CONFIG.GEMINI_SETTINGS.DEFAULT_MODEL.id + '">⚠️ 載入失敗 (無 Key或斷線)</option>';
-      });
     }
 
     // 💥 恢復金鑰儲存邏輯
@@ -750,7 +770,7 @@
       callGasApi('getStorageAndKeysStatus', {}).then(function(res) {
         if (res) updateKeyModalUI(res.keysStatus, res.storageUsage);
       }).catch(function(err) {
-        console.error("讀取金鑰狀態失敗:", err);
+        alert('讀取金鑰狀態失敗：\n' + err.message);
       });
     };
 
