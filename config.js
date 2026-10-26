@@ -17,7 +17,7 @@ window.CONFIG = {
   // 格式: "語音代號,語言代碼,引擎(azure|google)"
   // 港式女聲: "en-HK-YanNeural,en-HK,azure" | 港式男聲: "en-HK-SamNeural,en-HK,azure"
   // 美式 Chirp3: "en-US-Chirp3-HD-Aoede,en-US,google"
-  DEFAULT_VOICE: "en-HK-YanNeural,en-HK,azure",
+  DEFAULT_VOICE: "en-US-Chirp3-HD-Fenrir,en-US,google",
 
   // 5. Gemini 模型預設值與過濾關鍵字 (隨時修改免重發 GAS)
   GEMINI_DEFAULT_MODEL: {
