@@ -12,14 +12,28 @@ window.CONFIG = {
 
   // 3. iPhone 主畫面 Icon 網址 (可放相對路徑如 "icon.png" 或完整 https 網址 / data:image/png;base64,...)
   ICON_URL: "https://lamfungjerry.github.io/gas/icons/app1.png",
-
-  // 4. 預設 TTS 發音款式
-  // 格式: "語音代號,語言代碼,引擎(azure|google)"
-  // 港式女聲: "en-HK-YanNeural,en-HK,azure" | 港式男聲: "en-HK-SamNeural,en-HK,azure"
+  
+  // 4. 全自動發音下載清單 (所有新課題會自動下載此清單內的所有語音)
+  // 格式: "語音代號,語言代碼,引擎(google)"
+  VOICE_MODELS: [
+    "en-US-Chirp3-HD-Aoede,en-US,google",
+    "en-US-Chirp3-HD-Puck,en-US,google",
+    "en-US-Chirp3-HD-Kore,en-US,google",
+    "en-US-Chirp3-HD-Charon,en-US,google",
+    "en-US-Chirp3-HD-Fenrir,en-US,google"
+  ],
+  
+  // 5. 預設 TTS 發音款式
   // 美式 Chirp3: "en-US-Chirp3-HD-Aoede,en-US,google"
   DEFAULT_VOICE: "en-US-Chirp3-HD-Fenrir,en-US,google",
 
-  // 5. Gemini 模型預設值與過濾關鍵字 (隨時修改免重發 GAS)
+  // 6. 圖片上傳壓縮設定
+  IMAGE_SETTINGS: {
+    MAX_SIZE: 1600,
+    QUALITY: 0.82
+  },
+
+  // 7. Gemini 模型預設值與過濾關鍵字
   GEMINI_DEFAULT_MODEL: {
     id: "gemini-3.6-flash",
     displayName: "Gemini 3.6 Flash"
