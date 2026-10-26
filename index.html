@@ -1180,8 +1180,28 @@
     window.confirmAiResult = function() {
       try {
         var items = JSON.parse(document.getElementById('ai-json-output').value);
-        manualBoxesData = items.map(function(item) { return item.box_2d || item.box_2D || item.box2d || item.boundingBox || item.box; });
+        
+        // 核心修正：將可能的絕對像素強制轉換為 0.0~1.0 的比例座標
+        manualBoxesData = items.map(function(item) { 
+          var box = item.box_2d || item.box_2D || item.box2d || item.boundingBox || item.box; 
+          if (box && box.length === 4) {
+            var ymin = box[0] > 1 ? box[0] / mImgObj.height : box[0];
+            var xmin = box[1] > 1 ? box[1] / mImgObj.width  : box[1];
+            var ymax = box[2] > 1 ? box[2] / mImgObj.height : box[2];
+            var xmax = box[3] > 1 ? box[3] / mImgObj.width  : box[3];
+            return [ymin, xmin, ymax, xmax];
+          }
+          return box;
+        });
+        
         manualWordsData = items.map(function(item) { return item.word || item.text || ''; });
+        
+        // (選擇性) 將修正後的標準比例 JSON 寫回文字框，讓畫面與最終存檔資料一致
+        var correctedItems = items.map(function(item, idx) {
+          return { word: manualWordsData[idx], box_2d: manualBoxesData[idx] };
+        });
+        document.getElementById('ai-json-output').value = JSON.stringify(correctedItems, null, 2);
+
         window.openManualModal(true);
       } catch (e) {
         alert('JSON 格式有誤！\n' + e.message);
