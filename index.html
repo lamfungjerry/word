@@ -694,7 +694,23 @@
       });
     };
 
-    window.openKeyModal = function(){ document.getElementById('key-modal').classList.remove('hidden'); document.getElementById('key-modal').classList.add('flex'); }
+    window.openKeyModal = function() {
+      var modal = document.getElementById('key-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      
+      // 呼叫後端查詢現有 Key 的設定狀態
+      callGasApi('getKeysStatus', {}).then(function(res) {
+        if (!res || !res.keys) return;
+        var k = res.keys;
+        document.getElementById('input-gemini-key').placeholder = k.gemini ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
+        document.getElementById('input-azure-key').placeholder = k.azure ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
+        document.getElementById('input-gcptts-key').placeholder = k.gcpTts ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
+        document.getElementById('input-github-token').placeholder = k.github ? "✅ 已設定 (輸入可覆蓋)" : "尚未設定...";
+      }).catch(function(err) {
+        console.error("讀取 Key 狀態失敗:", err);
+      });
+    };
     window.openVoiceModal = function(){ document.getElementById('voice-modal').classList.remove('hidden'); document.getElementById('voice-modal').classList.add('flex'); }
     window.openDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.remove('collapsed'); }
     window.closeDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.add('collapsed'); }
