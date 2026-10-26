@@ -610,11 +610,15 @@
       if (window.globalData.lessonCache[topicId] && window.globalData.lessonCache[topicId].items) {
         return Promise.resolve(window.globalData.lessonCache[topicId]);
       }
+      
+      // 從總目錄 (Single Source of Truth) 取得基礎資料
       var tMeta = window.globalData.topics.find(function(t) { return t.id === topicId; });
+      
       if (tMeta && tMeta.items && tMeta.items.length > 0) {
         window.globalData.lessonCache[topicId] = tMeta;
         return Promise.resolve(tMeta);
       }
+      
       var url = getGitHubRawBaseUrl() + 'lessons/' + topicId + '.json';
       return fetch(url, { cache: 'no-store' })
         .then(function(r) {
@@ -622,9 +626,18 @@
           return r.json();
         })
         .then(function(detail) {
-          window.globalData.lessonCache[topicId] = detail;
-          if (tMeta) tMeta.items = detail.items;
-          return detail;
+          if (tMeta) {
+            // 💥 核心修正：將讀取到的生字陣列 (items) 注入回 tMeta 中，並回傳 tMeta
+            tMeta.items = detail.items;
+            window.globalData.lessonCache[topicId] = tMeta;
+            return tMeta;
+          } else {
+            // 例外防護
+            detail.id = topicId;
+            detail.name = detail.name_ref_only || 'Unknown';
+            window.globalData.lessonCache[topicId] = detail;
+            return detail;
+          }
         });
     }
 
