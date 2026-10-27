@@ -827,11 +827,12 @@
     function getAudioPath(topicId, voiceName, word) {
       var hash = md5(word.toLowerCase() + '_' + voiceName);
       var safeWord = word.replace(/[^a-zA-Z0-9]/g, "").substring(0, 20);
-      return 'cache/T_' + topicId + '/' + voiceName + '/' + safeWord + '_' + hash + '.mp3';
+      return 'cache/' + topicId + '/' + voiceName + '/' + safeWord + '_' + hash + '.mp3';
     }
 
     function getAudioRawUrl(topicId, voiceName, word) {
-      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + getAudioPath(topicId, voiceName, word);
+      var ref = window.globalData.commitSha || window.CONFIG.GITHUB_BRANCH || 'main';
+      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + ref + '/' + getAudioPath(topicId, voiceName, word);
     }
 
     function startSyncEngine() {
@@ -908,9 +909,13 @@
 
           items.forEach(function(it) {
             var url = getAudioRawUrl(topicId, vName, it.word);
-            var p = fetch(url, { method: 'HEAD', cache: 'no-store' })
-              .then(function(r) { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: r.ok }; })
-              .catch(function() { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: false }; });
+            var p = fetch(url, { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' })
+              .then(function(r) { 
+                return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: (r.ok || r.status === 206) }; 
+              })
+              .catch(function() { 
+                return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: false }; 
+              });
             checkPromises.push(p);
           });
         });
@@ -1011,8 +1016,8 @@
 
           items.forEach(function(it) {
             var url = getAudioRawUrl(tId, vName, it.word);
-            fetch(url, { method: 'HEAD', cache: 'no-store' }).then(function(r) {
-              if (!r.ok) {
+            fetch(url, { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' }).then(function(r) {
+              if (!r.ok && r.status !== 206) {
                 syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine });
                 syncEngine.totalInQueue = syncEngine.queue.length;
                 startSyncEngine();
