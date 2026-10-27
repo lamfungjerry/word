@@ -269,10 +269,17 @@
     };
 
     function showFatalError(msg) {
-      alert('❌ ' + msg);
+      // 避免重複堆疊，如果已經有 Banner 就只更新文字
+      var existing = document.getElementById('fatal-banner');
+      if (existing) {
+        existing.innerText = '❌ ' + msg;
+        return;
+      }
       var banner = document.createElement('div');
-      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px;font-weight:bold;font-size:14px;z-index:99999;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);';
-      banner.innerText = msg;
+      banner.id = 'fatal-banner';
+      banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px;font-weight:bold;font-size:14px;z-index:99999;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);cursor:pointer;';
+      banner.innerText = '❌ ' + msg;
+      banner.onclick = function() { this.remove(); }; // 點擊自動關閉
       document.body.appendChild(banner);
     }
 
@@ -323,7 +330,7 @@
         var isFail = customText.indexOf('失敗') !== -1 || customText.indexOf('錯誤') !== -1;
         s.innerHTML = '<span>' + (isFail ? '⚠️' : '☁️') + '</span> <span class="ml-1">' + customText + '</span>';
         s.className = 'text-xs md:text-sm font-bold ' + (isFail ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40') + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
-        if (isFail) showFatalError(customText);
+        // 刪除了這裏強制觸發 showFatalError() 的擾民代碼
       } else {
         s.innerHTML = '<span>✅</span> <span class="ml-1">已同步</span>';
         s.className = 'text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
@@ -611,9 +618,13 @@
       callGasApi('fetchTtsAudio', task).then(function(res) {
         if (res.base64) {
           syncEngine.commitBatch.push({ path: getAudioPath(task.topicId, task.voiceName, task.word), base64: res.base64 });
-          if (!audioState[task.voiceName]) audioState[task.voiceName] = {}; audioState[task.voiceName][task.word] = { base64: res.base64 };
+          if (!audioState[task.voiceName]) audioState[task.voiceName] = {}; 
+          audioState[task.voiceName][task.word] = { base64: res.base64 };
         }
-      }).catch(function() { updateSyncBadge(false, 0, '下載失敗: ' + task.word); }).finally(processSyncQueue);
+      }).catch(function(err) { 
+        // 將 GAS 回傳的具體錯誤寫入 Badge，不再只是隱藏起來
+        updateSyncBadge(false, 0, '下載失敗: ' + (err.message || task.word)); 
+      }).finally(processSyncQueue);
     }
 
     function flushCommitBatch() {
