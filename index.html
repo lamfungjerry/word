@@ -957,11 +957,11 @@
     function md5(str){ var hash=0; for(var i=0;i<str.length;i++){ hash=(hash<<5)-hash+str.charCodeAt(i); hash|=0; } return Math.abs(hash).toString(16); }
 
     function safeBack() {
-    // 檢查上一頁是否屬於同一個網站
-    if (document.referrer && document.referrer.startsWith(window.location.origin)) {
-      history.back();
+      // 檢查上一頁是否屬於同一個網站
+      if (document.referrer && document.referrer.startsWith(window.location.origin)) {
+        history.back();
+      }
     }
-  }
   </script>
 </body>
 </html>
