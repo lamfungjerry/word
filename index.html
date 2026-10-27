@@ -398,27 +398,23 @@
         .then(function(res) {
           sel.innerHTML = '';
           var list = (res && res.models && res.models.length) ? res.models : [defModel];
-          
           list.forEach(function(m) {
             var opt = document.createElement('option');
             opt.value = m.id;
             opt.innerText = m.displayName;
-            // 如果比對成功，標記為 selected
-            if (m.id === targetDefaultId) {
-              opt.selected = true;
-            }
+            if (m.id === targetDefaultId) opt.selected = true;
             sel.appendChild(opt);
           });
-
-          // 雙重保險：強制指定 select 的當前值為預設 ID
-          if (targetDefaultId) {
-            sel.value = targetDefaultId;
-          }
+          if (targetDefaultId) sel.value = targetDefaultId;
         })
         .catch(function(err) {
-          sel.innerHTML = '<option value="' + (targetDefaultId || 'gemini-3.6-flash') + '">⚠️ 載入失敗: ' + err.message + '</option>';
+          // 1. 若是因 history.back() 導致請求被瀏覽器中斷，靜默忽略
+          if (err.name === 'AbortError' || (err.message && err.message.indexOf('abort') !== -1)) {
+            return;
+          }
+          // 2. 僅在課題管理選單內安靜顯示狀態，不再跳出 alert 打擾操作
+          sel.innerHTML = '<option value="' + (targetDefaultId) + '">⚠️ 載入失敗: ' + err.message + '</option>';
           updateSyncBadge(false, 0, '⚠️ 模型載入失敗');
-          alert('載入 Gemini 模型失敗：\n' + err.message);
         });
     }
 
