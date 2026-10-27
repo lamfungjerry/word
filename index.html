@@ -111,11 +111,11 @@
             <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-md">下一題 ➡️</button>
           </div>
           
-          <div id="mc-mode-ui" class="w-full grid gap-2 hidden">
-            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
-            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
-            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
-            <button class="mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm"></button>
+          <div id="mc-mode-ui" class="w-full grid grid-cols-2 gap-2.5 hidden">
+            <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
+            <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
+            <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
+            <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
           </div>
           
           <div id="type-mode-ui" class="w-full max-w-xl hidden flex-col items-center">
@@ -645,12 +645,31 @@
       if(currentQuizMode === 'type') { currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; }
       else if(currentQuizMode === 'mc') {
         var correct = q.word;
-        var pool = currentQuestions.map(function(item){return item.word;}).filter(function(w){return w.toLowerCase()!==correct.toLowerCase();});
-        pool.sort(function(){return Math.random()-0.5;});
-        currentMcChoices = [correct, pool[0]||'A', pool[1]||'B', pool[2]||'C'].sort(function(){return Math.random()-0.5;});
+        var pool = currentQuestions.map(function(item){ return item.word; }).filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); });
+        pool.sort(function(){ return Math.random() - 0.5; });
+        currentMcChoices = [correct, pool[0]||'A', pool[1]||'B', pool[2]||'C'].sort(function(){ return Math.random() - 0.5; });
+        
         var btns = document.querySelectorAll('.mc-btn');
+        // iPhone 17 寬度下，英文字母超過 9 個字元左右在半寬卡片會開始擠擁
+        var longWordThreshold = 9;
+        var longCount = currentMcChoices.filter(function(w){ return (w || '').length > longWordThreshold; }).length;
+
         btns.forEach(function(btn, i) {
-          btn.innerText = currentMcChoices[i]; btn.className = 'mc-btn w-full py-4 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm';
+          var word = currentMcChoices[i] || '';
+          btn.innerText = word;
+          
+          // 判定排版 class：
+          // 1. 如果有 3~4 個長字：全部直排 (col-span-2)
+          // 2. 如果只有 1~2 個長字：該長字獨立直排 (col-span-2)，其餘短字左右各一 (col-span-1)
+          // 3. 全是短字：維持 2x2 左右各一
+          var colClass = 'col-span-1';
+          if (longCount >= 3) {
+            colClass = 'col-span-2';
+          } else if (word.length > longWordThreshold) {
+            colClass = 'col-span-2';
+          }
+
+          btn.className = 'mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center transition-all ' + colClass;
           btn.onclick = function() { window.checkMcAnswer(i); };
         });
       }
