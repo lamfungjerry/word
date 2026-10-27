@@ -18,14 +18,14 @@
 <body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
   <!-- =============================== -->
-  <!-- 頂部導覽列 (Safe Area 支援) -->
+  <!-- 頂部導覽列 -->
   <!-- =============================== -->
   <header class="bg-slate-900 shadow-md sticky top-0 z-50 pt-safe">
     <div class="max-w-4xl mx-auto px-3 pt-2 pb-1 flex flex-col space-y-1">
       <div class="flex justify-between items-center px-1">
         <div class="flex items-center space-x-2">
           <button onclick="window.openKeyModal()" class="text-lg hover:scale-110 transition p-1" title="API 金鑰">🔑</button>
-          <h1 class="text-white text-base md:text-lg font-bold py-1 cursor-pointer select-none active:opacity-70" onclick="safeBack()">英語單字學習系統</h1>
+          <h1 class="text-white text-base md:text-lg font-bold py-1 cursor-pointer select-none active:opacity-70" onclick="window.safeBack()">英語單字學習系統</h1>
         </div>
         <div class="flex items-center space-x-2">
           <div id="sync-status" class="text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
@@ -43,9 +43,7 @@
   </header>
 
   <main class="max-w-4xl mx-auto px-3 md:px-4 pt-3 pb-6">
-    <!-- =============================== -->
-    <!-- 1. 測驗分頁 -->
-    <!-- =============================== -->
+    <!-- 測驗分頁 -->
     <section id="tab-quiz">
       <div id="quiz-setup" class="bg-white p-5 md:p-6 rounded-xl shadow-sm border border-slate-200 mb-3">
         <div class="mb-5">
@@ -60,33 +58,27 @@
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="view" class="peer sr-only" checked>
               <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all flex flex-col h-full shadow-sm">
-                <div class="flex items-center space-x-2 mb-1">
-                  <span class="text-2xl">👁️</span><span class="font-bold text-indigo-900 text-base">瀏覽模式</span>
-                </div>
-                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">純顯示圖片與發音。<br>適合配合實體紙筆手寫作答。</p>
+                <div class="flex items-center space-x-2 mb-1"><span class="text-2xl">👁️</span><span class="font-bold text-indigo-900 text-base">瀏覽模式</span></div>
+                <p class="text-xs text-slate-500 font-medium mt-1">純顯示圖片與發音。適合手寫。</p>
               </div>
             </label>
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="type" class="peer sr-only">
               <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-indigo-500 peer-checked:bg-indigo-50 transition-all flex flex-col h-full shadow-sm">
-                <div class="flex items-center space-x-2 mb-1">
-                  <span class="text-2xl">⌨️</span><span class="font-bold text-indigo-900 text-base">打字模式</span>
-                </div>
-                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">使用虛擬鍵盤拼寫單字。<br>嚴格批改，成績將保存至歷程。</p>
+                <div class="flex items-center space-x-2 mb-1"><span class="text-2xl">⌨️</span><span class="font-bold text-indigo-900 text-base">打字模式</span></div>
+                <p class="text-xs text-slate-500 font-medium mt-1">虛擬鍵盤拼寫，紀錄成績。</p>
               </div>
             </label>
             <label class="relative cursor-pointer">
               <input type="radio" name="quizMode" value="mc" class="peer sr-only">
               <div class="p-4 rounded-xl border-2 border-slate-200 bg-white hover:bg-slate-50 peer-checked:border-emerald-500 peer-checked:bg-emerald-50 transition-all flex flex-col h-full shadow-sm">
-                <div class="flex items-center space-x-2 mb-1">
-                  <span class="text-2xl">🎲</span><span class="font-bold text-emerald-800 text-base">溫習模式</span>
-                </div>
-                <p class="text-xs text-slate-500 font-medium leading-relaxed mt-1">四選一選擇題。<br>無壓力快速溫習，不留紀錄。</p>
+                <div class="flex items-center space-x-2 mb-1"><span class="text-2xl">🎲</span><span class="font-bold text-emerald-800 text-base">溫習模式</span></div>
+                <p class="text-xs text-slate-500 font-medium mt-1">四選一選擇題。快速無壓力。</p>
               </div>
             </label>
           </div>
         </div>
-        <button id="start-quiz-btn" onclick="window.startQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 md:py-4 rounded-xl shadow-md transition text-lg mt-2 active:bg-emerald-800">▶️ 開始測驗</button>
+        <button id="start-quiz-btn" onclick="window.startQuiz()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 md:py-4 rounded-xl shadow-md text-lg active:bg-emerald-800">▶️ 開始測驗</button>
       </div>
 
       <div id="quiz-active" class="hidden space-y-2">
@@ -106,25 +98,20 @@
             <canvas id="word-canvas" class="w-full object-contain p-1 rounded bg-white shadow-sm border border-slate-200 transition-all duration-200" style="height: 344px;"></canvas>
           </div>
           
-          <button id="quiz-play-btn" onclick="window.playCurrentQuizWord()" class="btn-play-ready font-bold px-8 py-3 rounded-full flex items-center space-x-2 mb-4 shadow-md text-lg active:scale-95">
-            <span>▶️ 播放</span>
-          </button>
+          <button id="quiz-play-btn" onclick="window.playCurrentQuizWord()" class="btn-play-ready font-bold px-8 py-3 rounded-full flex items-center space-x-2 mb-4 shadow-md text-lg active:scale-95"><span>▶️ 播放</span></button>
           
-          <!-- 瀏覽模式 UI -->
           <div id="view-mode-ui" class="w-full flex gap-3 hidden">
-            <button onclick="window.prevQuestion()" class="flex-1 bg-slate-200 text-slate-800 font-bold py-3 rounded-xl hover:bg-slate-300">⬅️ 上一題</button>
-            <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-md">下一題 ➡️</button>
+            <button onclick="window.prevQuestion()" class="flex-1 bg-slate-200 text-slate-800 font-bold py-3 rounded-xl">⬅️ 上一題</button>
+            <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md">下一題 ➡️</button>
           </div>
           
-          <!-- 溫習模式 UI (智慧網格佈局) -->
-          <div id="mc-mode-ui" class="w-full grid grid-cols-2 gap-2.5 hidden">
+          <div id="mc-mode-ui" class="w-full grid gap-2.5 hidden">
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
           </div>
           
-          <!-- 打字模式 UI -->
           <div id="type-mode-ui" class="w-full max-w-xl hidden flex-col items-center">
             <div id="fake-answer-input" class="w-full p-3 border-2 border-slate-300 rounded-xl bg-slate-50 text-xl font-bold text-center h-12 flex items-center justify-center tracking-widest fake-cursor shadow-inner"></div>
             <div class="w-full mt-3 bg-slate-100 p-2 md:p-3 rounded-xl flex flex-col gap-1.5 shadow-inner">
@@ -156,9 +143,7 @@
       </div>
     </section>
 
-    <!-- =============================== -->
-    <!-- 2. 課題管理分頁 -->
-    <!-- =============================== -->
+    <!-- 課題管理分頁 -->
     <section id="tab-topics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <h2 class="text-base md:text-lg font-bold mb-3">📸 新增課題 (AI 自動切割)</h2>
@@ -183,14 +168,10 @@
       </div>
     </section>
 
-    <!-- =============================== -->
-    <!-- 3. 學習歷程分頁 -->
-    <!-- =============================== -->
+    <!-- 學習歷程分頁 -->
     <section id="tab-analytics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
-        <div class="flex justify-between items-center mb-3">
-          <h2 class="text-lg font-bold">學生測驗紀錄</h2>
-        </div>
+        <h2 class="text-lg font-bold mb-3">學生測驗紀錄</h2>
         <div class="mb-4">
           <select id="record-filter" onchange="window.renderRecords(this.value)" class="w-full p-2.5 border border-slate-300 rounded-lg bg-slate-50 font-medium text-sm outline-none"></select>
         </div>
@@ -199,116 +180,58 @@
     </section>
   </main>
 
-  <!-- =============================== -->
-  <!-- 2x5 網格編輯器 (新增/編輯共用) -->
-  <!-- =============================== -->
+  <!-- Modals -->
   <div id="grid-editor-modal" class="fixed inset-0 bg-slate-100 z-[70] hidden flex-col">
     <div class="bg-white p-2.5 flex justify-between items-center shadow-sm shrink-0 border-b pt-safe">
       <button onclick="window.closeGridEditor()" class="text-red-500 font-bold px-3 py-1.5 bg-red-50 rounded-lg text-sm border border-red-200">✖ 取消</button>
       <input type="text" id="grid-topic-name" class="flex-1 mx-3 p-1.5 text-center font-bold text-base border-b-2 border-indigo-300 focus:border-indigo-600 bg-transparent outline-none rounded-none" placeholder="輸入課題名稱">
       <button onclick="window.saveGridEditor()" id="grid-save-btn" class="bg-emerald-600 text-white px-4 py-1.5 rounded-lg font-bold text-sm shadow-md active:bg-emerald-700">💾 儲存</button>
     </div>
-    <div class="flex-1 overflow-y-auto p-3">
-      <div class="grid grid-cols-2 gap-3 pb-6" id="grid-cards-container"></div>
-    </div>
+    <div class="flex-1 overflow-y-auto p-3"><div class="grid grid-cols-2 gap-3 pb-6" id="grid-cards-container"></div></div>
   </div>
 
-  <!-- 單字修改放大彈窗 -->
   <div id="single-edit-modal" class="fixed inset-0 bg-slate-900/60 z-[80] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white w-full max-w-xs rounded-2xl p-5 flex flex-col items-center shadow-2xl">
       <h3 class="font-bold text-sm text-slate-500 mb-3">修改生字 (<span id="single-edit-idx"></span>)</h3>
       <canvas id="single-edit-canvas" class="w-full h-32 object-contain bg-slate-100 rounded border border-slate-200 mb-4"></canvas>
-      <input type="text" id="single-edit-input" class="w-full p-3 border-2 border-indigo-300 rounded-xl text-center font-bold text-xl outline-none focus:border-indigo-500 mb-5" placeholder="輸入正確生字">
-      <button onclick="window.confirmSingleEdit()" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl text-base shadow-md active:bg-indigo-700">確定修改</button>
+      <input type="text" id="single-edit-input" class="w-full p-3 border-2 border-indigo-300 rounded-xl text-center font-bold text-xl outline-none focus:border-indigo-500 mb-5">
+      <button onclick="window.confirmSingleEdit()" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl text-base shadow-md">確定修改</button>
     </div>
   </div>
 
-  <!-- =============================== -->
-  <!-- 🔑 金鑰設定 (已移除 Azure，支援條件顯示) -->
-  <!-- =============================== -->
   <div id="key-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
         <h3 class="text-lg font-bold text-slate-800">🔑 系統金鑰設定</h3>
-        <button onclick="window.closeKeyModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✖</button>
+        <button onclick="window.closeKeyModal()" class="text-slate-400 font-bold text-lg">✖</button>
       </div>
-      <p class="text-xs text-slate-500 mb-4">金鑰加密儲存於 GAS 底層。已設定之項目點擊「修改」方可變更。</p>
-
       <div class="space-y-3 text-sm">
-        <!-- 1. Gemini API Key -->
         <div id="row-gemini" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
           <div class="flex justify-between items-center">
             <span class="font-bold text-slate-700 text-xs">Gemini API Key</span>
-            <div class="flex items-center space-x-2">
-              <span id="status-gemini" class="text-xs font-bold"></span>
-              <button id="btn-edit-gemini" type="button" onclick="window.toggleKeyEdit('gemini')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
-            </div>
+            <div class="flex items-center space-x-2"><span id="status-gemini" class="text-xs font-bold"></span><button id="btn-edit-gemini" onclick="window.toggleKeyEdit('gemini')" class="text-xs font-bold text-indigo-600 hidden px-1 py-0.5">修改</button></div>
           </div>
-          <div id="wrap-input-gemini" class="mt-2 hidden">
-            <input type="password" id="input-gemini-key" placeholder="輸入新 Gemini API Key..." class="w-full p-2 border rounded-lg text-xs bg-white">
-          </div>
+          <div id="wrap-input-gemini" class="mt-2 hidden"><input type="password" id="input-gemini-key" class="w-full p-2 border rounded-lg text-xs bg-white"></div>
         </div>
-
-        <!-- 2. Google Cloud TTS Key -->
         <div id="row-gcptts" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
           <div class="flex justify-between items-center">
             <span class="font-bold text-slate-700 text-xs">Google Cloud TTS Key</span>
-            <div class="flex items-center space-x-2">
-              <span id="status-gcptts" class="text-xs font-bold"></span>
-              <button id="btn-edit-gcptts" type="button" onclick="window.toggleKeyEdit('gcptts')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
-            </div>
+            <div class="flex items-center space-x-2"><span id="status-gcptts" class="text-xs font-bold"></span><button id="btn-edit-gcptts" onclick="window.toggleKeyEdit('gcptts')" class="text-xs font-bold text-indigo-600 hidden px-1 py-0.5">修改</button></div>
           </div>
-          <div id="wrap-input-gcptts" class="mt-2 hidden">
-            <input type="password" id="input-gcptts-key" placeholder="輸入新 Google Cloud TTS Key..." class="w-full p-2 border rounded-lg text-xs bg-white">
-          </div>
+          <div id="wrap-input-gcptts" class="mt-2 hidden"><input type="password" id="input-gcptts-key" class="w-full p-2 border rounded-lg text-xs bg-white"></div>
         </div>
-
-        <!-- 3. GitHub Token -->
         <div id="row-github" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
           <div class="flex justify-between items-center">
             <span class="font-bold text-slate-700 text-xs">GitHub Token</span>
-            <div class="flex items-center space-x-2">
-              <span id="status-github" class="text-xs font-bold"></span>
-              <button id="btn-edit-github" type="button" onclick="window.toggleKeyEdit('github')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
-            </div>
+            <div class="flex items-center space-x-2"><span id="status-github" class="text-xs font-bold"></span><button id="btn-edit-github" onclick="window.toggleKeyEdit('github')" class="text-xs font-bold text-indigo-600 hidden px-1 py-0.5">修改</button></div>
           </div>
-          <div id="wrap-input-github" class="mt-2 hidden">
-            <input type="password" id="input-github-token" placeholder="ghp_... 或 github_pat_..." class="w-full p-2 border rounded-lg text-xs bg-white">
-          </div>
+          <div id="wrap-input-github" class="mt-2 hidden"><input type="password" id="input-github-token" class="w-full p-2 border rounded-lg text-xs bg-white"></div>
         </div>
       </div>
-
-      <div class="flex gap-2 mt-5">
-        <button onclick="window.saveAllKeys()" id="save-keys-btn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-sm shadow">💾 儲存設定</button>
-        <button onclick="window.closeKeyModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm">關閉</button>
-      </div>
-
-      <!-- 📊 容量明細折疊區 -->
-      <div class="mt-4 pt-3 border-t border-slate-200">
-        <div onclick="window.toggleStorageDetail()" class="flex justify-between items-center cursor-pointer select-none text-xs font-bold text-slate-600 hover:text-slate-900 py-1">
-          <span id="storage-summary-title">📊 容量明細: 載入中...</span>
-          <span id="storage-arrow">▼</span>
-        </div>
-        <div id="storage-detail-box" class="hidden mt-2 bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1.5">
-          <div class="flex justify-between text-slate-700">
-            <span>🔑 金鑰設定佔用：</span>
-            <span id="storage-keys-kb" class="font-mono font-bold">0.00 KB</span>
-          </div>
-          <div class="flex justify-between text-slate-700">
-            <span>📖 其他屬性佔用：</span>
-            <span id="storage-pending-kb" class="font-mono font-bold">0.00 KB</span>
-          </div>
-          <div id="storage-orphan-section" class="hidden pt-2 mt-2 border-t border-amber-200">
-            <div class="text-amber-700 font-bold mb-1">⚠️ 其他殘留項目：</div>
-            <ul id="storage-orphan-list" class="space-y-1 text-slate-600 font-mono text-[11px] mb-2 max-h-28 overflow-y-auto"></ul>
-            <button onclick="window.cleanOrphanProperties()" class="w-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold py-1.5 rounded-lg transition">🗑️ 清除殘留項目</button>
-          </div>
-        </div>
-      </div>
+      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-4 bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-sm">💾 儲存設定</button>
     </div>
   </div>
 
-  <!-- ⚙️ 測驗發音設定彈窗 -->
   <div id="voice-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5">
       <h3 class="text-base font-bold mb-3">⚙️ 測驗發音設定</h3>
@@ -317,79 +240,113 @@
     </div>
   </div>
 
-  <!-- 🎧 音檔狀態檢查與試聽彈窗 -->
   <div id="audio-inspect-modal" class="fixed inset-0 bg-slate-900/60 z-[85] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[85vh] flex flex-col">
       <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
-        <div>
-          <h3 class="text-base font-bold text-slate-800">🎧 音檔下載狀態</h3>
-          <p id="inspect-topic-title" class="text-xs text-indigo-600 font-bold truncate max-w-[200px]"></p>
-        </div>
+        <div><h3 class="text-base font-bold text-slate-800">🎧 音檔下載狀態</h3><p id="inspect-topic-title" class="text-xs text-indigo-600 font-bold truncate max-w-[200px]"></p></div>
         <button onclick="window.closeAudioInspectModal()" class="text-slate-400 font-bold text-lg p-1">✖</button>
       </div>
-
-      <div id="inspect-content-list" class="flex-1 overflow-y-auto space-y-3 py-2 pr-1 text-xs">
-        <div class="text-center text-slate-400 py-6"><span class="hourglass-spin">⏳</span> 正在檢查 GitHub 音檔...</div>
-      </div>
-
+      <div id="inspect-content-list" class="flex-1 overflow-y-auto space-y-3 py-2 pr-1 text-xs"></div>
       <div class="pt-3 border-t border-slate-100 flex gap-2">
-        <button id="btn-heal-audio" onclick="window.healMissingAudio()" class="flex-1 bg-amber-500 hover:bg-amber-600 text-white font-bold py-2.5 rounded-xl text-xs shadow-sm flex items-center justify-center space-x-1">
-          <span>⚡ 自動補齊缺漏</span>
-        </button>
+        <button id="btn-heal-audio" onclick="window.healMissingAudio()" class="flex-1 bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs">⚡ 自動補齊缺漏</button>
         <button onclick="window.closeAudioInspectModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl text-xs">關閉</button>
       </div>
     </div>
   </div>
 
-  <!-- 浮動下載控制器 -->
   <div id="download-controller" class="floating-dl-wrapper collapsed" style="display:none;">
     <div class="floating-dl-toggle" onclick="window.openDownloadBar(event)"><span class="hourglass-spin">⏳</span></div>
     <div class="floating-dl-content" onclick="window.closeDownloadBar(event)">
-      <span class="hourglass-spin text-sm">⏳</span>
-      <span id="dl-detail-text" class="text-xs font-bold text-slate-800 whitespace-nowrap">準備中...</span>
+      <span class="hourglass-spin text-sm">⏳</span><span id="dl-detail-text" class="text-xs font-bold text-slate-800 whitespace-nowrap">準備中...</span>
     </div>
   </div>
 
-  <!-- =============================== -->
   <!-- JavaScript 核心邏輯 -->
-  <!-- =============================== -->
   <script>
-    // 1. 安全返回函數
-    function safeBack() {
-      if (document.referrer && document.referrer.startsWith(window.location.origin)) {
-        history.back();
+    // ----------------------------------------------------
+    // 標準 32 位元 MD5 演算法 (純 JS 實作，確保與真實 MD5 一致)
+    // ----------------------------------------------------
+    var md5 = function (string) {
+      function RotateLeft(lValue, iShiftBits) { return (lValue<<iShiftBits) | (lValue>>>(32-iShiftBits)); }
+      function AddUnsigned(lX,lY) {
+        var lX4,lY4,lX8,lY8,lResult;
+        lX8 = (lX & 0x80000000); lY8 = (lY & 0x80000000); lX4 = (lX & 0x40000000); lY4 = (lY & 0x40000000);
+        lResult = (lX & 0x3FFFFFFF)+(lY & 0x3FFFFFFF);
+        if (lX4 & lY4) { return (lResult ^ 0x80000000 ^ lX8 ^ lY8); }
+        if (lX4 | lY4) { if (lResult & 0x40000000) { return (lResult ^ 0xC0000000 ^ lX8 ^ lY8); } else { return (lResult ^ 0x40000000 ^ lX8 ^ lY8); } }
+        return (lResult ^ lX8 ^ lY8);
       }
-    }
-
-    // 2. 嚴格 Config 驗證
-    function checkRequiredConfig() {
-      var requiredKeys = [
-        'GAS_URL',
-        'GITHUB_REPO',
-        'GITHUB_BRANCH',
-        'VOICE_MODELS',
-        'DEFAULT_VOICE',
-        'IMAGE_SETTINGS',
-        'GEMINI_DEFAULT_MODEL',
-        'GEMINI_EXCLUDE_KEYWORDS'
-      ];
-      if (!window.CONFIG) {
-        showFatalError('系統錯誤：找不到 config.js 檔案！');
-        return false;
-      }
-      for (var i = 0; i < requiredKeys.length; i++) {
-        var key = requiredKeys[i];
-        if (window.CONFIG[key] === undefined || window.CONFIG[key] === null || window.CONFIG[key] === '') {
-          showFatalError('config.js 設定錯誤：缺少關鍵欄位 [' + key + ']');
-          return false;
+      function F(x,y,z) { return (x & y) | ((~x) & z); }
+      function G(x,y,z) { return (x & z) | (y & (~z)); }
+      function H(x,y,z) { return (x ^ y ^ z); }
+      function I(x,y,z) { return (y ^ (x | (~z))); }
+      function FF(a,b,c,d,x,s,ac) { a = AddUnsigned(a, AddUnsigned(AddUnsigned(F(b, c, d), x), ac)); return AddUnsigned(RotateLeft(a, s), b); }
+      function GG(a,b,c,d,x,s,ac) { a = AddUnsigned(a, AddUnsigned(AddUnsigned(G(b, c, d), x), ac)); return AddUnsigned(RotateLeft(a, s), b); }
+      function HH(a,b,c,d,x,s,ac) { a = AddUnsigned(a, AddUnsigned(AddUnsigned(H(b, c, d), x), ac)); return AddUnsigned(RotateLeft(a, s), b); }
+      function II(a,b,c,d,x,s,ac) { a = AddUnsigned(a, AddUnsigned(AddUnsigned(I(b, c, d), x), ac)); return AddUnsigned(RotateLeft(a, s), b); }
+      function ConvertToWordArray(string) {
+        var lWordCount; var lMessageLength = string.length; var lNumberOfWords_temp1=lMessageLength + 8; var lNumberOfWords_temp2=(lNumberOfWords_temp1-(lNumberOfWords_temp1 % 64))/64;
+        var lNumberOfWords = (lNumberOfWords_temp2+1)*16; var lWordArray=Array(lNumberOfWords-1); var lBytePosition = 0; var lByteCount = 0;
+        while ( lByteCount < lMessageLength ) {
+          lWordCount = (lByteCount-(lByteCount % 4))/4; lBytePosition = (lByteCount % 4)*8;
+          lWordArray[lWordCount] = (lWordArray[lWordCount] | (string.charCodeAt(lByteCount)<<lBytePosition)); lByteCount++;
         }
+        lWordCount = (lByteCount-(lByteCount % 4))/4; lBytePosition = (lByteCount % 4)*8;
+        lWordArray[lWordCount] = lWordArray[lWordCount] | (0x80<<lBytePosition);
+        lWordArray[lNumberOfWords-2] = lMessageLength<<3; lWordArray[lNumberOfWords-1] = lMessageLength>>>29;
+        return lWordArray;
       }
-      if (!window.CONFIG.GEMINI_DEFAULT_MODEL || !window.CONFIG.GEMINI_DEFAULT_MODEL.id) {
-        showFatalError('config.js 設定錯誤：GEMINI_DEFAULT_MODEL 必須包含 id 屬性');
-        return false;
+      function WordToHex(lValue) {
+        var WordToHexValue="",WordToHexValue_temp="",lByte,lCount;
+        for (lCount = 0;lCount<=3;lCount++) {
+          lByte = (lValue>>>(lCount*8)) & 255; WordToHexValue_temp = "0" + lByte.toString(16);
+          WordToHexValue = WordToHexValue + WordToHexValue_temp.substr(WordToHexValue_temp.length-2,2);
+        }
+        return WordToHexValue;
       }
-      return true;
-    }
+      function Utf8Encode(string) {
+        string = string.replace(/\r\n/g,"\n"); var utftext = "";
+        for (var n = 0; n < string.length; n++) {
+          var c = string.charCodeAt(n);
+          if (c < 128) { utftext += String.fromCharCode(c); }
+          else if((c > 127) && (c < 2048)) { utftext += String.fromCharCode((c >> 6) | 192); utftext += String.fromCharCode((c & 63) | 128); }
+          else { utftext += String.fromCharCode((c >> 12) | 224); utftext += String.fromCharCode(((c >> 6) & 63) | 128); utftext += String.fromCharCode((c & 63) | 128); }
+        }
+        return utftext;
+      }
+      var x=Array(); var k,AA,BB,CC,DD,a,b,c,d; var S11=7, S12=12, S13=17, S14=22; var S21=5, S22=9 , S23=14, S24=20; var S31=4, S32=11, S33=16, S34=23; var S41=6, S42=10, S43=15, S44=21;
+      string = Utf8Encode(string); x = ConvertToWordArray(string);
+      a = 0x67452301; b = 0xEFCDAB89; c = 0x98BADCFE; d = 0x10325476;
+      for (k=0;k<x.length;k+=16) {
+        AA=a; BB=b; CC=c; DD=d;
+        a=FF(a,b,c,d,x[k+0], S11,0xD76AA478); d=FF(d,a,b,c,x[k+1], S12,0xE8C7B756); c=FF(c,d,a,b,x[k+2], S13,0x242070DB); b=FF(b,c,d,a,x[k+3], S14,0xC1BDCEEE);
+        a=FF(a,b,c,d,x[k+4], S11,0xF57C0FAF); d=FF(d,a,b,c,x[k+5], S12,0x4787C62A); c=FF(c,d,a,b,x[k+6], S13,0xA8304613); b=FF(b,c,d,a,x[k+7], S14,0xFD469501);
+        a=FF(a,b,c,d,x[k+8], S11,0x698098D8); d=FF(d,a,b,c,x[k+9], S12,0x8B44F7AF); c=FF(c,d,a,b,x[k+10],S13,0xFFFF5BB1); b=FF(b,c,d,a,x[k+11],S14,0x895CD7BE);
+        a=FF(a,b,c,d,x[k+12],S11,0x6B901122); d=FF(d,a,b,c,x[k+13],S12,0xFD987193); c=FF(c,d,a,b,x[k+14],S13,0xA679438E); b=FF(b,c,d,a,x[k+15],S14,0x49B40821);
+        a=GG(a,b,c,d,x[k+1], S21,0xF61E2562); d=GG(d,a,b,c,x[k+6], S22,0xC040B340); c=GG(c,d,a,b,x[k+11],S23,0x265E5A51); b=GG(b,c,d,a,x[k+0], S24,0xE9B6C7AA);
+        a=GG(a,b,c,d,x[k+5], S21,0xD62F105D); d=GG(d,a,b,c,x[k+10],S22,0x2441453);  c=GG(c,d,a,b,x[k+15],S23,0xD8A1E681); b=GG(b,c,d,a,x[k+4], S24,0xE7D3FBC8);
+        a=GG(a,b,c,d,x[k+9], S21,0x21E1CDE6); d=GG(d,a,b,c,x[k+14],S22,0xC33707D6); c=GG(c,d,a,b,x[k+3], S23,0xF4D50D87); b=GG(b,c,d,a,x[k+8], S24,0x455A14ED);
+        a=GG(a,b,c,d,x[k+13],S21,0xA9E3E905); d=GG(d,a,b,c,x[k+2], S22,0xFCEFA3F8); c=GG(c,d,a,b,x[k+7], S23,0x676F02D9); b=GG(b,c,d,a,x[k+12],S24,0x8D2A4C8A);
+        a=HH(a,b,c,d,x[k+5], S31,0xFFFA3942); d=HH(d,a,b,c,x[k+8], S32,0x8771F681); c=HH(c,d,a,b,x[k+11],S33,0x6D9D6122); b=HH(b,c,d,a,x[k+14],S34,0xFDE5380C);
+        a=HH(a,b,c,d,x[k+1], S31,0xA4BEEA44); d=HH(d,a,b,c,x[k+4], S32,0x4BDECFA9); c=HH(c,d,a,b,x[k+7], S33,0xF6BB4B60); b=HH(b,c,d,a,x[k+10],S34,0xBEBFBC70);
+        a=HH(a,b,c,d,x[k+13],S31,0x289B7EC6); d=HH(d,a,b,c,x[k+0], S32,0xEAA127FA); c=HH(c,d,a,b,x[k+3], S33,0xD4EF3085); b=HH(b,c,d,a,x[k+6], S34,0x4881D05);
+        a=HH(a,b,c,d,x[k+9], S31,0xD9D4D039); d=HH(d,a,b,c,x[k+12],S32,0xE6DB99E5); c=HH(c,d,a,b,x[k+15],S33,0x1FA27CF8); b=HH(b,c,d,a,x[k+2], S34,0xC4AC5665);
+        a=II(a,b,c,d,x[k+0], S41,0xF4292244); d=II(d,a,b,c,x[k+7], S42,0x432AFF97); c=II(c,d,a,b,x[k+14],S43,0xAB9423A7); b=II(b,c,d,a,x[k+5], S44,0xFC93A039);
+        a=II(a,b,c,d,x[k+12],S41,0x655B59C3); d=II(d,a,b,c,x[k+3], S42,0x8F0CCC92); c=II(c,d,a,b,x[k+10],S43,0xFFEFF47D); b=II(b,c,d,a,x[k+1], S44,0x85845DD1);
+        a=II(a,b,c,d,x[k+8], S41,0x6FA87E4F); d=II(d,a,b,c,x[k+15],S42,0xFE2CE6E0); c=II(c,d,a,b,x[k+6], S43,0xA3014314); b=II(b,c,d,a,x[k+13],S44,0x4E0811A1);
+        a=II(a,b,c,d,x[k+4], S41,0xF7537E82); d=II(d,a,b,c,x[k+11],S42,0xBD3AF235); c=II(c,d,a,b,x[k+2], S43,0x2AD7D2BB); b=II(b,c,d,a,x[k+9], S44,0xEB86D391);
+        a=AddUnsigned(a,AA); b=AddUnsigned(b,BB); c=AddUnsigned(c,CC); d=AddUnsigned(d,DD);
+      }
+      var temp = WordToHex(a)+WordToHex(b)+WordToHex(c)+WordToHex(d);
+      return temp.toLowerCase();
+    };
+
+    // ----------------------------------------------------
+    // 系統安全驗證與初始化
+    // ----------------------------------------------------
+    window.safeBack = function() {
+      if (document.referrer && document.referrer.startsWith(window.location.origin)) { history.back(); }
+    };
 
     function showFatalError(msg) {
       alert('❌ ' + msg);
@@ -399,9 +356,23 @@
       document.body.appendChild(banner);
     }
 
-    // 系統狀態
+    function checkRequiredConfig() {
+      if (!window.CONFIG) { showFatalError('系統錯誤：找不到 config.js 檔案！'); return false; }
+      var requiredKeys = ['GAS_URL', 'GITHUB_REPO', 'GITHUB_BRANCH', 'VOICE_MODELS', 'DEFAULT_VOICE', 'IMAGE_SETTINGS', 'GEMINI_DEFAULT_MODEL', 'GEMINI_EXCLUDE_KEYWORDS'];
+      for (var i = 0; i < requiredKeys.length; i++) {
+        var key = requiredKeys[i];
+        if (window.CONFIG[key] === undefined || window.CONFIG[key] === null || window.CONFIG[key] === '') {
+          showFatalError('config.js 錯誤：缺少欄位 [' + key + ']'); return false;
+        }
+      }
+      if (!window.CONFIG.GEMINI_DEFAULT_MODEL || !window.CONFIG.GEMINI_DEFAULT_MODEL.id) {
+        showFatalError('config.js 錯誤：GEMINI_DEFAULT_MODEL 必須包含 id 屬性'); return false;
+      }
+      return true;
+    }
+
     window.globalData = { topics: [], records: [], lessonCache: {}, commitSha: localStorage.getItem('latestCommitSha') || '' };
-    var audioState = {}; 
+    var audioState = {};
     var syncEngine = { queue: [], active: false, commitBatch: [], totalInQueue: 0, initialPayload: null };
     var gridEditorState = { isNew: true, topicId: '', items: [], imgObj: null, base64: '' };
     var activeEditIdx = -1, currentAudioPlayer = null;
@@ -410,39 +381,29 @@
     var quizImgHeight = localStorage.getItem('quizImgHeight') ? parseInt(localStorage.getItem('quizImgHeight'), 10) : 344;
     var currentInspectingTopicId = '', currentMissingAudioTasks = [];
 
-    // GAS API 呼叫
     function callGasApi(action, payload) {
-      if (!window.CONFIG || !window.CONFIG.GAS_URL) {
-        alert('❌ 嚴重錯誤：找不到 config.js 或 GAS_URL 未設定');
-        return Promise.reject(new Error('GAS_URL 未設定'));
-      }
       var fullPayload = Object.assign({}, payload, { CONFIG: window.CONFIG });
       return fetch(window.CONFIG.GAS_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify({ action: action, payload: fullPayload })
-      }).then(function(r) { 
-        return r.json(); 
-      }).then(function(d) {
-        if (d.status === 'error') throw new Error(d.message); 
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.status === 'error') throw new Error(d.message);
         return d;
       });
     }
 
     function updateSyncBadge(isSyncing, unsyncedCount, customText) {
-      var s = document.getElementById('sync-status'); 
+      var s = document.getElementById('sync-status');
       if (!s) return;
       if (isSyncing) {
         s.innerHTML = '<span class="hourglass-spin">⏳</span> <span class="ml-1">' + (customText || '自動同步...') + '</span>';
         s.className = 'text-xs md:text-sm font-bold text-amber-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
       } else if (customText) {
-        var icon = customText.indexOf('失敗') !== -1 ? '⚠️' : '☁️';
-        var color = customText.indexOf('失敗') !== -1 ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40';
-        s.innerHTML = '<span>' + icon + '</span> <span class="ml-1">' + customText + '</span>';
-        s.className = 'text-xs md:text-sm font-bold ' + color + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
-      } else if (unsyncedCount > 0) {
-        s.innerHTML = '<span>☁️</span> <span class="ml-1">待同步 (' + unsyncedCount + ')</span>';
-        s.className = 'text-xs md:text-sm font-bold text-amber-300 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
+        var isFail = customText.indexOf('失敗') !== -1 || customText.indexOf('錯誤') !== -1;
+        s.innerHTML = '<span>' + (isFail ? '⚠️' : '☁️') + '</span> <span class="ml-1">' + customText + '</span>';
+        s.className = 'text-xs md:text-sm font-bold ' + (isFail ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40') + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
+        if (isFail) showFatalError(customText);
       } else {
         s.innerHTML = '<span>✅</span> <span class="ml-1">已同步</span>';
         s.className = 'text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
@@ -450,24 +411,14 @@
     }
 
     function initVoiceSelect() {
-      var sel = document.getElementById('voice-select'); 
-      sel.innerHTML = '';
+      var sel = document.getElementById('voice-select'); sel.innerHTML = '';
       window.CONFIG.VOICE_MODELS.forEach(function(v) {
-        var opt = document.createElement('option'); 
-        opt.value = v; 
-        opt.innerText = v.split(',')[0]; 
-        sel.appendChild(opt);
+        var opt = document.createElement('option'); opt.value = v; opt.innerText = v.split(',')[0]; sel.appendChild(opt);
       });
       sel.value = localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE;
-      if (sel.selectedIndex === -1) sel.selectedIndex = 0;
     }
+    window.onVoiceChange = function() { localStorage.setItem('selectedVoice', document.getElementById('voice-select').value); };
 
-    window.onVoiceChange = function() {
-      var sel = document.getElementById('voice-select');
-      localStorage.setItem('selectedVoice', sel.value);
-    };
-
-    // 系統開機載入
     window.addEventListener('DOMContentLoaded', function() {
       if (!checkRequiredConfig()) return;
       initVoiceSelect();
@@ -477,38 +428,32 @@
       fetch(url, { headers: { 'Accept': 'application/vnd.github.sha' }, cache: 'no-store' })
       .then(function(r) { return r.ok ? r.text() : ''; })
       .then(function(sha) {
-        if (sha) { 
-          window.globalData.commitSha = sha.trim(); 
-          localStorage.setItem('latestCommitSha', sha.trim()); 
-        }
+        if (sha) { window.globalData.commitSha = sha.trim(); localStorage.setItem('latestCommitSha', sha.trim()); }
         var base = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/';
         return Promise.all([
-          fetch(base + 'lessons_index.json', { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; }),
-          fetch(base + 'records.json', { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : []; }).catch(function(){ return []; })
+          fetch(base + 'lessons_index.json', { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : []; }),
+          fetch(base + 'records.json', { cache: 'no-store' }).then(function(r){ return r.ok ? r.json() : []; })
         ]);
       }).then(function(res) {
-        window.globalData.topics = res[0]; 
-        window.globalData.records = res[1];
+        window.globalData.topics = res[0] || []; 
+        window.globalData.records = res[1] || [];
         window.refreshUI(); 
         updateSyncBadge(false, 0);
+      }).catch(function(err) {
+        updateSyncBadge(false, 0, '⚠️ 載入失敗: ' + err.message);
       });
     });
 
     function loadModels() {
-      var sel = document.getElementById('ai-model-select');
-      if (!sel) return;
+      var sel = document.getElementById('ai-model-select'); if (!sel) return;
       sel.innerHTML = '<option>⏳ 載入模型中...</option>';
-      
       var targetDefaultId = window.CONFIG.GEMINI_DEFAULT_MODEL.id;
-
       callGasApi('getGeminiModels', {})
         .then(function(res) {
           sel.innerHTML = '';
           var list = (res && res.models && res.models.length) ? res.models : [window.CONFIG.GEMINI_DEFAULT_MODEL];
           list.forEach(function(m) {
-            var opt = document.createElement('option');
-            opt.value = m.id;
-            opt.innerText = m.displayName;
+            var opt = document.createElement('option'); opt.value = m.id; opt.innerText = m.displayName;
             if (m.id === targetDefaultId) opt.selected = true;
             sel.appendChild(opt);
           });
@@ -516,197 +461,123 @@
         })
         .catch(function(err) {
           if (err.name === 'AbortError' || (err.message && err.message.indexOf('abort') !== -1)) return;
-          sel.innerHTML = '<option value="' + targetDefaultId + '">⚠️ 載入失敗: ' + err.message + '</option>';
-          updateSyncBadge(false, 0, '⚠️ 模型載入失敗: ' + err.message);
+          sel.innerHTML = '<option value="' + targetDefaultId + '">⚠️ 載入失敗</option>';
+          updateSyncBadge(false, 0, '模型載入錯誤: ' + err.message);
         });
     }
 
     // ----------------------------------------------------
-    // 🔑 金鑰設定與容量折疊
+    // 獨立資料夾架構：路徑產生器
     // ----------------------------------------------------
-    window.openKeyModal = function() {
-      var modal = document.getElementById('key-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-      
-      callGasApi('getStorageAndKeysStatus', {}).then(function(res) {
-        if (res) updateKeyModalUI(res.keysStatus, res.storageUsage);
-      }).catch(function(err) {
-        alert('讀取金鑰狀態失敗：\n' + err.message);
-      });
-    };
-
-    window.closeKeyModal = function() {
-      var modal = document.getElementById('key-modal');
-      modal.classList.add('hidden');
-      modal.classList.remove('flex');
-    };
-
-    window.toggleKeyEdit = function(type) {
-      var wrap = document.getElementById('wrap-input-' + type);
-      var btn = document.getElementById('btn-edit-' + type);
-      if (!wrap || !btn) return;
-      var isHidden = wrap.classList.toggle('hidden');
-      btn.innerText = isHidden ? '修改' : '取消';
-      btn.className = 'text-xs font-bold ' + (isHidden ? 'text-indigo-600' : 'text-slate-400') + ' hover:underline px-1 py-0.5';
-      if (!isHidden) {
-        var inputId = (type === 'github') ? 'input-github-token' : ('input-' + type + '-key');
-        var input = document.getElementById(inputId);
-        if (input) input.focus();
-      }
-    };
-
-    function updateKeyModalUI(keysStatus, storageUsage) {
-      if (keysStatus) {
-        var setupKeyRow = function(type, isSet, inputId) {
-          var statusEl = document.getElementById('status-' + type);
-          var btnEl = document.getElementById('btn-edit-' + type);
-          var wrapEl = document.getElementById('wrap-input-' + type);
-          var inputEl = document.getElementById(inputId);
-
-          if (inputEl) inputEl.value = '';
-
-          if (isSet) {
-            if (statusEl) {
-              statusEl.innerText = '✅ 已設定';
-              statusEl.className = 'text-xs font-bold text-emerald-600';
-            }
-            if (btnEl) {
-              btnEl.classList.remove('hidden');
-              btnEl.innerText = '修改';
-              btnEl.className = 'text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5';
-            }
-            if (wrapEl) wrapEl.classList.add('hidden');
-          } else {
-            if (statusEl) {
-              statusEl.innerText = '⚠️ 未設定';
-              statusEl.className = 'text-xs font-bold text-amber-500';
-            }
-            if (btnEl) btnEl.classList.add('hidden');
-            if (wrapEl) wrapEl.classList.remove('hidden');
-          }
-        };
-
-        setupKeyRow('gemini', keysStatus.gemini, 'input-gemini-key');
-        setupKeyRow('gcptts', keysStatus.gcpTts, 'input-gcptts-key');
-        setupKeyRow('github', keysStatus.github, 'input-github-token');
-      }
-
-      if (storageUsage) {
-        document.getElementById('storage-summary-title').innerText =
-          '📊 容量明細: ' + storageUsage.totalKB + ' / 500 KB (' + storageUsage.percent + '%)';
-        document.getElementById('storage-keys-kb').innerText = storageUsage.keysKB + ' KB';
-        document.getElementById('storage-pending-kb').innerText = storageUsage.pendingKB + ' KB';
-
-        var orphanSec = document.getElementById('storage-orphan-section');
-        var orphanList = document.getElementById('storage-orphan-list');
-        if (storageUsage.orphanItems && storageUsage.orphanItems.length > 0) {
-          orphanSec.classList.remove('hidden');
-          orphanList.innerHTML = '';
-          storageUsage.orphanItems.forEach(function(item) {
-            orphanList.innerHTML += '<li class="flex justify-between"><span>' + item.key + '</span><span>' + item.kb + ' KB</span></li>';
-          });
-        } else {
-          orphanSec.classList.add('hidden');
-        }
-      }
+    function getCleanWord(word) { return (word || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
+    function getTopicBase(topicId) { return 'topics/' + topicId; }
+    
+    function getTopicDataUrl(topicId) {
+      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + getTopicBase(topicId) + '/data.json';
+    }
+    function getTopicImageUrl(topicId) {
+      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + getTopicBase(topicId) + '/image.jpg';
+    }
+    
+    function getAudioPath(topicId, voiceName, word) {
+      var clean = getCleanWord(word);
+      var hash = md5(word.toLowerCase() + '_' + voiceName);
+      return getTopicBase(topicId) + '/' + voiceName + '/' + clean + '_' + hash + '.mp3';
+    }
+    function getAudioRawUrl(topicId, voiceName, word) {
+      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + getAudioPath(topicId, voiceName, word);
     }
 
-    window.toggleStorageDetail = function() {
-      var box = document.getElementById('storage-detail-box');
-      var arrow = document.getElementById('storage-arrow');
-      var isHidden = box.classList.toggle('hidden');
-      arrow.innerText = isHidden ? '▼' : '▲';
-    };
-
-    window.saveAllKeys = function() {
-      var btn = document.getElementById('save-keys-btn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="hourglass-spin">⏳</span> 儲存中...';
-
-      var geminiVal = document.getElementById('input-gemini-key') ? document.getElementById('input-gemini-key').value.trim() : '';
-      var gcpTtsVal = document.getElementById('input-gcptts-key') ? document.getElementById('input-gcptts-key').value.trim() : '';
-      var githubVal = document.getElementById('input-github-token') ? document.getElementById('input-github-token').value.trim() : '';
-
-      callGasApi('saveSystemKeys', {
-        geminiKey: geminiVal,
-        gcpTtsKey: gcpTtsVal,
-        githubToken: githubVal
-      }).then(function(res) {
-        btn.disabled = false;
-        btn.innerText = '💾 儲存設定';
-        updateKeyModalUI(res.keysStatus, res.storageUsage);
-        loadModels();
-        alert('✅ 金鑰設定已成功儲存！');
-      }).catch(function(err) {
-        btn.disabled = false;
-        btn.innerText = '💾 儲存設定';
-        alert('❌ 儲存失敗: ' + err.message);
-      });
-    };
-
-    window.cleanOrphanProperties = function() {
-      if (!confirm('確定要清除所有殘留屬性嗎？')) return;
-      callGasApi('cleanOrphanProperties', {}).then(function(res) {
-        updateKeyModalUI(res.keysStatus, res.storageUsage);
-        alert('🗑️ 殘留項目已清除！');
-      });
-    };
-
-    // ----------------------------------------------------
-    // 2x5 網格編輯與圖片上傳邏輯
-    // ----------------------------------------------------
     function ensureTopicDetailLoaded(topicId) {
       if (window.globalData.lessonCache[topicId] && window.globalData.lessonCache[topicId].items) {
         return Promise.resolve(window.globalData.lessonCache[topicId]);
       }
-      var tMeta = window.globalData.topics.find(function(t) { return t.id === topicId; });
-      var url = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/lessons/' + topicId + '.json';
-      return fetch(url, { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(detail) {
-        if (tMeta) { 
-          tMeta.items = detail.items; 
-          window.globalData.lessonCache[topicId] = tMeta; 
-          return tMeta; 
-        }
-        return detail; 
+      return fetch(getTopicDataUrl(topicId), { cache: 'no-store' }).then(function(r){ 
+        if(!r.ok) throw new Error("找不到資料檔 (data.json)");
+        return r.json(); 
+      }).then(function(detail) {
+        var tMeta = window.globalData.topics.find(function(t) { return t.id === topicId; }) || { id: topicId, name: 'Unknown' };
+        tMeta.items = detail.items; 
+        window.globalData.lessonCache[topicId] = tMeta; 
+        return tMeta; 
+      }).catch(function(err){
+        showFatalError('載入課題失敗：' + err.message);
+        throw err;
       });
     }
 
-    window.uploadTopic = function() {
-      var n = 'New Topic', f = document.getElementById('new-topic-img').files[0];
-      var m = document.getElementById('ai-model-select').value, stat = document.getElementById('upload-status');
-      if (!f) return alert('請先選擇圖片');
-      stat.innerHTML = '<span class="hourglass-spin">⏳</span> AI 視覺分析處理中...';
-      document.getElementById('upload-btn').disabled = true;
+    // ----------------------------------------------------
+    // API 金鑰管理
+    // ----------------------------------------------------
+    window.openKeyModal = function() {
+      var modal = document.getElementById('key-modal'); modal.classList.remove('hidden'); modal.classList.add('flex');
+      callGasApi('getStorageAndKeysStatus', {}).then(function(res) { if (res) updateKeyModalUI(res.keysStatus); }).catch(function(err) { updateSyncBadge(false,0,'讀取金鑰失敗'); });
+    };
+    window.closeKeyModal = function() { document.getElementById('key-modal').classList.add('hidden'); document.getElementById('key-modal').classList.remove('flex'); };
+    window.toggleKeyEdit = function(type) {
+      var wrap = document.getElementById('wrap-input-' + type), btn = document.getElementById('btn-edit-' + type);
+      if (!wrap || !btn) return;
+      var isHidden = wrap.classList.toggle('hidden');
+      btn.innerText = isHidden ? '修改' : '取消';
+      btn.className = 'text-xs font-bold ' + (isHidden ? 'text-indigo-600' : 'text-slate-400') + ' hover:underline px-1 py-0.5';
+      if (!isHidden) document.getElementById(type === 'github' ? 'input-github-token' : 'input-' + type + '-key').focus();
+    };
+    function updateKeyModalUI(keysStatus) {
+      if (!keysStatus) return;
+      var setupKeyRow = function(type, isSet, inputId) {
+        var statusEl = document.getElementById('status-' + type), btnEl = document.getElementById('btn-edit-' + type), wrapEl = document.getElementById('wrap-input-' + type);
+        document.getElementById(inputId).value = '';
+        if (isSet) {
+          statusEl.innerText = '✅ 已設定'; statusEl.className = 'text-xs font-bold text-emerald-600';
+          btnEl.classList.remove('hidden'); btnEl.innerText = '修改'; btnEl.className = 'text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5';
+          wrapEl.classList.add('hidden');
+        } else {
+          statusEl.innerText = '⚠️ 未設定'; statusEl.className = 'text-xs font-bold text-amber-500';
+          btnEl.classList.add('hidden'); wrapEl.classList.remove('hidden');
+        }
+      };
+      setupKeyRow('gemini', keysStatus.gemini, 'input-gemini-key');
+      setupKeyRow('gcptts', keysStatus.gcpTts, 'input-gcptts-key');
+      setupKeyRow('github', keysStatus.github, 'input-github-token');
+    }
+    window.saveAllKeys = function() {
+      var btn = document.getElementById('save-keys-btn'); btn.disabled = true; btn.innerHTML = '⏳ 儲存中...';
+      callGasApi('saveSystemKeys', {
+        geminiKey: document.getElementById('input-gemini-key').value.trim(),
+        gcpTtsKey: document.getElementById('input-gcptts-key').value.trim(),
+        githubToken: document.getElementById('input-github-token').value.trim()
+      }).then(function(res) {
+        btn.disabled = false; btn.innerText = '💾 儲存設定'; updateKeyModalUI(res.keysStatus); loadModels(); alert('✅ 金鑰設定已成功儲存！');
+      }).catch(function(err) {
+        btn.disabled = false; btn.innerText = '💾 儲存設定'; updateSyncBadge(false,0,'儲存金鑰失敗: ' + err.message);
+      });
+    };
 
+    // ----------------------------------------------------
+    // 新增與編輯網格 (動態產生檔案物件)
+    // ----------------------------------------------------
+    window.uploadTopic = function() {
+      var f = document.getElementById('new-topic-img').files[0], m = document.getElementById('ai-model-select').value, stat = document.getElementById('upload-status');
+      if (!f) return alert('請先選擇圖片');
+      stat.innerHTML = '⏳ AI 視覺分析處理中...'; document.getElementById('upload-btn').disabled = true;
       var reader = new FileReader();
       reader.onload = function(e) {
         var img = new Image();
         img.onload = function() {
           var w = img.width, h = img.height, max = window.CONFIG.IMAGE_SETTINGS.MAX_SIZE;
-          if (w > max || h > max) { 
-            if (w > h) { h = Math.round(h * max / w); w = max; } 
-            else { w = Math.round(w * max / h); h = max; } 
-          }
-          var cvs = document.createElement('canvas'); 
-          cvs.width = w; cvs.height = h;
-          cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+          if (w > max || h > max) { if (w > h) { h = Math.round(h * max / w); w = max; } else { w = Math.round(w * max / h); h = max; } }
+          var cvs = document.createElement('canvas'); cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
           var b64 = cvs.toDataURL('image/jpeg', window.CONFIG.IMAGE_SETTINGS.QUALITY).split(',')[1];
-          
           callGasApi('analyzeImagePositions', { base64Image: b64, modelName: m }).then(function(res) {
-            document.getElementById('upload-btn').disabled = false; 
-            stat.innerText = '';
+            document.getElementById('upload-btn').disabled = false; stat.innerText = '';
             var cleanItems = res.items.map(function(it) {
               var b = it.box_2d || it.boundingBox;
-              if (b && b.length === 4) {
-                return { word: it.word || it.text || '', box_2d: [ b[0]>1?b[0]/h:b[0], b[1]>1?b[1]/w:b[1], b[2]>1?b[2]/h:b[2], b[3]>1?b[3]/w:b[3] ] };
-              }
+              if (b && b.length === 4) return { word: it.word || it.text || '', box_2d: [ b[0]>1?b[0]/h:b[0], b[1]>1?b[1]/w:b[1], b[2]>1?b[2]/h:b[2], b[3]>1?b[3]/w:b[3] ] };
               return it;
             });
-            openGridEditor(true, { name: n, items: cleanItems }, b64, img.src);
+            openGridEditor(true, { name: 'New Topic', items: cleanItems }, b64, img.src);
           }).catch(function(err) {
-            document.getElementById('upload-btn').disabled = false; 
-            stat.innerText = '❌ 錯誤: ' + err.message;
+            document.getElementById('upload-btn').disabled = false; stat.innerText = '❌ 錯誤: ' + err.message;
           });
         };
         img.src = e.target.result;
@@ -715,317 +586,182 @@
     };
 
     window.openTopicEditor = function(id) {
-      var t = window.globalData.topics.find(function(x) { return x.id === id; });
       ensureTopicDetailLoaded(id).then(function(tData) {
-        var url = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + t.imagePath;
-        openGridEditor(false, tData, null, url);
+        openGridEditor(false, tData, null, getTopicImageUrl(id));
       });
     };
 
     function openGridEditor(isNew, data, base64, imgUrl) {
-      gridEditorState.isNew = isNew; 
-      gridEditorState.topicId = data.id || ('T_' + new Date().getTime());
-      gridEditorState.items = JSON.parse(JSON.stringify(data.items || []));
-      gridEditorState.base64 = base64; 
+      gridEditorState.isNew = isNew; gridEditorState.topicId = data.id || ('T_' + new Date().getTime());
+      gridEditorState.items = JSON.parse(JSON.stringify(data.items || [])); gridEditorState.base64 = base64; 
       document.getElementById('grid-topic-name').value = data.name || '';
-      
-      var img = new Image(); 
-      img.crossOrigin = 'anonymous';
+      var img = new Image(); img.crossOrigin = 'anonymous';
       img.onload = function() {
-        gridEditorState.imgObj = img; 
-        renderGridCards();
-        document.getElementById('grid-editor-modal').classList.remove('hidden');
-        document.getElementById('grid-editor-modal').classList.add('flex');
+        gridEditorState.imgObj = img; renderGridCards();
+        document.getElementById('grid-editor-modal').classList.remove('hidden'); document.getElementById('grid-editor-modal').classList.add('flex');
       };
+      img.onerror = function() { showFatalError("載入圖片失敗: " + imgUrl); };
       img.src = imgUrl;
     }
-
-    window.closeGridEditor = function() { 
-      document.getElementById('grid-editor-modal').classList.add('hidden'); 
-      document.getElementById('grid-editor-modal').classList.remove('flex'); 
-    };
+    window.closeGridEditor = function() { document.getElementById('grid-editor-modal').classList.add('hidden'); document.getElementById('grid-editor-modal').classList.remove('flex'); };
 
     function renderGridCards() {
-      var c = document.getElementById('grid-cards-container'); 
-      c.innerHTML = '';
+      var c = document.getElementById('grid-cards-container'); c.innerHTML = '';
       gridEditorState.items.forEach(function(it, i) {
-        var card = document.createElement('div');
-        card.className = 'bg-white rounded-lg shadow border border-slate-200 p-2 flex flex-col items-center grid-card';
-        card.onclick = function() { openSingleEdit(i); };
-        
-        var can = document.createElement('canvas'); 
-        can.className = 'w-full h-20 object-contain mb-1';
+        var card = document.createElement('div'); card.className = 'bg-white rounded-lg shadow border border-slate-200 p-2 flex flex-col items-center grid-card'; card.onclick = function() { openSingleEdit(i); };
+        var can = document.createElement('canvas'); can.className = 'w-full h-20 object-contain mb-1';
         var b = it.box_2d, img = gridEditorState.imgObj;
         if (b && b.length === 4) {
           var sw = (b[3] - b[1]) * img.width, sh = (b[2] - b[0]) * img.height;
-          can.width = sw; can.height = sh; 
-          can.getContext('2d').drawImage(img, b[1] * img.width, b[0] * img.height, sw, sh, 0, 0, sw, sh);
+          can.width = sw; can.height = sh; can.getContext('2d').drawImage(img, b[1] * img.width, b[0] * img.height, sw, sh, 0, 0, sw, sh);
         }
-        var txt = document.createElement('div'); 
-        txt.className = 'font-bold text-slate-800 text-sm truncate w-full text-center'; 
-        txt.innerText = it.word || '?';
-        
-        card.appendChild(can); 
-        card.appendChild(txt); 
-        c.appendChild(card);
+        var txt = document.createElement('div'); txt.className = 'font-bold text-slate-800 text-sm truncate w-full text-center'; txt.innerText = it.word || '?';
+        card.appendChild(can); card.appendChild(txt); c.appendChild(card);
       });
     }
 
     function openSingleEdit(idx) {
-      activeEditIdx = idx; 
-      var it = gridEditorState.items[idx], b = it.box_2d, img = gridEditorState.imgObj;
+      activeEditIdx = idx; var it = gridEditorState.items[idx], b = it.box_2d, img = gridEditorState.imgObj;
       var can = document.getElementById('single-edit-canvas');
-      var sw = (b[3] - b[1]) * img.width, sh = (b[2] - b[0]) * img.height;
-      can.width = sw; can.height = sh; 
+      var sw = (b[3] - b[1]) * img.width, sh = (b[2] - b[0]) * img.height; can.width = sw; can.height = sh; 
       can.getContext('2d').drawImage(img, b[1] * img.width, b[0] * img.height, sw, sh, 0, 0, sw, sh);
-      
-      document.getElementById('single-edit-idx').innerText = (idx + 1) + '/10';
-      document.getElementById('single-edit-input').value = it.word;
-      document.getElementById('single-edit-modal').classList.remove('hidden'); 
-      document.getElementById('single-edit-modal').classList.add('flex');
-      setTimeout(function(){ document.getElementById('single-edit-input').focus(); }, 100);
+      document.getElementById('single-edit-idx').innerText = (idx + 1) + '/10'; document.getElementById('single-edit-input').value = it.word;
+      document.getElementById('single-edit-modal').classList.remove('hidden'); document.getElementById('single-edit-modal').classList.add('flex');
     }
-    
     window.confirmSingleEdit = function() {
       gridEditorState.items[activeEditIdx].word = document.getElementById('single-edit-input').value.trim();
-      document.getElementById('single-edit-modal').classList.add('hidden'); 
-      document.getElementById('single-edit-modal').classList.remove('flex');
-      renderGridCards();
+      document.getElementById('single-edit-modal').classList.add('hidden'); document.getElementById('single-edit-modal').classList.remove('flex'); renderGridCards();
     };
 
     window.saveGridEditor = function() {
       var tName = document.getElementById('grid-topic-name').value.trim() || 'Untitled';
       var id = gridEditorState.topicId;
-      var meta = { id: id, name: tName, date: window.getFormattedTime(), imagePath: 'images/' + id + '.jpg' };
+      var meta = { id: id, name: tName, date: window.getFormattedTime() };
       
       if (gridEditorState.isNew) window.globalData.topics.unshift(meta);
-      else { 
-        var idx = window.globalData.topics.findIndex(function(x){ return x.id === id; }); 
-        if (idx !== -1) window.globalData.topics[idx] = meta; 
-      }
-      meta.items = gridEditorState.items; 
-      window.globalData.lessonCache[id] = meta;
-      window.refreshUI(); 
-      window.closeGridEditor();
+      else { var idx = window.globalData.topics.findIndex(function(x){ return x.id === id; }); if (idx !== -1) window.globalData.topics[idx] = meta; }
+      window.globalData.lessonCache[id] = Object.assign({}, meta, { items: gridEditorState.items });
+      window.refreshUI(); window.closeGridEditor();
 
-      syncEngine.initialPayload = { meta: meta, items: meta.items, imgBase64: gridEditorState.isNew ? gridEditorState.base64 : null };
-      
-      var words = meta.items.map(function(x){ return x.word; });
+      // 建構純粹的文件樹
+      var filesToCommit = [];
+      filesToCommit.push({ path: 'lessons_index.json', content: JSON.stringify(window.globalData.topics, null, 2) });
+      filesToCommit.push({ path: getTopicBase(id) + '/data.json', content: JSON.stringify({ items: gridEditorState.items }, null, 2) });
+      if (gridEditorState.isNew && gridEditorState.base64) {
+        filesToCommit.push({ path: getTopicBase(id) + '/image.jpg', base64: gridEditorState.base64 });
+      }
+
+      syncEngine.initialPayload = { files: filesToCommit };
+      var words = gridEditorState.items.map(function(x){ return x.word; });
       window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
         var pts = vConfig.split(',');
-        words.forEach(function(w) { 
-          syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1], engine: pts[2] }); 
-        });
+        words.forEach(function(w) { syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1], engine: pts[2] }); });
       });
-      syncEngine.totalInQueue = syncEngine.queue.length; 
-      startSyncEngine();
+      syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
     };
 
     // ----------------------------------------------------
-    // 🎧 音檔路徑規範、檢查與下載引擎
+    // 下載與同步引擎
     // ----------------------------------------------------
-    function getAudioPath(topicId, voiceName, word) {
-      var hash = md5(word.toLowerCase() + '_' + voiceName);
-      var safeWord = word.replace(/[^a-zA-Z0-9]/g, "").substring(0, 20);
-      return 'cache/' + topicId + '/' + voiceName + '/' + safeWord + '_' + hash + '.mp3';
-    }
-
-    function getAudioRawUrl(topicId, voiceName, word) {
-      var ref = window.globalData.commitSha || window.CONFIG.GITHUB_BRANCH || 'main';
-      return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + ref + '/' + getAudioPath(topicId, voiceName, word);
-    }
-
     function startSyncEngine() {
       if (syncEngine.active) return; 
-      syncEngine.active = true;
-      updateSyncBadge(false, 0, '待下載後同步...'); 
-      document.getElementById('download-controller').style.display = 'flex';
-      processSyncQueue();
+      syncEngine.active = true; updateSyncBadge(false, 0, '待下載後同步...'); document.getElementById('download-controller').style.display = 'flex'; processSyncQueue();
     }
 
     function processSyncQueue() {
-      document.getElementById('dl-detail-text').innerText = '雲端生成中 (' + (syncEngine.totalInQueue - syncEngine.queue.length) + '/' + syncEngine.totalInQueue + ')';
+      document.getElementById('dl-detail-text').innerText = '生成中 (' + (syncEngine.totalInQueue - syncEngine.queue.length) + '/' + syncEngine.totalInQueue + ')';
       if (syncEngine.queue.length === 0 || syncEngine.commitBatch.length >= 10) {
-        if (syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) {
-          flushCommitBatch();
-        } else { 
-          syncEngine.active = false; 
-          syncEngine.totalInQueue = 0; 
-          document.getElementById('download-controller').style.display = 'none'; 
-          updateSyncBadge(false, 0); 
-        }
+        if (syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) flushCommitBatch();
+        else { syncEngine.active = false; syncEngine.totalInQueue = 0; document.getElementById('download-controller').style.display = 'none'; updateSyncBadge(false, 0); }
         return;
       }
-      
       var task = syncEngine.queue.shift();
       callGasApi('fetchTtsAudio', task).then(function(res) {
         if (res.base64) {
-          var path = getAudioPath(task.topicId, task.voiceName, task.word);
-          syncEngine.commitBatch.push({ path: path, base64: res.base64 });
-          if (!audioState[task.voiceName]) audioState[task.voiceName] = {};
-          audioState[task.voiceName][task.word] = { status: 'ready', base64: res.base64 };
+          syncEngine.commitBatch.push({ path: getAudioPath(task.topicId, task.voiceName, task.word), base64: res.base64 });
+          if (!audioState[task.voiceName]) audioState[task.voiceName] = {}; audioState[task.voiceName][task.word] = { base64: res.base64 };
         }
-      }).catch(function(err) {
-        updateSyncBadge(false, 0, '⚠️ 下載失敗 (' + task.word + ')');
-      }).finally(function() { 
-        processSyncQueue(); 
-      });
+      }).catch(function() { updateSyncBadge(false, 0, '下載失敗: ' + task.word); }).finally(processSyncQueue);
     }
 
     function flushCommitBatch() {
       updateSyncBadge(true, 0, '自動同步...');
-      var payload = { commitSha: window.globalData.commitSha, initial: syncEngine.initialPayload, files: syncEngine.commitBatch.slice() };
-      syncEngine.initialPayload = null; 
-      syncEngine.commitBatch = [];
-      callGasApi('commitToGitHub', payload).then(function(res) {
-        window.globalData.commitSha = res.commitSha; 
-        localStorage.setItem('latestCommitSha', res.commitSha);
-        updateSyncBadge(false, 0, '待下載後同步...'); 
-        processSyncQueue(); 
-      }).catch(function(err) {
-        updateSyncBadge(false, 0, '⚠️ 同步失敗'); 
-        syncEngine.active = false;
-      });
+      var payloadFiles = (syncEngine.initialPayload ? syncEngine.initialPayload.files : []).concat(syncEngine.commitBatch);
+      syncEngine.initialPayload = null; syncEngine.commitBatch = [];
+      callGasApi('commitToGitHub', { commitSha: window.globalData.commitSha, files: payloadFiles }).then(function(res) {
+        window.globalData.commitSha = res.commitSha; localStorage.setItem('latestCommitSha', res.commitSha);
+        updateSyncBadge(false, 0, '待下載後同步...'); processSyncQueue();
+      }).catch(function(err) { updateSyncBadge(false, 0, '同步錯誤: ' + err.message); syncEngine.active = false; });
     }
 
+    // ----------------------------------------------------
+    // 音檔檢查與自癒 (嚴格 GET)
+    // ----------------------------------------------------
     window.openAudioInspectModal = function(topicId) {
-      currentInspectingTopicId = topicId;
-      currentMissingAudioTasks = [];
+      currentInspectingTopicId = topicId; currentMissingAudioTasks = [];
       var modal = document.getElementById('audio-inspect-modal');
       var tMeta = window.globalData.topics.find(function(x) { return x.id === topicId; });
       document.getElementById('inspect-topic-title').innerText = tMeta ? tMeta.name : topicId;
-      document.getElementById('inspect-content-list').innerHTML = '<div class="text-center text-slate-400 py-6"><span class="hourglass-spin">⏳</span> 檢查 GitHub 檔案中...</div>';
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
+      document.getElementById('inspect-content-list').innerHTML = '<div class="text-center text-slate-400 py-6">⏳ 檢查 GitHub 檔案中...</div>';
+      modal.classList.remove('hidden'); modal.classList.add('flex');
 
       ensureTopicDetailLoaded(topicId).then(function(tData) {
-        var items = tData.items || [];
-        var voiceModels = window.CONFIG.VOICE_MODELS;
-        var checkPromises = [];
-
+        var items = tData.items || [], voiceModels = window.CONFIG.VOICE_MODELS, checkPromises = [];
         voiceModels.forEach(function(vConfig) {
-          var pts = vConfig.split(',');
-          var vName = pts[0], langCode = pts[1], engine = pts[2];
-
+          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1], engine = pts[2];
           items.forEach(function(it) {
             var url = getAudioRawUrl(topicId, vName, it.word);
             var p = fetch(url, { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' })
-              .then(function(r) { 
-                return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: (r.ok || r.status === 206) }; 
-              })
-              .catch(function() { 
-                return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: false }; 
-              });
+              .then(function(r) { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: (r.ok || r.status === 206), activeUrl: url }; })
+              .catch(function() { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: false, activeUrl: url }; });
             checkPromises.push(p);
           });
         });
-
-        return Promise.all(checkPromises).then(function(results) {
-          renderAudioInspectResults(results, items);
-        });
-      }).catch(function(err) {
-        document.getElementById('inspect-content-list').innerHTML = '<div class="text-center text-red-500 py-4">檢查失敗: ' + err.message + '</div>';
-      });
+        return Promise.all(checkPromises).then(function(results) { renderAudioInspectResults(results, items); });
+      }).catch(function(err) { document.getElementById('inspect-content-list').innerHTML = '<div class="text-center text-red-500 py-4">檢查失敗: ' + err.message + '</div>'; });
     };
 
     function renderAudioInspectResults(results, items) {
-      var container = document.getElementById('inspect-content-list');
-      container.innerHTML = '';
-      currentMissingAudioTasks = [];
-
+      var container = document.getElementById('inspect-content-list'); container.innerHTML = ''; currentMissingAudioTasks = [];
       var grouped = {};
       results.forEach(function(r) {
-        if (!grouped[r.voiceName]) grouped[r.voiceName] = [];
-        grouped[r.voiceName].push(r);
-        if (!r.ok) {
-          currentMissingAudioTasks.push({ topicId: currentInspectingTopicId, word: r.word, voiceName: r.voiceName, langCode: r.langCode, engine: r.engine });
-        }
+        if (!grouped[r.voiceName]) grouped[r.voiceName] = []; grouped[r.voiceName].push(r);
+        if (!r.ok) currentMissingAudioTasks.push({ topicId: currentInspectingTopicId, word: r.word, voiceName: r.voiceName, langCode: r.langCode, engine: r.engine });
       });
-
       for (var vName in grouped) {
-        var list = grouped[vName];
-        var readyCount = list.filter(function(x) { return x.ok; }).length;
-        var isAllReady = (readyCount === list.length);
-
-        var card = document.createElement('div');
-        card.className = 'p-2.5 rounded-xl border ' + (isAllReady ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/40');
-
-        var header = '<div class="flex justify-between items-center font-bold mb-1.5">' +
-          '<span class="text-slate-700 truncate max-w-[190px]">' + vName + '</span>' +
-          '<span class="' + (isAllReady ? 'text-emerald-600' : 'text-amber-600') + '">' + readyCount + '/' + list.length + ' ' + (isAllReady ? '✅' : '⚠️') + '</span>' +
-        '</div>';
-
+        var list = grouped[vName], readyCount = list.filter(function(x) { return x.ok; }).length, isAllReady = (readyCount === list.length);
+        var card = document.createElement('div'); card.className = 'p-2.5 rounded-xl border ' + (isAllReady ? 'border-emerald-200 bg-emerald-50/40' : 'border-amber-200 bg-amber-50/40');
+        var header = '<div class="flex justify-between items-center font-bold mb-1.5"><span class="text-slate-700 truncate max-w-[190px]">' + vName + '</span><span class="' + (isAllReady ? 'text-emerald-600' : 'text-amber-600') + '">' + readyCount + '/' + list.length + ' ' + (isAllReady ? '✅' : '⚠️') + '</span></div>';
         var wordsGrid = '<div class="grid grid-cols-2 gap-1 mt-1">';
         list.forEach(function(item) {
-          var audioUrl = getAudioRawUrl(currentInspectingTopicId, item.voiceName, item.word);
-          wordsGrid += '<div class="flex justify-between items-center bg-white px-2 py-1 rounded border border-slate-200 text-[11px]">' +
-            '<span class="truncate ' + (item.ok ? 'text-slate-700 font-bold' : 'text-red-400') + '">' + item.word + '</span>' +
-            (item.ok 
-              ? '<button onclick="window.playAudioDirect(\'' + audioUrl + '\')" class="text-indigo-600 font-bold px-1 active:scale-125">▶️</button>' 
-              : '<span class="text-red-400 font-bold">缺</span>') +
-          '</div>';
+          wordsGrid += '<div class="flex justify-between items-center bg-white px-2 py-1 rounded border border-slate-200 text-[11px]"><span class="truncate ' + (item.ok ? 'text-slate-700 font-bold' : 'text-red-400') + '">' + item.word + '</span>' +
+            (item.ok ? '<button onclick="window.playAudioDirect(\'' + item.activeUrl + '\')" class="text-indigo-600 font-bold px-1">▶️</button>' : '<span class="text-red-400 font-bold">缺</span>') + '</div>';
         });
-        wordsGrid += '</div>';
-
-        card.innerHTML = header + wordsGrid;
-        container.appendChild(card);
+        card.innerHTML = header + wordsGrid + '</div>'; container.appendChild(card);
       }
-
       var badge = document.getElementById('badge-voice-' + currentInspectingTopicId);
-      if (badge) {
-        badge.innerText = currentMissingAudioTasks.length === 0 ? '✅ 音檔齊全' : '⚠️ 缺 ' + currentMissingAudioTasks.length + ' 個音檔';
-        badge.className = 'text-[11px] font-bold ' + (currentMissingAudioTasks.length === 0 ? 'text-emerald-600' : 'text-amber-600');
-      }
+      if (badge) { badge.innerText = currentMissingAudioTasks.length === 0 ? '✅ 音檔齊全' : '⚠️ 缺 ' + currentMissingAudioTasks.length + ' 個'; badge.className = 'text-[11px] font-bold ' + (currentMissingAudioTasks.length === 0 ? 'text-emerald-600' : 'text-amber-600'); }
     }
-
-    window.closeAudioInspectModal = function() {
-      document.getElementById('audio-inspect-modal').classList.add('hidden');
-      document.getElementById('audio-inspect-modal').classList.remove('flex');
-    };
-
-    window.playAudioDirect = function(url) {
-      if (currentAudioPlayer) currentAudioPlayer.pause();
-      currentAudioPlayer = new Audio(url);
-      currentAudioPlayer.play().catch(function() { alert('播放失敗: 音檔無法存取'); });
-    };
-
+    window.closeAudioInspectModal = function() { document.getElementById('audio-inspect-modal').classList.add('hidden'); document.getElementById('audio-inspect-modal').classList.remove('flex'); };
+    window.playAudioDirect = function(url) { if (currentAudioPlayer) currentAudioPlayer.pause(); currentAudioPlayer = new Audio(url); currentAudioPlayer.play().catch(function(){ showFatalError('音檔無法播放'); }); };
+    
     window.healMissingAudio = function() {
-      if (currentMissingAudioTasks.length === 0) {
-        alert('所有音檔已全部齊全，無需補齊！');
-        return;
-      }
+      if (currentMissingAudioTasks.length === 0) return alert('無需補齊！');
       currentMissingAudioTasks.forEach(function(t) { syncEngine.queue.push(t); });
-      syncEngine.totalInQueue = syncEngine.queue.length;
-      startSyncEngine();
-      window.closeAudioInspectModal();
-      alert('已將 ' + currentMissingAudioTasks.length + ' 個缺少音檔排入自動下載佇列！');
+      syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine(); window.closeAudioInspectModal(); alert('已將 ' + currentMissingAudioTasks.length + ' 個缺檔排入下載佇列！');
     };
 
-    // 測驗切換課題時：自動檢查並背景自癒
     window.onTopicSelectChange = function() {
-      var tId = document.getElementById('topic-select').value;
-      if (!tId) return;
-
+      var tId = document.getElementById('topic-select').value; if (!tId) return;
       ensureTopicDetailLoaded(tId).then(function(tData) {
         var items = tData.items || [];
-        var voiceModels = window.CONFIG.VOICE_MODELS;
-
-        voiceModels.forEach(function(vConfig) {
-          var pts = vConfig.split(',');
-          var vName = pts[0], langCode = pts[1], engine = pts[2];
-
+        window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
+          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1], engine = pts[2];
           items.forEach(function(it) {
-            var url = getAudioRawUrl(tId, vName, it.word);
-            fetch(url, { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' }).then(function(r) {
-              if (!r.ok && r.status !== 206) {
-                syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine });
-                syncEngine.totalInQueue = syncEngine.queue.length;
-                startSyncEngine();
-              }
+            fetch(getAudioRawUrl(tId, vName, it.word), { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' }).then(function(r) {
+              if (!r.ok && r.status !== 206) { syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine(); }
             }).catch(function() {
-              syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine });
-              syncEngine.totalInQueue = syncEngine.queue.length;
-              startSyncEngine();
+              syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
             });
           });
         });
@@ -1033,238 +769,118 @@
     };
 
     // ----------------------------------------------------
-    // 測驗與播放邏輯
+    // 測驗與播放邏輯 (四選一嚴格排版)
     // ----------------------------------------------------
-    window.changeImageHeight = function(delta) {
-      quizImgHeight = Math.max(144, Math.min(480, quizImgHeight + delta));
-      localStorage.setItem('quizImgHeight', quizImgHeight);
-      var cvs = document.getElementById('word-canvas'); 
-      if (cvs) cvs.style.height = quizImgHeight + 'px';
-    };
-
+    window.changeImageHeight = function(delta) { quizImgHeight = Math.max(144, Math.min(480, quizImgHeight + delta)); localStorage.setItem('quizImgHeight', quizImgHeight); var cvs = document.getElementById('word-canvas'); if (cvs) cvs.style.height = quizImgHeight + 'px'; };
     window.startQuiz = function() {
-      var s = document.getElementById('topic-select'); 
-      if (!s.value) return alert('請選擇課題');
-      currentTopicId = s.value; 
-      currentTopicName = s.options[s.selectedIndex].text;
+      var s = document.getElementById('topic-select'); if (!s.value) return alert('請選擇課題');
+      currentTopicId = s.value; currentTopicName = s.options[s.selectedIndex].text;
       document.getElementsByName('quizMode').forEach(function(r) { if (r.checked) currentQuizMode = r.value; });
-      var btn = document.getElementById('start-quiz-btn'); 
-      btn.disabled = true; 
-      btn.innerHTML = '<span class="hourglass-spin">⏳</span> 載入中...';
+      var btn = document.getElementById('start-quiz-btn'); btn.disabled = true; btn.innerHTML = '⏳ 載入中...';
 
       ensureTopicDetailLoaded(currentTopicId).then(function(tData) {
         var qArray = (tData.items || []).slice();
-        for (var i = qArray.length - 1; i > 0; i--) { 
-          var j = Math.floor(Math.random() * (i + 1)); 
-          var tmp = qArray[i]; qArray[i] = qArray[j]; qArray[j] = tmp; 
-        }
-        currentQuestions = qArray; 
-        currentIndex = 0; 
-        currentScore = 0; 
-        mistakes = []; 
-        currentTypedAnswer = '';
-
-        var img = new Image(); 
-        img.crossOrigin = 'anonymous';
+        for (var i = qArray.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var tmp = qArray[i]; qArray[i] = qArray[j]; qArray[j] = tmp; }
+        currentQuestions = qArray; currentIndex = 0; currentScore = 0; mistakes = []; currentTypedAnswer = '';
+        var img = new Image(); img.crossOrigin = 'anonymous';
         img.onload = function() {
-          btn.disabled = false; 
-          btn.innerHTML = '▶️ 開始測驗'; 
-          gridEditorState.imgObj = img;
-          document.getElementById('quiz-setup').classList.add('hidden'); 
-          document.getElementById('quiz-active').classList.remove('hidden'); 
-          document.getElementById('main-nav').classList.add('hidden');
-          document.getElementById('view-mode-ui').classList.toggle('hidden', currentQuizMode !== 'view');
-          document.getElementById('type-mode-ui').classList.toggle('hidden', currentQuizMode !== 'type');
-          document.getElementById('mc-mode-ui').classList.toggle('hidden', currentQuizMode !== 'mc');
-          document.getElementById('score-container').classList.toggle('hidden', currentQuizMode === 'view' || currentQuizMode === 'mc');
+          btn.disabled = false; btn.innerHTML = '▶️ 開始測驗'; gridEditorState.imgObj = img;
+          document.getElementById('quiz-setup').classList.add('hidden'); document.getElementById('quiz-active').classList.remove('hidden'); document.getElementById('main-nav').classList.add('hidden');
+          document.getElementById('view-mode-ui').classList.toggle('hidden', currentQuizMode !== 'view'); document.getElementById('type-mode-ui').classList.toggle('hidden', currentQuizMode !== 'type'); document.getElementById('mc-mode-ui').classList.toggle('hidden', currentQuizMode !== 'mc'); document.getElementById('score-container').classList.toggle('hidden', currentQuizMode === 'view' || currentQuizMode === 'mc');
           document.getElementById('word-canvas').style.height = quizImgHeight + 'px';
           window.renderCurrentQuestion();
         };
-        var tMeta = window.globalData.topics.find(function(t){ return t.id === currentTopicId; }) || tData;
-        img.src = 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + tMeta.imagePath;
+        img.onerror = function() { btn.disabled = false; btn.innerHTML = '▶️ 開始測驗'; showFatalError("無法讀取測驗圖片"); };
+        img.src = getTopicImageUrl(currentTopicId);
       });
     };
 
     window.renderCurrentQuestion = function() {
-      if (currentIndex >= currentQuestions.length) { 
-        window.finishQuiz(); 
-        return; 
-      }
-      document.getElementById('q-progress').innerText = (currentIndex + 1) + '/' + currentQuestions.length;
-      document.getElementById('q-score').innerText = currentScore;
-      
-      var q = currentQuestions[currentIndex], cvs = document.getElementById('word-canvas'), ctx = cvs.getContext('2d');
-      ctx.clearRect(0, 0, cvs.width, cvs.height);
+      if (currentIndex >= currentQuestions.length) return window.finishQuiz();
+      document.getElementById('q-progress').innerText = (currentIndex + 1) + '/' + currentQuestions.length; document.getElementById('q-score').innerText = currentScore;
+      var q = currentQuestions[currentIndex], cvs = document.getElementById('word-canvas'), ctx = cvs.getContext('2d'); ctx.clearRect(0, 0, cvs.width, cvs.height);
       var b = q.box_2d, img = gridEditorState.imgObj;
       if (b && b.length === 4 && img) {
-        var sx = b[1] > 1 ? b[1] : b[1] * img.width, sy = b[0] > 1 ? b[0] : b[0] * img.height, ex = b[3] > 1 ? b[3] : b[3] * img.width, ey = b[2] > 1 ? b[2] : b[2] * img.height;
-        var sw = ex - sx, sh = ey - sy;
-        cvs.width = sw; cvs.height = sh; 
-        ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+        var sx = b[1] > 1 ? b[1] : b[1] * img.width, sy = b[0] > 1 ? b[0] : b[0] * img.height, ex = b[3] > 1 ? b[3] : b[3] * img.width, ey = b[2] > 1 ? b[2] : b[2] * img.height, sw = ex - sx, sh = ey - sy;
+        cvs.width = sw; cvs.height = sh; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
       }
       
-      if (currentQuizMode === 'type') { 
-        currentTypedAnswer = ''; 
-        document.getElementById('fake-answer-input').innerText = ''; 
-      } else if (currentQuizMode === 'mc') {
-        var correct = q.word;
-        var pool = currentQuestions.map(function(item){ return item.word; }).filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); });
-        pool.sort(function(){ return Math.random() - 0.5; });
+      if (currentQuizMode === 'type') { currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; } 
+      else if (currentQuizMode === 'mc') {
+        var correct = q.word, pool = currentQuestions.map(function(item){ return item.word; }).filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); }); pool.sort(function(){ return Math.random() - 0.5; });
         var rawChoices = [correct, pool[0]||'A', pool[1]||'B', pool[2]||'C'].sort(function(){ return Math.random() - 0.5; });
-        
-        var longWordThreshold = 9;
-        var longWords = [];
-        var shortWords = [];
-        
-        rawChoices.forEach(function(w) {
-          if ((w || '').length > longWordThreshold) {
-            longWords.push(w);
-          } else {
-            shortWords.push(w);
-          }
-        });
+        var longWords = [], shortWords = [];
+        rawChoices.forEach(function(w) { if ((w || '').length > 9) longWords.push(w); else shortWords.push(w); });
 
-        var layoutOrder = [];
-        var colSpanMap = [];
-
+        var layoutOrder = [], colSpanMap = [];
         if (longWords.length >= 3) {
-          // 規則 3: 3~4 個字太長 -> 全部 4 個全排 (共 4 行)
-          layoutOrder = rawChoices;
-          colSpanMap = ['col-span-2', 'col-span-2', 'col-span-2', 'col-span-2'];
+          layoutOrder = rawChoices; colSpanMap = ['col-span-2', 'col-span-2', 'col-span-2', 'col-span-2'];
         } else if (longWords.length >= 1) {
-          // 規則 2: 1~2 個字太長 -> 全排、全排、左右 (共 3 行)
-          var row1 = longWords[0];
-          var row2 = longWords[1] || shortWords.shift();
-          var remainingShort = shortWords;
-
+          var row1 = longWords[0], row2 = longWords[1] || shortWords.shift(), remainingShort = shortWords;
           if (Math.random() > 0.5) remainingShort.reverse();
-
-          layoutOrder = [row1, row2, remainingShort[0], remainingShort[1]];
-          colSpanMap = ['col-span-2', 'col-span-2', 'col-span-1', 'col-span-1'];
+          layoutOrder = [row1, row2, remainingShort[0], remainingShort[1]]; colSpanMap = ['col-span-2', 'col-span-2', 'col-span-1', 'col-span-1'];
         } else {
-          // 規則 1: 0 個字太長 -> 左右、左右 (2x2，共 2 行)
-          layoutOrder = rawChoices;
-          colSpanMap = ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'];
+          layoutOrder = rawChoices; colSpanMap = ['col-span-1', 'col-span-1', 'col-span-1', 'col-span-1'];
         }
-
         currentMcChoices = layoutOrder;
         var btns = document.querySelectorAll('.mc-btn');
         btns.forEach(function(btn, i) {
-          var word = layoutOrder[i] || '';
-          btn.innerText = word;
-          btn.className = 'mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center transition-all ' + colSpanMap[i];
-          btn.onclick = function() { window.checkMcAnswer(i); };
+          btn.innerText = layoutOrder[i] || ''; btn.className = 'mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center transition-all ' + colSpanMap[i]; btn.onclick = function() { window.checkMcAnswer(i); };
         });
       }
       setTimeout(window.playCurrentQuizWord, 250);
     };
 
     window.playCurrentQuizWord = function() {
-      var q = currentQuestions[currentIndex];
-      if (!q) return;
-      var w = q.word;
-      var vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(',');
-      var vName = vCfg[0], langCode = vCfg[1], engine = vCfg[2];
-
-      if (currentAudioPlayer) currentAudioPlayer.pause();
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-
-      // 1. 本地暫存優先
+      var q = currentQuestions[currentIndex]; if (!q) return; var w = q.word, vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(','), vName = vCfg[0], langCode = vCfg[1], engine = vCfg[2];
+      if (currentAudioPlayer) currentAudioPlayer.pause(); if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (audioState[vName] && audioState[vName][w] && audioState[vName][w].base64) {
-        currentAudioPlayer = new Audio('data:audio/mp3;base64,' + audioState[vName][w].base64);
-        currentAudioPlayer.play();
-        return;
+        currentAudioPlayer = new Audio('data:audio/mp3;base64,' + audioState[vName][w].base64); currentAudioPlayer.play(); return;
       }
-
-      // 2. 直連 GitHub Raw 播放
-      var rawUrl = getAudioRawUrl(currentTopicId, vName, w);
-      var testAudio = new Audio(rawUrl);
-      testAudio.play().then(function() {
-        currentAudioPlayer = testAudio;
-      }).catch(function() {
-        // 3. GitHub 亦未下載：使用 Web Speech API 頂替，並自動排入背景下載修復
-        if (window.speechSynthesis) {
-          var u = new SpeechSynthesisUtterance(w);
-          u.lang = langCode;
-          window.speechSynthesis.speak(u);
-        }
-        syncEngine.queue.push({ topicId: currentTopicId, word: w, voiceName: vName, langCode: langCode, engine: engine });
-        syncEngine.totalInQueue = syncEngine.queue.length;
-        startSyncEngine();
+      var testAudio = new Audio(getAudioRawUrl(currentTopicId, vName, w));
+      testAudio.play().then(function() { currentAudioPlayer = testAudio; }).catch(function() {
+        if (window.speechSynthesis) { var u = new SpeechSynthesisUtterance(w); u.lang = langCode; window.speechSynthesis.speak(u); }
+        syncEngine.queue.push({ topicId: currentTopicId, word: w, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
       });
     };
 
     window.checkMcAnswer = function(idx) {
       var btns = document.querySelectorAll('.mc-btn');
       if (currentMcChoices[idx].toLowerCase() === currentQuestions[currentIndex].word.toLowerCase()) {
-        btns[idx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800');
-        setTimeout(function() { currentIndex++; window.renderCurrentQuestion(); }, 550);
-      } else {
-        btns[idx].classList.add('bg-red-100', 'border-red-500', 'text-red-800'); 
-        window.playCurrentQuizWord();
-      }
+        btns[idx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800'); setTimeout(function() { currentIndex++; window.renderCurrentQuestion(); }, 550);
+      } else { btns[idx].classList.add('bg-red-100', 'border-red-500', 'text-red-800'); window.playCurrentQuizWord(); }
     };
-
     window.handleVK = function(k) {
       if (currentQuizMode !== 'type') return;
-      if (k === 'DEL') currentTypedAnswer = currentTypedAnswer.slice(0, -1);
-      else if (k === 'ENTER') window.submitAnswer(); 
-      else currentTypedAnswer += k.toLowerCase();
+      if (k === 'DEL') currentTypedAnswer = currentTypedAnswer.slice(0, -1); else if (k === 'ENTER') window.submitAnswer(); else currentTypedAnswer += k.toLowerCase();
       document.getElementById('fake-answer-input').innerText = currentTypedAnswer.toLowerCase();
     };
-    
     window.submitAnswer = function() {
       var ans = currentTypedAnswer.trim().toLowerCase(), cor = currentQuestions[currentIndex].word.trim().toLowerCase();
       if (!ans) return;
-      if (ans === cor) currentScore++; 
-      else { 
-        mistakes.push(currentQuestions[currentIndex].word); 
-        alert('答錯！正確為: ' + currentQuestions[currentIndex].word); 
-      }
-      currentIndex++; 
-      window.renderCurrentQuestion();
+      if (ans === cor) currentScore++; else { mistakes.push(currentQuestions[currentIndex].word); alert('答錯！正確為: ' + currentQuestions[currentIndex].word); }
+      currentIndex++; window.renderCurrentQuestion();
     };
-
     window.cancelQuiz = function() {
-      if (!confirm('確定要結束測驗嗎？(進度將不儲存)')) return;
-      if (currentAudioPlayer) currentAudioPlayer.pause(); 
-      if (window.speechSynthesis) window.speechSynthesis.cancel();
-      document.getElementById('quiz-active').classList.add('hidden'); 
-      document.getElementById('quiz-setup').classList.remove('hidden'); 
-      document.getElementById('main-nav').classList.remove('hidden');
+      if (!confirm('結束測驗？')) return;
+      if (currentAudioPlayer) currentAudioPlayer.pause(); if (window.speechSynthesis) window.speechSynthesis.cancel();
+      document.getElementById('quiz-active').classList.add('hidden'); document.getElementById('quiz-setup').classList.remove('hidden'); document.getElementById('main-nav').classList.remove('hidden');
     };
-
     window.finishQuiz = function() {
-      document.getElementById('quiz-active').classList.add('hidden'); 
-      document.getElementById('quiz-setup').classList.remove('hidden'); 
-      document.getElementById('main-nav').classList.remove('hidden');
-      if (currentQuizMode === 'mc') { 
-        alert('溫習完成！此模式不紀錄成績。'); 
-        return; 
-      }
-      
-      var scoreStr = currentQuizMode === 'view' ? '手寫模式' : (currentScore + '/' + currentQuestions.length + '(打字)');
-      var detailsStr = currentQuizMode === 'view' ? '順序: ' + currentQuestions.map(function(q,i){ return (i+1) + '.' + q.word; }).join(', ') : (mistakes.length > 0 ? '錯誤: ' + mistakes.join(', ') : '全對');
-      alert(currentQuizMode === 'view' ? '測驗結束！請至「學習歷程」查看順序。' : '測驗完成！\n得分: ' + currentScore);
-
+      document.getElementById('quiz-active').classList.add('hidden'); document.getElementById('quiz-setup').classList.remove('hidden'); document.getElementById('main-nav').classList.remove('hidden');
+      if (currentQuizMode === 'mc') return alert('溫習完成！');
+      var scoreStr = currentQuizMode === 'view' ? '手寫' : (currentScore + '/' + currentQuestions.length + '(打字)'), detailsStr = currentQuizMode === 'view' ? '順序: ' + currentQuestions.map(function(q,i){ return (i+1) + '.' + q.word; }).join(', ') : (mistakes.length > 0 ? '錯誤: ' + mistakes.join(', ') : '全對');
+      alert(currentQuizMode === 'view' ? '測驗結束！' : '得分: ' + currentScore);
       updateSyncBadge(true, 0, '儲存紀錄...');
+      var payloadFiles = [{ path: 'records.json', content: '' }]; // 標記用，讓 Code.gs 知道要更新 records
       callGasApi('recordQuizResult', { topicId: currentTopicId, topicName: currentTopicName, score: scoreStr, details: detailsStr, commitSha: window.globalData.commitSha })
       .then(function(res) {
         if (res.newRecord) window.globalData.records.unshift(res.newRecord);
-        if (res.commitSha) { 
-          window.globalData.commitSha = res.commitSha; 
-          localStorage.setItem('latestCommitSha', res.commitSha); 
-        }
-        window.refreshUI(); 
-        updateSyncBadge(false, 0);
-      }).catch(function() { 
-        updateSyncBadge(false, 0, '⚠️ 儲存紀錄失敗'); 
-      });
+        if (res.commitSha) { window.globalData.commitSha = res.commitSha; localStorage.setItem('latestCommitSha', res.commitSha); }
+        window.refreshUI(); updateSyncBadge(false, 0);
+      }).catch(function(err) { updateSyncBadge(false, 0, '儲存錯誤: ' + err.message); });
     };
 
-    // ----------------------------------------------------
-    // UI 控制與歷程清單渲染
-    // ----------------------------------------------------
     window.switchTab = function(tName) {
       ['quiz', 'topics', 'analytics'].forEach(function(n) { document.getElementById('tab-' + n).classList.add('hidden'); });
       document.getElementById('tab-' + tName).classList.remove('hidden');
@@ -1273,55 +889,24 @@
         if (b.id === 'nav-' + tName) b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-amber-500 text-slate-900 shadow-sm';
       });
     };
-    
     window.refreshUI = function() {
-      var select = document.getElementById('topic-select'); 
-      select.innerHTML = '<option value="">請選擇課題</option>';
-      var ul = document.getElementById('topic-list-ul'); 
-      ul.innerHTML = '';
-
+      var select = document.getElementById('topic-select'); select.innerHTML = '<option value="">請選擇課題</option>';
+      var ul = document.getElementById('topic-list-ul'); ul.innerHTML = '';
       window.globalData.topics.forEach(function(t) {
         select.innerHTML += '<option value="' + t.id + '">' + t.name + '</option>';
-        ul.innerHTML += '<li class="flex justify-between items-center p-3 bg-slate-50 border border-slate-200 rounded-lg mb-2 shadow-sm">' +
-          '<div class="flex flex-col flex-1 min-w-0 pr-2">' +
-            '<span class="font-bold text-slate-700 text-base truncate">' + t.name + '</span>' +
-            '<span id="badge-voice-' + t.id + '" class="text-[11px] text-slate-400 font-medium">點擊檢查音檔...</span>' +
-          '</div>' +
-          '<div class="flex space-x-1.5 shrink-0">' +
-            '<button onclick="window.openAudioInspectModal(\'' + t.id + '\')" class="text-amber-700 font-bold px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs shadow-sm active:bg-amber-100">🎧 音檔</button>' +
-            '<button onclick="window.openTopicEditor(\'' + t.id + '\')" class="text-indigo-600 font-bold px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg text-xs shadow-sm active:bg-indigo-100">編輯</button>' +
-          '</div>' +
-        '</li>';
+        ul.innerHTML += '<li class="flex justify-between items-center p-3 bg-slate-50 border border-slate-200 rounded-lg mb-2 shadow-sm"><div class="flex flex-col flex-1 min-w-0 pr-2"><span class="font-bold text-slate-700 text-base truncate">' + t.name + '</span><span id="badge-voice-' + t.id + '" class="text-[11px] text-slate-400 font-medium">點擊檢查音檔...</span></div><div class="flex space-x-1.5 shrink-0"><button onclick="window.openAudioInspectModal(\'' + t.id + '\')" class="text-amber-700 font-bold px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs shadow-sm">🎧 音檔</button><button onclick="window.openTopicEditor(\'' + t.id + '\')" class="text-indigo-600 font-bold px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg text-xs shadow-sm">編輯</button></div></li>';
       });
-
-      var filter = document.getElementById('record-filter'); 
-      var currentFilter = filter ? filter.value : '';
-      if (filter) {
-        filter.innerHTML = '<option value="">📜 顯示所有課題紀錄</option>';
-        var uniqueTopics = Array.from(new Set((window.globalData.records || []).map(function(r) { return r[2]; })));
-        uniqueTopics.forEach(function(tName) { 
-          filter.innerHTML += '<option value="' + tName + '"' + (tName === currentFilter ? ' selected' : '') + '>' + tName + '</option>'; 
-        });
-      }
+      var filter = document.getElementById('record-filter'), currentFilter = filter ? filter.value : '';
+      if (filter) { filter.innerHTML = '<option value="">📜 顯示所有課題紀錄</option>'; Array.from(new Set((window.globalData.records || []).map(function(r) { return r[2]; }))).forEach(function(tName) { filter.innerHTML += '<option value="' + tName + '"' + (tName === currentFilter ? ' selected' : '') + '>' + tName + '</option>'; }); }
       window.renderRecords(currentFilter);
     };
-
     window.renderRecords = function(filterTopic) {
-      var list = document.getElementById('records-list'); 
-      list.innerHTML = '';
-      var records = window.globalData.records || [];
+      var list = document.getElementById('records-list'); list.innerHTML = ''; var records = window.globalData.records || [];
       if (filterTopic) records = records.filter(function(r) { return r[2] === filterTopic; });
-      if (records.length === 0) { 
-        list.innerHTML = '<p class="text-center text-slate-400 py-4 text-sm">目前沒有相關紀錄</p>'; 
-        return; 
-      }
+      if (records.length === 0) return list.innerHTML = '<p class="text-center text-slate-400 py-4 text-sm">無紀錄</p>';
       records.forEach(function(r) {
-        var detailsText = r[4] || '無詳細紀錄', scoreText = String(r[3] || '');
-        var badgeColor = (scoreText.indexOf('10/10') !== -1 || detailsText.indexOf('全對') !== -1) ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
-        if (scoreText.indexOf('手寫') !== -1) badgeColor = 'bg-indigo-100 text-indigo-700';
-        list.innerHTML += '<div class="bg-white border border-slate-200 rounded-lg p-3 shadow-sm mb-3">' +
-          '<div class="flex justify-between items-start mb-1"><span class="text-xs text-slate-500 font-medium">' + r[0] + '</span><span class="font-bold text-xs ' + badgeColor + ' px-2 py-0.5 rounded">' + scoreText + '</span></div>' +
-          '<div class="font-bold text-slate-800 text-sm mb-1">' + r[2] + '</div><div class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">' + detailsText + '</div></div>';
+        var badgeColor = (String(r[3]||'').indexOf('10/10') !== -1 || (r[4]||'').indexOf('全對') !== -1) ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'; if (String(r[3]||'').indexOf('手寫') !== -1) badgeColor = 'bg-indigo-100 text-indigo-700';
+        list.innerHTML += '<div class="bg-white border border-slate-200 rounded-lg p-3 shadow-sm mb-3"><div class="flex justify-between items-start mb-1"><span class="text-xs text-slate-500 font-medium">' + r[0] + '</span><span class="font-bold text-xs ' + badgeColor + ' px-2 py-0.5 rounded">' + String(r[3]||'') + '</span></div><div class="font-bold text-slate-800 text-sm mb-1">' + r[2] + '</div><div class="text-xs text-slate-600 bg-slate-50 p-2 rounded border border-slate-100">' + (r[4]||'無詳細紀錄') + '</div></div>';
       });
     };
 
@@ -1330,15 +915,6 @@
     window.prevQuestion = function() { if (currentIndex > 0) { currentIndex--; window.renderCurrentQuestion(); } };
     window.nextQuestion = function() { currentIndex++; window.renderCurrentQuestion(); };
     window.getFormattedTime = function(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes(); };
-    
-    function md5(str) { 
-      var hash = 0; 
-      for (var i = 0; i < str.length; i++) { 
-        hash = (hash << 5) - hash + str.charCodeAt(i); 
-        hash |= 0; 
-      } 
-      return Math.abs(hash).toString(16); 
-    }
   </script>
 </body>
 </html>
