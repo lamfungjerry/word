@@ -210,51 +210,58 @@
     </div>
   </div>
 
-  <!-- =============================== -->
-  <!-- Modal 1: 🔑 API Key 與 📊 容量明細 (完整還原版) -->
+  <<!-- =============================== -->
+  <!-- Modal 1: 🔑 API Key 與 📊 容量明細 -->
   <!-- =============================== -->
   <div id="key-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center mb-3">
-        <h3 class="text-lg font-bold text-slate-800">🔑 金鑰與容量設定</h3>
+        <h3 class="text-lg font-bold text-slate-800">🔑 系統金鑰設定</h3>
         <button onclick="window.closeKeyModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg">✖</button>
       </div>
-      <p class="text-xs text-slate-500 mb-4">金鑰安全儲存於 GAS 伺服器底層，留空代表保持原設定不變。</p>
+      <p class="text-xs text-slate-500 mb-4">金鑰加密儲存於 GAS 底層。已設定之項目點擊「修改」方可變更。</p>
 
       <div class="space-y-3 text-sm">
-        <div>
-          <div class="flex justify-between">
-            <label class="font-bold text-slate-700 text-xs">Gemini API Key：</label>
-            <span id="status-gemini" class="text-xs font-bold"></span>
+        <!-- 1. Gemini API Key -->
+        <div id="row-gemini" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-700 text-xs">Gemini API Key</span>
+            <div class="flex items-center space-x-2">
+              <span id="status-gemini" class="text-xs font-bold"></span>
+              <button id="btn-edit-gemini" type="button" onclick="window.toggleKeyEdit('gemini')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
+            </div>
           </div>
-          <input type="password" id="input-gemini-key" placeholder="輸入新 Gemini Key 以更新..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
-        </div>
-
-        <div>
-          <div class="flex justify-between">
-            <label class="font-bold text-slate-700 text-xs">Azure Speech Key：</label>
-            <span id="status-azure" class="text-xs font-bold"></span>
-          </div>
-          <div class="flex gap-2 mt-1">
-            <input type="password" id="input-azure-key" placeholder="Azure TTS Key..." class="flex-1 p-2 border rounded-lg text-xs bg-slate-50">
-            <input type="text" id="input-azure-region" placeholder="eastasia" value="eastasia" class="w-24 p-2 border rounded-lg text-xs text-center bg-slate-50" title="Azure 區域">
+          <div id="wrap-input-gemini" class="mt-2 hidden">
+            <input type="password" id="input-gemini-key" placeholder="輸入新 Gemini API Key..." class="w-full p-2 border rounded-lg text-xs bg-white">
           </div>
         </div>
 
-        <div>
-          <div class="flex justify-between">
-            <label class="font-bold text-slate-700 text-xs">Google Cloud TTS Key：</label>
-            <span id="status-gcptts" class="text-xs font-bold"></span>
+        <!-- 2. Google Cloud TTS Key -->
+        <div id="row-gcptts" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-700 text-xs">Google Cloud TTS Key</span>
+            <div class="flex items-center space-x-2">
+              <span id="status-gcptts" class="text-xs font-bold"></span>
+              <button id="btn-edit-gcptts" type="button" onclick="window.toggleKeyEdit('gcptts')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
+            </div>
           </div>
-          <input type="password" id="input-gcptts-key" placeholder="輸入新 Google TTS Key..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
+          <div id="wrap-input-gcptts" class="mt-2 hidden">
+            <input type="password" id="input-gcptts-key" placeholder="輸入新 Google Cloud TTS Key..." class="w-full p-2 border rounded-lg text-xs bg-white">
+          </div>
         </div>
 
-        <div>
-          <div class="flex justify-between">
-            <label class="font-bold text-slate-700 text-xs">GitHub Token：</label>
-            <span id="status-github" class="text-xs font-bold"></span>
+        <!-- 3. GitHub Token -->
+        <div id="row-github" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-slate-700 text-xs">GitHub Token</span>
+            <div class="flex items-center space-x-2">
+              <span id="status-github" class="text-xs font-bold"></span>
+              <button id="btn-edit-github" type="button" onclick="window.toggleKeyEdit('github')" class="text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5 hidden">修改</button>
+            </div>
           </div>
-          <input type="password" id="input-github-token" placeholder="ghp_... 或 github_pat_..." class="w-full p-2 border rounded-lg mt-1 text-xs bg-slate-50">
+          <div id="wrap-input-github" class="mt-2 hidden">
+            <input type="password" id="input-github-token" placeholder="ghp_... 或 github_pat_..." class="w-full p-2 border rounded-lg text-xs bg-white">
+          </div>
         </div>
       </div>
 
@@ -263,7 +270,7 @@
         <button onclick="window.closeKeyModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-xl text-sm">關閉</button>
       </div>
 
-      <!-- 📊 容量明細折疊區 -->
+      <!-- 📊 容量明細折疊區 (保持原樣) -->
       <div class="mt-4 pt-3 border-t border-slate-200">
         <div onclick="window.toggleStorageDetail()" class="flex justify-between items-center cursor-pointer select-none text-xs font-bold text-slate-600 hover:text-slate-900 py-1">
           <span id="storage-summary-title">📊 容量明細: 載入中...</span>
@@ -831,21 +838,54 @@
       modal.classList.remove('flex');
     };
 
+    window.toggleKeyEdit = function(type) {
+      var wrap = document.getElementById('wrap-input-' + type);
+      var btn = document.getElementById('btn-edit-' + type);
+      if (!wrap || !btn) return;
+      var isHidden = wrap.classList.toggle('hidden');
+      btn.innerText = isHidden ? '修改' : '取消';
+      btn.className = 'text-xs font-bold ' + (isHidden ? 'text-indigo-600' : 'text-slate-400') + ' hover:underline px-1 py-0.5';
+      if (!isHidden) {
+        var inputId = (type === 'github') ? 'input-github-token' : ('input-' + type + '-key');
+        var input = document.getElementById(inputId);
+        if (input) input.focus();
+      }
+    };
+
     function updateKeyModalUI(keysStatus, storageUsage) {
       if (keysStatus) {
-        var setBadge = function(id, isSet) {
-          var el = document.getElementById(id);
-          if (!el) return;
-          el.innerText = isSet ? '✅ 已設定' : '⚠️ 未設定';
-          el.className = 'text-xs font-bold ' + (isSet ? 'text-emerald-600' : 'text-amber-500');
+        var setupKeyRow = function(type, isSet, inputId) {
+          var statusEl = document.getElementById('status-' + type);
+          var btnEl = document.getElementById('btn-edit-' + type);
+          var wrapEl = document.getElementById('wrap-input-' + type);
+          var inputEl = document.getElementById(inputId);
+
+          if (inputEl) inputEl.value = '';
+
+          if (isSet) {
+            if (statusEl) {
+              statusEl.innerText = '✅ 已設定';
+              statusEl.className = 'text-xs font-bold text-emerald-600';
+            }
+            if (btnEl) {
+              btnEl.classList.remove('hidden');
+              btnEl.innerText = '修改';
+              btnEl.className = 'text-xs font-bold text-indigo-600 hover:underline px-1 py-0.5';
+            }
+            if (wrapEl) wrapEl.classList.add('hidden');
+          } else {
+            if (statusEl) {
+              statusEl.innerText = '⚠️ 未設定';
+              statusEl.className = 'text-xs font-bold text-amber-500';
+            }
+            if (btnEl) btnEl.classList.add('hidden');
+            if (wrapEl) wrapEl.classList.remove('hidden');
+          }
         };
-        setBadge('status-gemini', keysStatus.gemini);
-        setBadge('status-azure', keysStatus.azure);
-        setBadge('status-gcptts', keysStatus.gcpTts);
-        setBadge('status-github', keysStatus.github);
-        if (keysStatus.azureRegion) {
-          document.getElementById('input-azure-region').value = keysStatus.azureRegion;
-        }
+
+        setupKeyRow('gemini', keysStatus.gemini, 'input-gemini-key');
+        setupKeyRow('gcptts', keysStatus.gcpTts, 'input-gcptts-key');
+        setupKeyRow('github', keysStatus.github, 'input-github-token');
       }
 
       if (storageUsage) {
@@ -868,30 +908,22 @@
       }
     }
 
-    window.toggleStorageDetail = function() {
-      var box = document.getElementById('storage-detail-box');
-      var arrow = document.getElementById('storage-arrow');
-      var isHidden = box.classList.toggle('hidden');
-      arrow.innerText = isHidden ? '▼' : '▲';
-    };
-
     window.saveAllKeys = function() {
       var btn = document.getElementById('save-keys-btn');
       btn.disabled = true;
       btn.innerHTML = '<span class="hourglass-spin">⏳</span> 儲存中...';
 
+      var geminiVal = document.getElementById('input-gemini-key') ? document.getElementById('input-gemini-key').value.trim() : '';
+      var gcpTtsVal = document.getElementById('input-gcptts-key') ? document.getElementById('input-gcptts-key').value.trim() : '';
+      var githubVal = document.getElementById('input-github-token') ? document.getElementById('input-github-token').value.trim() : '';
+
       callGasApi('saveSystemKeys', {
-        geminiKey: document.getElementById('input-gemini-key').value.trim(),
-        azureKey: document.getElementById('input-azure-key').value.trim(),
-        azureRegion: document.getElementById('input-azure-region').value.trim() || 'eastasia',
-        gcpTtsKey: document.getElementById('input-gcptts-key').value.trim(),
-        githubToken: document.getElementById('input-github-token').value.trim()
+        geminiKey: geminiVal,
+        gcpTtsKey: gcpTtsVal,
+        githubToken: githubVal
       }).then(function(res) {
         btn.disabled = false;
         btn.innerText = '💾 儲存設定';
-        ['input-gemini-key', 'input-azure-key', 'input-gcptts-key', 'input-github-token'].forEach(function(id) {
-          document.getElementById(id).value = '';
-        });
         updateKeyModalUI(res.keysStatus, res.storageUsage);
         loadModels();
         alert('✅ 金鑰設定已成功儲存！');
@@ -900,6 +932,13 @@
         btn.innerText = '💾 儲存設定';
         alert('❌ 儲存失敗: ' + err.message);
       });
+    };
+
+    window.toggleStorageDetail = function() {
+      var box = document.getElementById('storage-detail-box');
+      var arrow = document.getElementById('storage-arrow');
+      var isHidden = box.classList.toggle('hidden');
+      arrow.innerText = isHidden ? '▼' : '▲';
     };
 
     window.cleanOrphanProperties = function() {
