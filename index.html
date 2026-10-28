@@ -17,7 +17,9 @@
 </head>
 <body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
+  <!-- =============================== -->
   <!-- 頂部導覽列 -->
+  <!-- =============================== -->
   <header class="bg-slate-900 shadow-md sticky top-0 z-50 pt-safe">
     <div class="max-w-4xl mx-auto px-3 pt-2 pb-1 flex flex-col space-y-1">
       <div class="flex justify-between items-center px-1">
@@ -269,17 +271,13 @@
     };
 
     function showFatalError(msg) {
-      // 避免重複堆疊，如果已經有 Banner 就只更新文字
       var existing = document.getElementById('fatal-banner');
-      if (existing) {
-        existing.innerText = '❌ ' + msg;
-        return;
-      }
+      if (existing) { existing.innerText = '❌ ' + msg; return; }
       var banner = document.createElement('div');
       banner.id = 'fatal-banner';
       banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:#fff;padding:12px;font-weight:bold;font-size:14px;z-index:99999;text-align:center;box-shadow:0 4px 6px rgba(0,0,0,0.3);cursor:pointer;';
       banner.innerText = '❌ ' + msg;
-      banner.onclick = function() { this.remove(); }; // 點擊自動關閉
+      banner.onclick = function() { this.remove(); };
       document.body.appendChild(banner);
     }
 
@@ -330,7 +328,6 @@
         var isFail = customText.indexOf('失敗') !== -1 || customText.indexOf('錯誤') !== -1;
         s.innerHTML = '<span>' + (isFail ? '⚠️' : '☁️') + '</span> <span class="ml-1">' + customText + '</span>';
         s.className = 'text-xs md:text-sm font-bold ' + (isFail ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40') + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
-        // 刪除了這裏強制觸發 showFatalError() 的擾民代碼
       } else {
         s.innerHTML = '<span>✅</span> <span class="ml-1">已同步</span>';
         s.className = 'text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
@@ -394,7 +391,7 @@
     }
 
     // ----------------------------------------------------
-    // 獨立資料夾架構：極簡路徑產生器
+    // 獨立資料夾架構：極簡路徑產生器 (無 MD5，直接 {cleanWord}.mp3)
     // ----------------------------------------------------
     function getCleanWord(word) { return (word || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
     function getTopicBase(topicId) { return 'topics/' + topicId; }
@@ -406,7 +403,6 @@
       return 'https://raw.githubusercontent.com/' + window.CONFIG.GITHUB_REPO + '/' + window.globalData.commitSha + '/' + getTopicBase(topicId) + '/image.jpg';
     }
     
-    // ⭐ 最新極簡檔名邏輯：無 MD5，直接 {cleanWord}.mp3
     function getAudioPath(topicId, voiceName, word) {
       return getTopicBase(topicId) + '/' + voiceName + '/' + getCleanWord(word) + '.mp3';
     }
@@ -480,7 +476,7 @@
     };
 
     // ----------------------------------------------------
-    // 新增與編輯網格 (動態產生檔案物件)
+    // 新增與編輯網格
     // ----------------------------------------------------
     window.uploadTopic = function() {
       var f = document.getElementById('new-topic-img').files[0], m = document.getElementById('ai-model-select').value, stat = document.getElementById('upload-status');
@@ -580,7 +576,7 @@
       var words = gridEditorState.items.map(function(x){ return x.word; });
       window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
         var pts = vConfig.split(',');
-        words.forEach(function(w) { syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1], engine: pts[2] }); });
+        words.forEach(function(w) { syncEngine.queue.push({ topicId: id, word: w, voiceName: pts[0], langCode: pts[1] }); });
       });
       syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
     };
@@ -618,11 +614,9 @@
       callGasApi('fetchTtsAudio', task).then(function(res) {
         if (res.base64) {
           syncEngine.commitBatch.push({ path: getAudioPath(task.topicId, task.voiceName, task.word), base64: res.base64 });
-          if (!audioState[task.voiceName]) audioState[task.voiceName] = {}; 
-          audioState[task.voiceName][task.word] = { base64: res.base64 };
+          if (!audioState[task.voiceName]) audioState[task.voiceName] = {}; audioState[task.voiceName][task.word] = { base64: res.base64 };
         }
       }).catch(function(err) { 
-        // 將 GAS 回傳的具體錯誤寫入 Badge，不再只是隱藏起來
         updateSyncBadge(false, 0, '下載失敗: ' + (err.message || task.word)); 
       }).finally(processSyncQueue);
     }
@@ -638,7 +632,7 @@
     }
 
     // ----------------------------------------------------
-    // 音檔檢查與自癒 (嚴格 GET)
+    // 音檔檢查與自癒
     // ----------------------------------------------------
     window.openAudioInspectModal = function(topicId) {
       currentInspectingTopicId = topicId; currentMissingAudioTasks = [];
@@ -651,12 +645,12 @@
       ensureTopicDetailLoaded(topicId).then(function(tData) {
         var items = tData.items || [], voiceModels = window.CONFIG.VOICE_MODELS, checkPromises = [];
         voiceModels.forEach(function(vConfig) {
-          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1], engine = pts[2];
+          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1];
           items.forEach(function(it) {
             var url = getAudioRawUrl(topicId, vName, it.word);
             var p = fetch(url, { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' })
-              .then(function(r) { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: (r.ok || r.status === 206), activeUrl: url }; })
-              .catch(function() { return { word: it.word, voiceName: vName, langCode: langCode, engine: engine, ok: false, activeUrl: url }; });
+              .then(function(r) { return { word: it.word, voiceName: vName, langCode: langCode, ok: (r.ok || r.status === 206), activeUrl: url }; })
+              .catch(function() { return { word: it.word, voiceName: vName, langCode: langCode, ok: false, activeUrl: url }; });
             checkPromises.push(p);
           });
         });
@@ -669,7 +663,7 @@
       var grouped = {};
       results.forEach(function(r) {
         if (!grouped[r.voiceName]) grouped[r.voiceName] = []; grouped[r.voiceName].push(r);
-        if (!r.ok) currentMissingAudioTasks.push({ topicId: currentInspectingTopicId, word: r.word, voiceName: r.voiceName, langCode: r.langCode, engine: r.engine });
+        if (!r.ok) currentMissingAudioTasks.push({ topicId: currentInspectingTopicId, word: r.word, voiceName: r.voiceName, langCode: r.langCode });
       });
       for (var vName in grouped) {
         var list = grouped[vName], readyCount = list.filter(function(x) { return x.ok; }).length, isAllReady = (readyCount === list.length);
@@ -699,12 +693,12 @@
       ensureTopicDetailLoaded(tId).then(function(tData) {
         var items = tData.items || [];
         window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
-          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1], engine = pts[2];
+          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1];
           items.forEach(function(it) {
             fetch(getAudioRawUrl(tId, vName, it.word), { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' }).then(function(r) {
-              if (!r.ok && r.status !== 206) { syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine(); }
+              if (!r.ok && r.status !== 206) { syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine(); }
             }).catch(function() {
-              syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
+              syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
             });
           });
         });
@@ -712,7 +706,7 @@
     };
 
     // ----------------------------------------------------
-    // 測驗與播放邏輯 (四選一嚴格排版)
+    // 測驗與播放邏輯
     // ----------------------------------------------------
     window.changeImageHeight = function(delta) { quizImgHeight = Math.max(144, Math.min(480, quizImgHeight + delta)); localStorage.setItem('quizImgHeight', quizImgHeight); var cvs = document.getElementById('word-canvas'); if (cvs) cvs.style.height = quizImgHeight + 'px'; };
     window.startQuiz = function() {
@@ -775,7 +769,8 @@
     };
 
     window.playCurrentQuizWord = function() {
-      var q = currentQuestions[currentIndex]; if (!q) return; var w = q.word, vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(','), vName = vCfg[0], langCode = vCfg[1], engine = vCfg[2];
+      var q = currentQuestions[currentIndex]; if (!q) return; 
+      var w = q.word, vCfg = (localStorage.getItem('selectedVoice') || window.CONFIG.DEFAULT_VOICE).split(','), vName = vCfg[0], langCode = vCfg[1];
       if (currentAudioPlayer) currentAudioPlayer.pause(); if (window.speechSynthesis) window.speechSynthesis.cancel();
       if (audioState[vName] && audioState[vName][w] && audioState[vName][w].base64) {
         currentAudioPlayer = new Audio('data:audio/mp3;base64,' + audioState[vName][w].base64); currentAudioPlayer.play(); return;
@@ -783,7 +778,7 @@
       var testAudio = new Audio(getAudioRawUrl(currentTopicId, vName, w));
       testAudio.play().then(function() { currentAudioPlayer = testAudio; }).catch(function() {
         if (window.speechSynthesis) { var u = new SpeechSynthesisUtterance(w); u.lang = langCode; window.speechSynthesis.speak(u); }
-        syncEngine.queue.push({ topicId: currentTopicId, word: w, voiceName: vName, langCode: langCode, engine: engine }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
+        syncEngine.queue.push({ topicId: currentTopicId, word: w, voiceName: vName, langCode: langCode }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
       });
     };
 
