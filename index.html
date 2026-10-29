@@ -682,6 +682,13 @@
     window.closeAudioInspectModal = function() { document.getElementById('audio-inspect-modal').classList.add('hidden'); document.getElementById('audio-inspect-modal').classList.remove('flex'); };
     window.playAudioDirect = function(url) { if (currentAudioPlayer) currentAudioPlayer.pause(); currentAudioPlayer = new Audio(url); currentAudioPlayer.play().catch(function(){ showFatalError('音檔無法播放'); }); };
     
+    window.openVoiceModal = function() {
+      var modal = document.getElementById('voice-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    
     window.healMissingAudio = function() {
       if (currentMissingAudioTasks.length === 0) return alert('無需補齊！');
       currentMissingAudioTasks.forEach(function(t) { syncEngine.queue.push(t); });
