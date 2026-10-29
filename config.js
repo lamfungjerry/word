@@ -24,7 +24,7 @@ window.CONFIG = {
   
   // 5. 預設 TTS 發音款式
   // 美式 Chirp3: "en-US-Chirp3-HD-Aoede,en-US"
-  DEFAULT_VOICE: "en-US-Chirp3-HD-Fenrir,en-US",
+  DEFAULT_VOICE: "en-US-Neural2-F,en-US",
 
   // 6. 圖片上傳壓縮設定
   IMAGE_SETTINGS: {
