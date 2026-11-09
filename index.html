@@ -17,9 +17,7 @@
 </head>
 <body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
-  <!-- =============================== -->
   <!-- 頂部導覽列 -->
-  <!-- =============================== -->
   <header class="bg-slate-900 shadow-md sticky top-0 z-50 pt-safe">
     <div class="max-w-4xl mx-auto px-3 pt-2 pb-1 flex flex-col space-y-1">
       <div class="flex justify-between items-center px-1">
@@ -28,7 +26,8 @@
           <h1 class="text-white text-base md:text-lg font-bold py-1 cursor-pointer select-none active:opacity-70" onclick="window.safeBack()">英語單字學習系統</h1>
         </div>
         <div class="flex items-center space-x-2">
-          <div id="sync-status" class="text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700">
+          <!-- 加入 onclick 綁定，點擊觸發明細或手動同步 -->
+          <div id="sync-status" onclick="window.handleSyncClick()" class="cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition">
             <span class="hourglass-spin">⏳</span> <span class="ml-1">載入中...</span>
           </div>
           <button onclick="window.openVoiceModal()" class="text-lg p-1">⚙️</button>
@@ -254,9 +253,25 @@
     </div>
   </div>
 
-  <div id="download-controller" class="floating-dl-wrapper collapsed" style="display:none;">
-    <div class="floating-dl-toggle" onclick="window.openDownloadBar(event)"><span class="hourglass-spin">⏳</span></div>
-    <div class="floating-dl-content" onclick="window.closeDownloadBar(event)">
+  <!-- 新增：背景下載佇列明細 Modal -->
+  <div id="queue-detail-modal" class="fixed inset-0 bg-slate-900/60 z-[95] hidden items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
+        <h3 class="text-base font-bold text-slate-800">📥 背景下載佇列明細</h3>
+        <button onclick="document.getElementById('queue-detail-modal').classList.add('hidden'); document.getElementById('queue-detail-modal').classList.remove('flex');" class="text-slate-400 font-bold text-lg p-1">✖</button>
+      </div>
+      <div id="queue-task-list" class="flex-1 overflow-y-auto space-y-2 py-2 pr-1 text-xs font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
+        <!-- 佇列明細生成位置 -->
+      </div>
+      <div class="pt-3 border-t border-slate-100">
+        <button onclick="window.clearAndForceSync()" class="w-full bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-md active:bg-red-600">🛑 終止下載，清空佇列並強制同步</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="download-controller" class="floating-dl-wrapper collapsed cursor-pointer" onclick="window.handleSyncClick()" style="display:none;">
+    <div class="floating-dl-toggle"><span class="hourglass-spin">⏳</span></div>
+    <div class="floating-dl-content">
       <span class="hourglass-spin text-sm">⏳</span><span id="dl-detail-text" class="text-xs font-bold text-slate-800 whitespace-nowrap">準備中...</span>
     </div>
   </div>
@@ -323,14 +338,14 @@
       if (!s) return;
       if (isSyncing) {
         s.innerHTML = '<span class="hourglass-spin">⏳</span> <span class="ml-1">' + (customText || '自動同步...') + '</span>';
-        s.className = 'text-xs md:text-sm font-bold text-amber-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40';
+        s.className = 'cursor-pointer text-xs md:text-sm font-bold text-amber-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-amber-500/40 hover:bg-slate-700 transition';
       } else if (customText) {
         var isFail = customText.indexOf('失敗') !== -1 || customText.indexOf('錯誤') !== -1;
         s.innerHTML = '<span>' + (isFail ? '⚠️' : '☁️') + '</span> <span class="ml-1">' + customText + '</span>';
-        s.className = 'text-xs md:text-sm font-bold ' + (isFail ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40') + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border';
+        s.className = 'cursor-pointer text-xs md:text-sm font-bold ' + (isFail ? 'text-red-400 border-red-500/40' : 'text-amber-300 border-amber-500/40') + ' flex items-center bg-slate-800 px-2.5 py-1 rounded-full border hover:bg-slate-700 transition';
       } else {
         s.innerHTML = '<span>✅</span> <span class="ml-1">已同步</span>';
-        s.className = 'text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700';
+        s.className = 'cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition';
       }
     }
 
@@ -391,7 +406,7 @@
     }
 
     // ----------------------------------------------------
-    // 獨立資料夾架構：極簡路徑產生器 (無 MD5，直接 {cleanWord}.mp3)
+    // 獨立資料夾架構：極簡路徑產生器
     // ----------------------------------------------------
     function getCleanWord(word) { return (word || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
     function getTopicBase(topicId) { return 'topics/' + topicId; }
@@ -474,35 +489,44 @@
         btn.disabled = false; btn.innerText = '💾 儲存設定'; updateSyncBadge(false,0,'儲存金鑰失敗: ' + err.message);
       });
     };
+    window.openVoiceModal = function() {
+      var modal = document.getElementById('voice-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
 
     // ----------------------------------------------------
-    // 新增與編輯網格
+    // 新增與編輯網格 (無損畫質上傳 & 自動命名)
     // ----------------------------------------------------
+    function getNextTopicName() {
+      var max = 0;
+      window.globalData.topics.forEach(function(t) {
+        var match = t.name.match(/^Words of the Week(?: (\d+))?$/i);
+        if (match) { var num = match[1] ? parseInt(match[1], 10) : 1; if (num > max) max = num; }
+      });
+      return max === 0 ? "Words of the Week" : "Words of the Week " + (max + 1);
+    }
+
     window.uploadTopic = function() {
       var f = document.getElementById('new-topic-img').files[0], m = document.getElementById('ai-model-select').value, stat = document.getElementById('upload-status');
       if (!f) return alert('請先選擇圖片');
       stat.innerHTML = '⏳ AI 視覺分析處理中...'; document.getElementById('upload-btn').disabled = true;
       var reader = new FileReader();
       reader.onload = function(e) {
-        var img = new Image();
-        img.onload = function() {
-          var w = img.width, h = img.height, max = window.CONFIG.IMAGE_SETTINGS.MAX_SIZE;
-          if (w > max || h > max) { if (w > h) { h = Math.round(h * max / w); w = max; } else { w = Math.round(w * max / h); h = max; } }
-          var cvs = document.createElement('canvas'); cvs.width = w; cvs.height = h; cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-          var b64 = cvs.toDataURL('image/jpeg', window.CONFIG.IMAGE_SETTINGS.QUALITY).split(',')[1];
-          callGasApi('analyzeImagePositions', { base64Image: b64, modelName: m }).then(function(res) {
-            document.getElementById('upload-btn').disabled = false; stat.innerText = '';
-            var cleanItems = res.items.map(function(it) {
-              var b = it.box_2d || it.boundingBox;
-              if (b && b.length === 4) return { word: it.word || it.text || '', box_2d: [ b[0]>1?b[0]/h:b[0], b[1]>1?b[1]/w:b[1], b[2]>1?b[2]/h:b[2], b[3]>1?b[3]/w:b[3] ] };
-              return it;
-            });
-            openGridEditor(true, { name: 'New Topic', items: cleanItems }, b64, img.src);
-          }).catch(function(err) {
-            document.getElementById('upload-btn').disabled = false; stat.innerText = '❌ 錯誤: ' + err.message;
+        // 百分百原畫質，不經 Canvas 壓縮
+        var rawBase64 = e.target.result.split(',')[1];
+        var imgUrl = e.target.result;
+        callGasApi('analyzeImagePositions', { base64Image: rawBase64, modelName: m }).then(function(res) {
+          document.getElementById('upload-btn').disabled = false; stat.innerText = '';
+          var cleanItems = res.items.map(function(it) {
+            var b = it.box_2d || it.boundingBox;
+            if (b && b.length === 4) return { word: it.word || it.text || '', box_2d: [ b[0], b[1], b[2], b[3] ] };
+            return it;
           });
-        };
-        img.src = e.target.result;
+          openGridEditor(true, { name: 'New Topic', items: cleanItems }, rawBase64, imgUrl);
+        }).catch(function(err) {
+          document.getElementById('upload-btn').disabled = false; stat.innerText = '❌ 錯誤: ' + err.message;
+        });
       };
       reader.readAsDataURL(f);
     };
@@ -516,7 +540,9 @@
     function openGridEditor(isNew, data, base64, imgUrl) {
       gridEditorState.isNew = isNew; gridEditorState.topicId = data.id || ('T_' + new Date().getTime());
       gridEditorState.items = JSON.parse(JSON.stringify(data.items || [])); gridEditorState.base64 = base64; 
-      document.getElementById('grid-topic-name').value = data.name || '';
+      
+      document.getElementById('grid-topic-name').value = isNew ? getNextTopicName() : (data.name || '');
+      
       var img = new Image(); img.crossOrigin = 'anonymous';
       img.onload = function() {
         gridEditorState.imgObj = img; renderGridCards();
@@ -631,6 +657,52 @@
       }).catch(function(err) { updateSyncBadge(false, 0, '同步錯誤: ' + err.message); syncEngine.active = false; });
     }
 
+    window.triggerAutoSync = function() {
+      if (syncEngine.active || syncEngine.queue.length > 0 || syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) {
+        startSyncEngine();
+      } else {
+        updateSyncBadge(false, 0);
+        alert('✅ 所有資料已同步至 GitHub，無需手動處理！');
+      }
+    };
+
+    window.handleSyncClick = function() {
+      if (syncEngine.active || syncEngine.queue.length > 0) {
+        window.openDownloadBar();
+      } else {
+        window.triggerAutoSync();
+      }
+    };
+
+    window.openDownloadBar = function(){ 
+      var listEl = document.getElementById('queue-task-list');
+      listEl.innerHTML = '';
+      if (syncEngine.queue.length === 0) {
+        listEl.innerHTML = '<div class="text-center text-emerald-600 py-4 font-bold">✅ 目前無待處理項目</div>';
+      } else {
+        syncEngine.queue.forEach(function(task, idx) {
+          listEl.innerHTML += '<div>' + (idx+1) + '. ' + task.word + ' (' + task.voiceName + ')</div>';
+        });
+      }
+      var modal = document.getElementById('queue-detail-modal');
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+    };
+
+    window.clearAndForceSync = function() {
+      syncEngine.queue = [];
+      syncEngine.totalInQueue = 0;
+      document.getElementById('queue-detail-modal').classList.add('hidden');
+      document.getElementById('queue-detail-modal').classList.remove('flex');
+      if (syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) {
+        flushCommitBatch();
+      } else {
+        syncEngine.active = false;
+        document.getElementById('download-controller').style.display = 'none';
+        updateSyncBadge(false, 0);
+        alert('🗑️ 佇列已強制清空並重置！');
+      }
+    };
+
     // ----------------------------------------------------
     // 音檔檢查與自癒
     // ----------------------------------------------------
@@ -682,13 +754,6 @@
     window.closeAudioInspectModal = function() { document.getElementById('audio-inspect-modal').classList.add('hidden'); document.getElementById('audio-inspect-modal').classList.remove('flex'); };
     window.playAudioDirect = function(url) { if (currentAudioPlayer) currentAudioPlayer.pause(); currentAudioPlayer = new Audio(url); currentAudioPlayer.play().catch(function(){ showFatalError('音檔無法播放'); }); };
     
-    window.openVoiceModal = function() {
-      var modal = document.getElementById('voice-modal');
-      modal.classList.remove('hidden');
-      modal.classList.add('flex');
-    };
-
-    
     window.healMissingAudio = function() {
       if (currentMissingAudioTasks.length === 0) return alert('無需補齊！');
       currentMissingAudioTasks.forEach(function(t) { syncEngine.queue.push(t); });
@@ -696,20 +761,9 @@
     };
 
     window.onTopicSelectChange = function() {
-      var tId = document.getElementById('topic-select').value; if (!tId) return;
-      ensureTopicDetailLoaded(tId).then(function(tData) {
-        var items = tData.items || [];
-        window.CONFIG.VOICE_MODELS.forEach(function(vConfig) {
-          var pts = vConfig.split(','), vName = pts[0], langCode = pts[1];
-          items.forEach(function(it) {
-            fetch(getAudioRawUrl(tId, vName, it.word), { method: 'GET', headers: { 'Range': 'bytes=0-0' }, cache: 'no-store' }).then(function(r) {
-              if (!r.ok && r.status !== 206) { syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine(); }
-            }).catch(function() {
-              syncEngine.queue.push({ topicId: tId, word: it.word, voiceName: vName, langCode: langCode }); syncEngine.totalInQueue = syncEngine.queue.length; startSyncEngine();
-            });
-          });
-        });
-      });
+      var tId = document.getElementById('topic-select').value; 
+      if (!tId) return;
+      ensureTopicDetailLoaded(tId);
     };
 
     // ----------------------------------------------------
@@ -834,17 +888,43 @@
         if (b.id === 'nav-' + tName) b.className = 'nav-btn flex-1 py-1.5 rounded-lg text-sm md:text-base font-bold bg-amber-500 text-slate-900 shadow-sm';
       });
     };
+    
     window.refreshUI = function() {
-      var select = document.getElementById('topic-select'); select.innerHTML = '<option value="">請選擇課題</option>';
+      var select = document.getElementById('topic-select'); 
+      var prevVal = select.value;
+      select.innerHTML = '<option value="">請選擇課題</option>';
       var ul = document.getElementById('topic-list-ul'); ul.innerHTML = '';
+      
       window.globalData.topics.forEach(function(t) {
         select.innerHTML += '<option value="' + t.id + '">' + t.name + '</option>';
         ul.innerHTML += '<li class="flex justify-between items-center p-3 bg-slate-50 border border-slate-200 rounded-lg mb-2 shadow-sm"><div class="flex flex-col flex-1 min-w-0 pr-2"><span class="font-bold text-slate-700 text-base truncate">' + t.name + '</span><span id="badge-voice-' + t.id + '" class="text-[11px] text-slate-400 font-medium">點擊檢查音檔...</span></div><div class="flex space-x-1.5 shrink-0"><button onclick="window.openAudioInspectModal(\'' + t.id + '\')" class="text-amber-700 font-bold px-2.5 py-1.5 bg-amber-50 border border-amber-200 rounded-lg text-xs shadow-sm">🎧 音檔</button><button onclick="window.openTopicEditor(\'' + t.id + '\')" class="text-indigo-600 font-bold px-3 py-1.5 bg-indigo-50 border border-indigo-200 rounded-lg text-xs shadow-sm">編輯</button><button onclick="window.deleteTopic(\'' + t.id + '\')" class="text-red-500 font-bold px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg text-xs shadow-sm">刪除</button></div></li>';
       });
-      var filter = document.getElementById('record-filter'), currentFilter = filter ? filter.value : '';
-      if (filter) { filter.innerHTML = '<option value="">📜 顯示所有課題紀錄</option>'; Array.from(new Set((window.globalData.records || []).map(function(r) { return r[2]; }))).forEach(function(tName) { filter.innerHTML += '<option value="' + tName + '"' + (tName === currentFilter ? ' selected' : '') + '>' + tName + '</option>'; }); }
+
+      if (!prevVal && window.globalData.topics.length > 0) { select.value = window.globalData.topics[0].id; } 
+      else if (prevVal) { select.value = prevVal; }
+      if (select.value) window.onTopicSelectChange();
+
+      var filter = document.getElementById('record-filter');
+      var currentFilter = filter ? filter.value : '';
+      if (!prevVal && window.globalData.topics.length > 0) { currentFilter = window.globalData.topics[0].name; }
+
+      if (filter) { 
+        filter.innerHTML = '<option value="">📜 顯示所有課題紀錄</option>'; 
+        var existingNames = [];
+        window.globalData.topics.forEach(function(t) {
+            existingNames.push(t.name);
+            filter.innerHTML += '<option value="' + t.name + '"' + (t.name === currentFilter ? ' selected' : '') + '>' + t.name + '</option>';
+        });
+        var recordNames = Array.from(new Set((window.globalData.records || []).map(function(r) { return r[2]; })));
+        recordNames.forEach(function(rName) {
+            if (existingNames.indexOf(rName) === -1) {
+                filter.innerHTML += '<option value="' + rName + '"' + (rName === currentFilter ? ' selected' : '') + '>🗑️ ' + rName + ' (已刪除)</option>';
+            }
+        });
+      }
       window.renderRecords(currentFilter);
     };
+
     window.renderRecords = function(filterTopic) {
       var list = document.getElementById('records-list'); list.innerHTML = ''; var records = window.globalData.records || [];
       if (filterTopic) records = records.filter(function(r) { return r[2] === filterTopic; });
@@ -855,10 +935,6 @@
       });
     };
 
-    window.openDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.remove('collapsed'); };
-    window.closeDownloadBar = function(e){ e.stopPropagation(); document.getElementById('download-controller').classList.add('collapsed'); };
-    window.prevQuestion = function() { if (currentIndex > 0) { currentIndex--; window.renderCurrentQuestion(); } };
-    window.nextQuestion = function() { currentIndex++; window.renderCurrentQuestion(); };
     window.getFormattedTime = function(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes(); };
   </script>
 </body>
