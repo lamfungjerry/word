@@ -592,10 +592,16 @@
       
       if (gridEditorState.isNew) window.globalData.topics.unshift(meta);
       else { var idx = window.globalData.topics.findIndex(function(x){ return x.id === id; }); if (idx !== -1) window.globalData.topics[idx] = meta; }
-      window.globalData.lessonCache[id] = Object.assign({}, meta, { items: gridEditorState.items });
+      
+      // CRITICAL FIX: 避免記憶體連動導致 items 被寫入 topics 陣列
+      var cachedTopicDetail = JSON.parse(JSON.stringify(meta));
+      cachedTopicDetail.items = JSON.parse(JSON.stringify(gridEditorState.items));
+      window.globalData.lessonCache[id] = cachedTopicDetail;
+      
       window.refreshUI(); window.closeGridEditor();
 
       var filesToCommit = [];
+      // 上傳的 lessons_index.json 將純淨無 items
       filesToCommit.push({ path: 'lessons_index.json', content: JSON.stringify(window.globalData.topics, null, 2) });
       filesToCommit.push({ path: getTopicBase(id) + '/data.json', content: JSON.stringify({ items: gridEditorState.items }, null, 2) });
       if (gridEditorState.isNew && gridEditorState.base64) {
