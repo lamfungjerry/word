@@ -17,7 +17,9 @@
 </head>
 <body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
+  <!-- =============================== -->
   <!-- 頂部導覽列 -->
+  <!-- =============================== -->
   <header class="bg-slate-900 shadow-md sticky top-0 z-50 pt-safe">
     <div class="max-w-4xl mx-auto px-3 pt-2 pb-1 flex flex-col space-y-1">
       <div class="flex justify-between items-center px-1">
@@ -26,8 +28,8 @@
           <h1 class="text-white text-base md:text-lg font-bold py-1 cursor-pointer select-none active:opacity-70" onclick="window.safeBack()">英語單字學習系統</h1>
         </div>
         <div class="flex items-center space-x-2">
-          <!-- 加入 onclick 綁定，點擊觸發明細或手動同步 -->
-          <div id="sync-status" onclick="window.handleSyncClick()" class="cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition">
+          <!-- 右上角點擊觸發明細或手動同步 -->
+          <div id="sync-status" onclick="window.handleSyncClick()" class="cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition" title="點擊查看詳細或同步">
             <span class="hourglass-spin">⏳</span> <span class="ml-1">載入中...</span>
           </div>
           <button onclick="window.openVoiceModal()" class="text-lg p-1">⚙️</button>
@@ -180,6 +182,7 @@
   </main>
 
   <!-- Modals -->
+  <!-- 限定高度 80vh 以免超過螢幕 -->
   <div id="grid-editor-modal" class="fixed inset-0 bg-slate-100 z-[70] hidden flex-col">
     <div class="bg-white p-2.5 flex justify-between items-center shadow-sm shrink-0 border-b pt-safe">
       <button onclick="window.closeGridEditor()" class="text-red-500 font-bold px-3 py-1.5 bg-red-50 rounded-lg text-sm border border-red-200">✖ 取消</button>
@@ -199,12 +202,12 @@
   </div>
 
   <div id="key-modal" class="fixed inset-0 bg-slate-900/60 z-[90] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-5 max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center mb-3">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-5 max-h-[80vh] flex flex-col">
+      <div class="flex justify-between items-center mb-3 shrink-0">
         <h3 class="text-lg font-bold text-slate-800">🔑 系統金鑰設定</h3>
         <button onclick="window.closeKeyModal()" class="text-slate-400 font-bold text-lg">✖</button>
       </div>
-      <div class="space-y-3 text-sm">
+      <div class="space-y-3 text-sm flex-1 overflow-y-auto pr-1">
         <div id="row-gemini" class="p-3 rounded-xl border border-slate-200 bg-slate-50">
           <div class="flex justify-between items-center">
             <span class="font-bold text-slate-700 text-xs">Gemini API Key</span>
@@ -227,7 +230,7 @@
           <div id="wrap-input-github" class="mt-2 hidden"><input type="password" id="input-github-token" class="w-full p-2 border rounded-lg text-xs bg-white"></div>
         </div>
       </div>
-      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-4 bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-sm">💾 儲存設定</button>
+      <button onclick="window.saveAllKeys()" id="save-keys-btn" class="w-full mt-4 bg-emerald-600 text-white font-bold py-2.5 rounded-xl text-sm shrink-0">💾 儲存設定</button>
     </div>
   </div>
 
@@ -240,39 +243,40 @@
   </div>
 
   <div id="audio-inspect-modal" class="fixed inset-0 bg-slate-900/60 z-[85] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[80vh] flex flex-col">
+      <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 shrink-0">
         <div><h3 class="text-base font-bold text-slate-800">🎧 音檔下載狀態</h3><p id="inspect-topic-title" class="text-xs text-indigo-600 font-bold truncate max-w-[200px]"></p></div>
         <button onclick="window.closeAudioInspectModal()" class="text-slate-400 font-bold text-lg p-1">✖</button>
       </div>
       <div id="inspect-content-list" class="flex-1 overflow-y-auto space-y-3 py-2 pr-1 text-xs"></div>
-      <div class="pt-3 border-t border-slate-100 flex gap-2">
+      <div class="pt-3 border-t border-slate-100 flex gap-2 shrink-0">
         <button id="btn-heal-audio" onclick="window.healMissingAudio()" class="flex-1 bg-amber-500 text-white font-bold py-2.5 rounded-xl text-xs">⚡ 自動補齊缺漏</button>
         <button onclick="window.closeAudioInspectModal()" class="flex-1 bg-slate-100 text-slate-700 font-bold py-2.5 rounded-xl text-xs">關閉</button>
       </div>
     </div>
   </div>
 
-  <!-- 新增：背景下載佇列明細 Modal -->
+  <!-- 新增：背景下載佇列明細 Modal (限制高度 80vh，內部可捲動) -->
   <div id="queue-detail-modal" class="fixed inset-0 bg-slate-900/60 z-[95] hidden items-center justify-center p-4 backdrop-blur-sm">
-    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[85vh] flex flex-col">
-      <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[80vh] flex flex-col">
+      <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 shrink-0">
         <h3 class="text-base font-bold text-slate-800">📥 背景下載佇列明細</h3>
         <button onclick="document.getElementById('queue-detail-modal').classList.add('hidden'); document.getElementById('queue-detail-modal').classList.remove('flex');" class="text-slate-400 font-bold text-lg p-1">✖</button>
       </div>
       <div id="queue-task-list" class="flex-1 overflow-y-auto space-y-2 py-2 pr-1 text-xs font-mono text-slate-600 bg-slate-50 p-2 rounded border border-slate-200">
         <!-- 佇列明細生成位置 -->
       </div>
-      <div class="pt-3 border-t border-slate-100">
+      <div class="pt-3 border-t border-slate-100 shrink-0">
         <button onclick="window.clearAndForceSync()" class="w-full bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs shadow-md active:bg-red-600">🛑 終止下載，清空佇列並強制同步</button>
       </div>
     </div>
   </div>
 
-  <div id="download-controller" class="floating-dl-wrapper collapsed cursor-pointer" onclick="window.handleSyncClick()" style="display:none;">
-    <div class="floating-dl-toggle"><span class="hourglass-spin">⏳</span></div>
-    <div class="floating-dl-content">
-      <span class="hourglass-spin text-sm">⏳</span><span id="dl-detail-text" class="text-xs font-bold text-slate-800 whitespace-nowrap">準備中...</span>
+  <!-- 右下角浮動條：取消事件綁定，僅被動顯示數量 -->
+  <div id="download-controller" class="floating-dl-wrapper pointer-events-none" style="display:none; bottom: 80px;">
+    <div class="floating-dl-content" style="display:flex; padding: 8px 16px;">
+      <span class="hourglass-spin text-sm">⏳</span>
+      <span id="dl-detail-text" class="text-xs font-bold text-slate-800 whitespace-nowrap ml-2">準備中...</span>
     </div>
   </div>
 
@@ -496,7 +500,7 @@
     };
 
     // ----------------------------------------------------
-    // 新增與編輯網格 (無損畫質上傳 & 自動命名)
+    // 新增與編輯網格 (無損畫質上傳 & 無括號自動命名)
     // ----------------------------------------------------
     function getNextTopicName() {
       var max = 0;
@@ -513,7 +517,7 @@
       stat.innerHTML = '⏳ AI 視覺分析處理中...'; document.getElementById('upload-btn').disabled = true;
       var reader = new FileReader();
       reader.onload = function(e) {
-        // 百分百原畫質，不經 Canvas 壓縮
+        // 百分百原畫質，直接讀取原始檔案 Base64，不經 Canvas 壓縮
         var rawBase64 = e.target.result.split(',')[1];
         var imgUrl = e.target.result;
         callGasApi('analyzeImagePositions', { base64Image: rawBase64, modelName: m }).then(function(res) {
@@ -626,14 +630,39 @@
     // ----------------------------------------------------
     function startSyncEngine() {
       if (syncEngine.active) return; 
-      syncEngine.active = true; updateSyncBadge(false, 0, '待下載後同步...'); document.getElementById('download-controller').style.display = 'flex'; processSyncQueue();
+      syncEngine.active = true; 
+      updateSyncBadge(false, 0, '待下載後同步...'); 
+      
+      // 確保右下角數量顯示可見
+      var dc = document.getElementById('download-controller');
+      if(dc) { dc.style.display = 'flex'; }
+      
+      processSyncQueue();
     }
 
     function processSyncQueue() {
-      document.getElementById('dl-detail-text').innerText = '生成中 (' + (syncEngine.totalInQueue - syncEngine.queue.length) + '/' + syncEngine.totalInQueue + ')';
+      var doneCount = syncEngine.totalInQueue - syncEngine.queue.length;
+      var textStr = '生成中 (' + doneCount + '/' + syncEngine.totalInQueue + ')';
+      
+      // 更新右下角純數量顯示
+      var dlText = document.getElementById('dl-detail-text');
+      if (dlText) dlText.innerText = textStr;
+
+      // 如果明細視窗是打開的，實時更新明細
+      var modalQ = document.getElementById('queue-task-list');
+      if (modalQ && !document.getElementById('queue-detail-modal').classList.contains('hidden')) {
+          window.renderQueueDetailList();
+      }
+
       if (syncEngine.queue.length === 0 || syncEngine.commitBatch.length >= 10) {
-        if (syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) flushCommitBatch();
-        else { syncEngine.active = false; syncEngine.totalInQueue = 0; document.getElementById('download-controller').style.display = 'none'; updateSyncBadge(false, 0); }
+        if (syncEngine.commitBatch.length > 0 || syncEngine.initialPayload) {
+            flushCommitBatch();
+        } else { 
+            syncEngine.active = false; 
+            syncEngine.totalInQueue = 0; 
+            document.getElementById('download-controller').style.display = 'none'; 
+            updateSyncBadge(false, 0); 
+        }
         return;
       }
       var task = syncEngine.queue.shift();
@@ -666,16 +695,9 @@
       }
     };
 
-    window.handleSyncClick = function() {
-      if (syncEngine.active || syncEngine.queue.length > 0) {
-        window.openDownloadBar();
-      } else {
-        window.triggerAutoSync();
-      }
-    };
-
-    window.openDownloadBar = function(){ 
+    window.renderQueueDetailList = function() {
       var listEl = document.getElementById('queue-task-list');
+      if (!listEl) return;
       listEl.innerHTML = '';
       if (syncEngine.queue.length === 0) {
         listEl.innerHTML = '<div class="text-center text-emerald-600 py-4 font-bold">✅ 目前無待處理項目</div>';
@@ -684,8 +706,18 @@
           listEl.innerHTML += '<div>' + (idx+1) + '. ' + task.word + ' (' + task.voiceName + ')</div>';
         });
       }
-      var modal = document.getElementById('queue-detail-modal');
-      modal.classList.remove('hidden'); modal.classList.add('flex');
+    };
+
+    // 右上角觸發：如果有任務則顯示明細，無任務則同步
+    window.handleSyncClick = function() {
+      if (syncEngine.active || syncEngine.queue.length > 0) {
+        window.renderQueueDetailList();
+        var modal = document.getElementById('queue-detail-modal');
+        modal.classList.remove('hidden'); 
+        modal.classList.add('flex');
+      } else {
+        window.triggerAutoSync();
+      }
     };
 
     window.clearAndForceSync = function() {
@@ -803,7 +835,20 @@
         cvs.width = sw; cvs.height = sh; ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
       }
       
-      if (currentQuizMode === 'type') { currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; } 
+      if (currentQuizMode === 'type') { 
+        currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; 
+      } 
+      else if (currentQuizMode === 'view') {
+        // 修復瀏覽模式按鈕狀態
+        var nb = document.getElementById('view-next-btn');
+        if (currentIndex === currentQuestions.length - 1) {
+          nb.innerText = '✅ 完成紀錄';
+          nb.className = 'flex-1 bg-emerald-600 text-white font-bold py-3 rounded-xl shadow-md text-sm md:text-base';
+        } else {
+          nb.innerText = '下一題 ➡️';
+          nb.className = 'flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md text-sm md:text-base';
+        }
+      }
       else if (currentQuizMode === 'mc') {
         var correct = q.word, pool = currentQuestions.map(function(item){ return item.word; }).filter(function(w){ return w.toLowerCase() !== correct.toLowerCase(); }); pool.sort(function(){ return Math.random() - 0.5; });
         var rawChoices = [correct, pool[0]||'A', pool[1]||'B', pool[2]||'C'].sort(function(){ return Math.random() - 0.5; });
@@ -935,6 +980,9 @@
       });
     };
 
+    // 已清理底部重複多餘的舊代碼，改為以下 3 個核心輔助功能
+    window.prevQuestion = function() { if (currentIndex > 0) { currentIndex--; window.renderCurrentQuestion(); } };
+    window.nextQuestion = function() { currentIndex++; window.renderCurrentQuestion(); };
     window.getFormattedTime = function(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes(); };
   </script>
 </body>
