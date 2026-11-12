@@ -14,6 +14,25 @@
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* 全面禁止 iOS 雙擊放大與文字選取 */
+    body, button, input, select { 
+      touch-action: manipulation; 
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    input[type="text"], input[type="password"] {
+      -webkit-user-select: auto;
+      user-select: auto;
+    }
+    /* 鍵盤按鈕樣式微調 */
+    .vk-btn-space {
+      flex: 3;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: #475569;
+    }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-800 pb-16 font-sans">
 
@@ -28,7 +47,6 @@
           <h1 class="text-white text-base md:text-lg font-bold py-1 cursor-pointer select-none active:opacity-70" onclick="window.safeBack()">英語單字學習系統</h1>
         </div>
         <div class="flex items-center space-x-2">
-          <!-- 右上角點擊觸發明細或手動同步 -->
           <div id="sync-status" onclick="window.handleSyncClick()" class="cursor-pointer text-xs md:text-sm font-bold text-emerald-400 flex items-center bg-slate-800 px-2.5 py-1 rounded-full border border-slate-700 hover:bg-slate-700 transition" title="點擊查看詳細或同步">
             <span class="hourglass-spin">⏳</span> <span class="ml-1">載入中...</span>
           </div>
@@ -44,7 +62,9 @@
   </header>
 
   <main class="max-w-4xl mx-auto px-3 md:px-4 pt-3 pb-6">
-    <!-- 測驗分頁 -->
+    <!-- =============================== -->
+    <!-- 1. 測驗分頁 -->
+    <!-- =============================== -->
     <section id="tab-quiz">
       <div id="quiz-setup" class="bg-white p-5 md:p-6 rounded-xl shadow-sm border border-slate-200 mb-3">
         <div class="mb-5">
@@ -101,11 +121,13 @@
           
           <button id="quiz-play-btn" onclick="window.playCurrentQuizWord()" class="btn-play-ready font-bold px-8 py-3 rounded-full flex items-center space-x-2 mb-4 shadow-md text-lg active:scale-95"><span>▶️ 播放</span></button>
           
+          <!-- 瀏覽模式按鈕 -->
           <div id="view-mode-ui" class="w-full flex gap-3 hidden">
             <button onclick="window.prevQuestion()" class="flex-1 bg-slate-200 text-slate-800 font-bold py-3 rounded-xl">⬅️ 上一題</button>
             <button onclick="window.nextQuestion()" id="view-next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-3 rounded-xl shadow-md">下一題 ➡️</button>
           </div>
           
+          <!-- 溫習模式按鈕 -->
           <div id="mc-mode-ui" class="w-full grid gap-2.5 hidden">
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
@@ -113,9 +135,24 @@
             <button class="mc-btn w-full py-3.5 px-2 rounded-xl border-2 border-slate-300 font-bold text-base md:text-lg text-slate-800 bg-white shadow-sm flex items-center justify-center text-center"></button>
           </div>
           
+          <!-- 打字模式介面 (含空格與錯誤提示區) -->
           <div id="type-mode-ui" class="w-full max-w-xl hidden flex-col items-center">
-            <div id="fake-answer-input" class="w-full p-3 border-2 border-slate-300 rounded-xl bg-slate-50 text-xl font-bold text-center h-12 flex items-center justify-center tracking-widest fake-cursor shadow-inner"></div>
-            <div class="w-full mt-3 bg-slate-100 p-2 md:p-3 rounded-xl flex flex-col gap-1.5 shadow-inner">
+            <!-- 正常輸入框 -->
+            <div id="fake-answer-input" class="w-full p-3 border-2 border-slate-300 rounded-xl bg-slate-50 text-xl font-bold text-center h-12 flex items-center justify-center tracking-widest shadow-inner relative overflow-hidden"></div>
+            
+            <!-- 答錯時顯示的紅字對比區 -->
+            <div id="type-error-box" class="w-full mt-2 hidden flex-col gap-2">
+              <div class="w-full p-3 border-2 border-red-300 rounded-xl bg-red-50 text-center shadow-inner">
+                <div class="text-xs text-red-500 font-bold mb-1">你的答案：</div>
+                <div id="error-user-ans" class="text-lg font-bold text-slate-500 line-through"></div>
+                <div class="text-xs text-emerald-600 font-bold mt-2 mb-1">正確答案：</div>
+                <div id="error-correct-ans" class="text-xl font-bold text-slate-800 tracking-wider"></div>
+              </div>
+              <button onclick="window.nextQuestion()" class="w-full bg-indigo-600 text-white font-bold py-3.5 rounded-xl shadow-md text-lg active:bg-indigo-700">我知道了，下一題 ➡️</button>
+            </div>
+
+            <!-- 虛擬鍵盤 (加入 Space 鍵) -->
+            <div id="type-keyboard-box" class="w-full mt-3 bg-slate-100 p-2 md:p-3 rounded-xl flex flex-col gap-1.5 shadow-inner">
               <div class="flex gap-1 justify-center">
                 <button onclick="window.handleVK('q')" class="vk-btn">q</button><button onclick="window.handleVK('w')" class="vk-btn">w</button>
                 <button onclick="window.handleVK('e')" class="vk-btn">e</button><button onclick="window.handleVK('r')" class="vk-btn">r</button>
@@ -131,12 +168,16 @@
                 <button onclick="window.handleVK('l')" class="vk-btn">l</button>
               </div>
               <div class="flex gap-1 justify-center">
-                <button onclick="window.handleVK('DEL')" class="vk-btn vk-btn-wide text-red-600">⌫</button>
                 <button onclick="window.handleVK('z')" class="vk-btn">z</button><button onclick="window.handleVK('x')" class="vk-btn">x</button>
                 <button onclick="window.handleVK('c')" class="vk-btn">c</button><button onclick="window.handleVK('v')" class="vk-btn">v</button>
                 <button onclick="window.handleVK('b')" class="vk-btn">b</button><button onclick="window.handleVK('n')" class="vk-btn">n</button>
                 <button onclick="window.handleVK('m')" class="vk-btn">m</button>
-                <button onclick="window.handleVK('ENTER')" class="vk-btn vk-btn-wide bg-emerald-100 text-emerald-800">↵</button>
+                <button onclick="window.handleVK('DEL')" class="vk-btn vk-btn-wide text-red-600">⌫</button>
+              </div>
+              <!-- 加入空白鍵與 Enter 的最後一排 -->
+              <div class="flex gap-1 justify-center px-4 md:px-8 mt-0.5">
+                <button onclick="window.handleVK(' ')" class="vk-btn vk-btn-space bg-white border border-slate-300">Space</button>
+                <button onclick="window.handleVK('ENTER')" class="vk-btn vk-btn-space bg-emerald-100 border border-emerald-300 text-emerald-800">Enter ↵</button>
               </div>
             </div>
           </div>
@@ -144,7 +185,9 @@
       </div>
     </section>
 
-    <!-- 課題管理分頁 -->
+    <!-- =============================== -->
+    <!-- 2. 課題管理分頁 -->
+    <!-- =============================== -->
     <section id="tab-topics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <h2 class="text-base md:text-lg font-bold mb-3">📸 新增課題 (AI 自動切割)</h2>
@@ -169,7 +212,9 @@
       </div>
     </section>
 
-    <!-- 學習歷程分頁 -->
+    <!-- =============================== -->
+    <!-- 3. 學習歷程分頁 -->
+    <!-- =============================== -->
     <section id="tab-analytics" class="hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <h2 class="text-lg font-bold mb-3">學生測驗紀錄</h2>
@@ -181,7 +226,9 @@
     </section>
   </main>
 
+  <!-- =============================== -->
   <!-- Modals -->
+  <!-- =============================== -->
   <!-- 限定高度 80vh 以免超過螢幕 -->
   <div id="grid-editor-modal" class="fixed inset-0 bg-slate-100 z-[70] hidden flex-col">
     <div class="bg-white p-2.5 flex justify-between items-center shadow-sm shrink-0 border-b pt-safe">
@@ -256,7 +303,7 @@
     </div>
   </div>
 
-  <!-- 新增：背景下載佇列明細 Modal (限制高度 80vh，內部可捲動) -->
+  <!-- 背景下載佇列明細 Modal -->
   <div id="queue-detail-modal" class="fixed inset-0 bg-slate-900/60 z-[95] hidden items-center justify-center p-4 backdrop-blur-sm">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-sm p-4 max-h-[80vh] flex flex-col">
       <div class="flex justify-between items-center mb-2 pb-2 border-b border-slate-100 shrink-0">
@@ -272,7 +319,7 @@
     </div>
   </div>
 
-  <!-- 右下角浮動條：取消事件綁定，僅被動顯示數量 -->
+  <!-- 右下角浮動條 (純顯示進度) -->
   <div id="download-controller" class="floating-dl-wrapper pointer-events-none" style="display:none; bottom: 80px;">
     <div class="floating-dl-content" style="display:flex; padding: 8px 16px;">
       <span class="hourglass-spin text-sm">⏳</span>
@@ -283,8 +330,16 @@
   <!-- JavaScript 核心邏輯 -->
   <script>
     // ----------------------------------------------------
-    // 系統安全驗證與初始化
+    // 防雙擊放大與安全驗證
     // ----------------------------------------------------
+    // 攔截過快的 touchstart 事件來防止 iOS Safari 雙擊放大
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function(event) {
+      var now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) { event.preventDefault(); }
+      lastTouchEnd = now;
+    }, false);
+
     window.safeBack = function() {
       if (document.referrer && document.referrer.startsWith(window.location.origin)) { history.back(); }
     };
@@ -593,7 +648,6 @@
       if (gridEditorState.isNew) window.globalData.topics.unshift(meta);
       else { var idx = window.globalData.topics.findIndex(function(x){ return x.id === id; }); if (idx !== -1) window.globalData.topics[idx] = meta; }
       
-      // CRITICAL FIX: 避免記憶體連動導致 items 被寫入 topics 陣列
       var cachedTopicDetail = JSON.parse(JSON.stringify(meta));
       cachedTopicDetail.items = JSON.parse(JSON.stringify(gridEditorState.items));
       window.globalData.lessonCache[id] = cachedTopicDetail;
@@ -639,7 +693,6 @@
       syncEngine.active = true; 
       updateSyncBadge(false, 0, '待下載後同步...'); 
       
-      // 確保右下角數量顯示可見
       var dc = document.getElementById('download-controller');
       if(dc) { dc.style.display = 'flex'; }
       
@@ -650,11 +703,9 @@
       var doneCount = syncEngine.totalInQueue - syncEngine.queue.length;
       var textStr = '生成中 (' + doneCount + '/' + syncEngine.totalInQueue + ')';
       
-      // 更新右下角純數量顯示
       var dlText = document.getElementById('dl-detail-text');
       if (dlText) dlText.innerText = textStr;
 
-      // 如果明細視窗是打開的，實時更新明細
       var modalQ = document.getElementById('queue-task-list');
       if (modalQ && !document.getElementById('queue-detail-modal').classList.contains('hidden')) {
           window.renderQueueDetailList();
@@ -714,7 +765,6 @@
       }
     };
 
-    // 右上角觸發：如果有任務則顯示明細，無任務則同步
     window.handleSyncClick = function() {
       if (syncEngine.active || syncEngine.queue.length > 0) {
         window.renderQueueDetailList();
@@ -805,7 +855,7 @@
     };
 
     // ----------------------------------------------------
-    // 測驗與播放邏輯
+    // 測驗與播放邏輯 (加入打字錯誤分析)
     // ----------------------------------------------------
     window.changeImageHeight = function(delta) { quizImgHeight = Math.max(144, Math.min(480, quizImgHeight + delta)); localStorage.setItem('quizImgHeight', quizImgHeight); var cvs = document.getElementById('word-canvas'); if (cvs) cvs.style.height = quizImgHeight + 'px'; };
     window.startQuiz = function() {
@@ -842,10 +892,15 @@
       }
       
       if (currentQuizMode === 'type') { 
-        currentTypedAnswer = ''; document.getElementById('fake-answer-input').innerText = ''; 
+        currentTypedAnswer = ''; 
+        document.getElementById('fake-answer-input').innerText = ''; 
+        // 隱藏錯誤提示，顯示鍵盤
+        document.getElementById('type-error-box').classList.add('hidden');
+        document.getElementById('type-error-box').classList.remove('flex');
+        document.getElementById('type-keyboard-box').classList.remove('hidden');
+        document.getElementById('type-keyboard-box').classList.add('flex');
       } 
       else if (currentQuizMode === 'view') {
-        // 修復瀏覽模式按鈕狀態
         var nb = document.getElementById('view-next-btn');
         if (currentIndex === currentQuestions.length - 1) {
           nb.innerText = '✅ 完成紀錄';
@@ -900,17 +955,86 @@
         btns[idx].classList.add('bg-emerald-100', 'border-emerald-500', 'text-emerald-800'); setTimeout(function() { currentIndex++; window.renderCurrentQuestion(); }, 550);
       } else { btns[idx].classList.add('bg-red-100', 'border-red-500', 'text-red-800'); window.playCurrentQuizWord(); }
     };
+    
+    // 實體鍵盤監聽支援 (加入空白鍵防捲動)
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('quiz-active').classList.contains('hidden') || currentQuizMode !== 'type') return;
+      
+      // 如果處於錯誤提示畫面，按 Enter 即進入下一題
+      if (!document.getElementById('type-error-box').classList.contains('hidden')) {
+          if (e.key === 'Enter') {
+              e.preventDefault();
+              window.nextQuestion();
+          }
+          return;
+      }
+
+      if (e.key === 'Backspace') {
+          currentTypedAnswer = currentTypedAnswer.slice(0, -1);
+      } else if (e.key === 'Enter') {
+          window.submitAnswer();
+      } else if (e.key === ' ') {
+          e.preventDefault(); // 防止按空白鍵往下捲動頁面
+          currentTypedAnswer += ' ';
+      } else if (/^[a-zA-Z\-']$/.test(e.key)) {
+          currentTypedAnswer += e.key.toLowerCase();
+      }
+      document.getElementById('fake-answer-input').innerText = currentTypedAnswer;
+    });
+
     window.handleVK = function(k) {
       if (currentQuizMode !== 'type') return;
-      if (k === 'DEL') currentTypedAnswer = currentTypedAnswer.slice(0, -1); else if (k === 'ENTER') window.submitAnswer(); else currentTypedAnswer += k.toLowerCase();
-      document.getElementById('fake-answer-input').innerText = currentTypedAnswer.toLowerCase();
+      if (k === 'DEL') currentTypedAnswer = currentTypedAnswer.slice(0, -1); 
+      else if (k === 'ENTER') window.submitAnswer(); 
+      else currentTypedAnswer += k.toLowerCase();
+      // 使用 innerText 可以正確顯示首尾空白，保留原本的 tracking-widest 排版
+      document.getElementById('fake-answer-input').innerText = currentTypedAnswer.replace(/ /g, '\u00A0');
     };
+
+    // 精緻字元比對 (打字錯誤時標出紅字)
+    function generateErrorDiffHtml(userAns, correctAns) {
+        var html = '';
+        var maxLen = Math.max(userAns.length, correctAns.length);
+        for (var i = 0; i < maxLen; i++) {
+            var cChar = correctAns[i] || '';
+            var uChar = userAns[i] || '';
+            if (cChar.toLowerCase() === uChar.toLowerCase()) {
+                // 正確字元：普通顏色
+                html += '<span>' + (cChar === ' ' ? '&nbsp;' : cChar) + '</span>';
+            } else {
+                // 錯誤或漏打字元：紅色標示
+                html += '<span class="text-red-600 font-extrabold border-b-2 border-red-500">' + (cChar === ' ' ? '&nbsp;' : (cChar || '_')) + '</span>';
+            }
+        }
+        return html;
+    }
+
     window.submitAnswer = function() {
       var ans = currentTypedAnswer.trim().toLowerCase(), cor = currentQuestions[currentIndex].word.trim().toLowerCase();
       if (!ans) return;
-      if (ans === cor) currentScore++; else { mistakes.push(currentQuestions[currentIndex].word); alert('答錯！正確為: ' + currentQuestions[currentIndex].word); }
-      currentIndex++; window.renderCurrentQuestion();
+      
+      if (ans === cor) {
+          currentScore++;
+          currentIndex++; 
+          window.renderCurrentQuestion();
+      } else {
+          mistakes.push(currentQuestions[currentIndex].word);
+          // 隱藏鍵盤，顯示錯誤分析框
+          document.getElementById('type-keyboard-box').classList.add('hidden');
+          document.getElementById('type-keyboard-box').classList.remove('flex');
+          
+          var errBox = document.getElementById('type-error-box');
+          errBox.classList.remove('hidden');
+          errBox.classList.add('flex');
+          
+          document.getElementById('error-user-ans').innerText = currentTypedAnswer || '(未填寫)';
+          document.getElementById('error-correct-ans').innerHTML = generateErrorDiffHtml(ans, currentQuestions[currentIndex].word);
+          
+          // 自動發音正確答案以加深印象
+          window.playCurrentQuizWord();
+      }
     };
+    
     window.cancelQuiz = function() {
       if (!confirm('結束測驗？')) return;
       if (currentAudioPlayer) currentAudioPlayer.pause(); if (window.speechSynthesis) window.speechSynthesis.cancel();
@@ -986,7 +1110,6 @@
       });
     };
 
-    // 已清理底部重複多餘的舊代碼，改為以下 3 個核心輔助功能
     window.prevQuestion = function() { if (currentIndex > 0) { currentIndex--; window.renderCurrentQuestion(); } };
     window.nextQuestion = function() { currentIndex++; window.renderCurrentQuestion(); };
     window.getFormattedTime = function(){ var d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate() + ' ' + d.getHours() + ':' + d.getMinutes(); };
